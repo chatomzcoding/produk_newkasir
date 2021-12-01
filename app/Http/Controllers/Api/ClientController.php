@@ -47,7 +47,12 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        return $client;
+        if (cektoken($_GET['token'])) {
+            return $client;
+        } else {
+            return response()->json('akses terlarang');
+        }
+        
     }
 
     /**

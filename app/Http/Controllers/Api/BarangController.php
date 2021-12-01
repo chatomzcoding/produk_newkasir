@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -15,7 +16,17 @@ class BarangController extends Controller
      */
     public function index()
     {
-        return Barang::where('client_id',$_GET['client_id'])->get();
+        if (cektoken($_GET['token'])) {
+            if (isset($_GET['kategori'])) {
+                return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->get();
+            } else {
+                return Barang::where('client_id',$_GET['client_id'])->get();
+            }
+        } else {
+            return response()->json('akses terlarang');
+        }
+        
+        
     }
 
     /**
@@ -36,25 +47,31 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        Barang::create([
-            'client_id' => $request->client_id,
-            'kode_barang' => 'KD-'.time(),
-            'nama_barang' => $request->nama_barang,
-            'kategori_id' => $request->kategori_id,
-            'satuan_id' => $request->satuan_id,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-            'stok' => $request->stok,
-            'gambar' => $request->gambar,
-            'kode_barcode' => $request->kode_barcode,
-            'merk' => $request->merk,
-            'produsen_id' => $request->produsen_id,
-        ]);
-
-        return response()->json([
-            'success' => 1,
-            'message' => 'success'
-        ]);
+        if (cektoken($_POST['token'])) {
+            $namafile   = uploadgambar($request,'barang');
+            Barang::create([
+                'client_id' => $request->client_id,
+                'kode_barang' => 'KD-'.time(),
+                'nama_barang' => $request->nama_barang,
+                'kategori_id' => $request->kategori_id,
+                'satuan_id' => $request->satuan_id,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual,
+                'stok' => $request->stok,
+                'gambar' => $namafile,
+                'kode_barcode' => $request->kode_barcode,
+                'merk' => $request->merk,
+                'produsen_id' => $request->produsen_id,
+            ]);
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
+        
     }
 
     /**
@@ -97,8 +114,21 @@ class BarangController extends Controller
      * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Barang $barang)
+    public function destroy($barang)
     {
-        //
+        
+        if (cektoken($_GET['token'])) {
+            $barang     = Barang::find($barang);
+            deletefile('public/img/barang/'.$barang->gambar);
+    
+            $barang->delete();
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
     }
 }

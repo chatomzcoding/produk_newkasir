@@ -15,20 +15,24 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $result = NULL;
-        switch ($_GET['label']) {
-            case 'satuan':
-                $result = Kategori::where('label','satuan')->get();
-                break;
-            case 'barang':
-                $result = Kategori::where('label','barang')->get();
-                break;
-            
-            default:
-                break;
+        if (cektoken($_GET['token'])) {
+            $result = NULL;
+            switch ($_GET['label']) {
+                case 'satuan':
+                    $result = Kategori::where('label','satuan')->get();
+                    break;
+                case 'barang':
+                    $result = Kategori::where('label','barang')->get();
+                    break;
+                
+                default:
+                    break;
+            }
+            return $result;
+        } else {
+            return response()->json('akses terlarang');
         }
-
-        return $result;
+        
     }
 
     /**
@@ -49,16 +53,21 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        Kategori::create([
-            'nama' => $request->nama,
-            'keterangan' => $request->keterangan,
-            'label' => $request->label,
-        ]);
-
-        return response()->json([
-            'success' => 1,
-            'message' => 'success'
-        ]);
+        if (cektoken($_POST['token'])) {
+            Kategori::create([
+                'nama' => $request->nama,
+                'keterangan' => $request->keterangan,
+                'label' => $request->label,
+            ]);
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
+        
     }
 
     /**
@@ -101,8 +110,26 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kategori $kategori)
+    public function destroy($kategori)
     {
-        //
+        if (cektoken($_GET['token'])) {
+            $kategori   = Kategori::find($kategori);
+            if ($kategori) {
+                $kategori->delete();
+        
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'success'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'data tidak ada'
+                ]);
+            }
+            
+        } else {
+            return response()->json('akses terlarang');
+        }
     }
 }
