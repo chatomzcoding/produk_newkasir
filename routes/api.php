@@ -19,5 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // api produk
-Route::resource('produk','App\Http\Controllers\Api\ProdukController');
+Route::resource('client','App\Http\Controllers\Api\ClientController');
+Route::resource('kategori','App\Http\Controllers\Api\KategoriController');
+Route::resource('barang','App\Http\Controllers\Api\BarangController');
+Route::resource('user','App\Http\Controllers\Api\UserController');
 Route::get('chatforum/{id}','App\Http\Controllers\Api\ForumController@chatforum');

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,20 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $result = NULL;
+        switch ($_GET['label']) {
+            case 'satuan':
+                $result = Kategori::where('label','satuan')->get();
+                break;
+            case 'barang':
+                $result = Kategori::where('label','barang')->get();
+                break;
+            
+            default:
+                break;
+        }
+
+        return $result;
     }
 
     /**
@@ -36,32 +49,36 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Kategori::create([
+            'nama' => $request->nama,
+            'keterangan' => $request->keterangan,
+            'label' => $request->label,
+        ]);
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'success'
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function show($user)
+    public function show(Kategori $kategori)
     {
-        // $token = $_GET['token'];
-        // if (cektoken($token)) {
-            return User::find($user);
-        // } else {
-            // return response()->json('akses dilarang');
-        // }
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Kategori $kategori)
     {
         //
     }
@@ -70,10 +87,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Kategori $kategori)
     {
         //
     }
@@ -81,10 +98,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Kategori $kategori)
     {
         //
     }

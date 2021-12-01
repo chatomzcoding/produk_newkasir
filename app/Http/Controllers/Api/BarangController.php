@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class BarangController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return Barang::where('client_id',$_GET['client_id'])->get();
     }
 
     /**
@@ -36,32 +36,45 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Barang::create([
+            'client_id' => $request->client_id,
+            'kode_barang' => 'KD-'.time(),
+            'nama_barang' => $request->nama_barang,
+            'kategori_id' => $request->kategori_id,
+            'satuan_id' => $request->satuan_id,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
+            'stok' => $request->stok,
+            'gambar' => $request->gambar,
+            'kode_barcode' => $request->kode_barcode,
+            'merk' => $request->merk,
+            'produsen_id' => $request->produsen_id,
+        ]);
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'success'
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function show($user)
+    public function show(Barang $barang)
     {
-        // $token = $_GET['token'];
-        // if (cektoken($token)) {
-            return User::find($user);
-        // } else {
-            // return response()->json('akses dilarang');
-        // }
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Barang $barang)
     {
         //
     }
@@ -70,10 +83,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Barang $barang)
     {
         //
     }
@@ -81,10 +94,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Barang $barang)
     {
         //
     }

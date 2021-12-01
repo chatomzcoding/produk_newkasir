@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableKategori extends Migration
+class AddFkToBarang extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateTableKategori extends Migration
      */
     public function up()
     {
-        Schema::create('kategori', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->string('label');
-            $table->string('keterangan');
-            $table->timestamps();
+        Schema::table('barang', function (Blueprint $table) {
+            $table->unsignedBigInteger('client_id')->after('id');
+            $table->foreign('client_id')->references('id')->on('client')->onDelete('cascade');
         });
     }
 
@@ -29,6 +26,8 @@ class CreateTableKategori extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kategori');
+        Schema::table('barang', function (Blueprint $table) {
+            //
+        });
     }
 }

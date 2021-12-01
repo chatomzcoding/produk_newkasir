@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,26 +42,21 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function show($user)
+    public function show(Client $client)
     {
-        // $token = $_GET['token'];
-        // if (cektoken($token)) {
-            return User::find($user);
-        // } else {
-            // return response()->json('akses dilarang');
-        // }
+        return $client;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Client $client)
     {
         //
     }
@@ -70,10 +65,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Client $client)
     {
         //
     }
@@ -81,10 +76,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Client $client)
     {
         //
     }
