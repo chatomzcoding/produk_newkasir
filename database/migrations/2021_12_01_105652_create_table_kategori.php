@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFkToRw extends Migration
+class CreateTableKategori extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddFkToRw extends Migration
      */
     public function up()
     {
-        Schema::table('rw', function (Blueprint $table) {
-            $table->unsignedBigInteger('dusun_id')->after('id');
-            $table->foreign('dusun_id')->references('id')->on('dusun')->onDelete('cascade');
+        Schema::create('kategori', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -26,8 +26,6 @@ class AddFkToRw extends Migration
      */
     public function down()
     {
-        Schema::table('rw', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('kategori');
     }
 }
