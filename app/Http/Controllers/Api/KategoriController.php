@@ -55,6 +55,7 @@ class KategoriController extends Controller
     {
         if (cektoken($_POST['token'])) {
             Kategori::create([
+                'client_id' => $request->client_id,
                 'nama' => $request->nama,
                 'keterangan' => $request->keterangan,
                 'label' => $request->label,
