@@ -18,9 +18,9 @@ class BarangController extends Controller
     {
         if (cektoken($_GET['token'])) {
             if (isset($_GET['kategori'])) {
-                return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('id',$_GET['sortby'])->get();
+                return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
             } else {
-                return Barang::where('client_id',$_GET['client_id'])->orderBy('id',$_GET['sortby'])->get();
+                return Barang::where('client_id',$_GET['client_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
             }
         } else {
             return response()->json('akses terlarang');

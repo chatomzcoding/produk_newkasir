@@ -19,10 +19,10 @@ class KategoriController extends Controller
             $result = NULL;
             switch ($_GET['label']) {
                 case 'satuan':
-                    $result = Kategori::where('label','satuan')->get();
+                    $result = Kategori::where('label','satuan')->orderBy('nama',$_GET['sortby'])->get();
                     break;
                 case 'barang':
-                    $result = Kategori::where('label','barang')->get();
+                    $result = Kategori::where('label','barang')->orderBy('nama',$_GET['sortby'])->get();
                     break;
                 
                 default:
