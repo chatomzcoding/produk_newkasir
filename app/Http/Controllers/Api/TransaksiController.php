@@ -120,8 +120,18 @@ class TransaksiController extends Controller
      * @param  \App\Models\Transaksi  $transaksi
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transaksi $transaksi)
+    public function destroy($transaksi)
     {
-        //
+        if (cektoken($_GET['token'])) {
+            $transaksi  = Transaksi::find($transaksi);
+            $transaksi->delete();
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
     }
 }

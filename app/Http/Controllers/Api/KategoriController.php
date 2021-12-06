@@ -53,7 +53,7 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        if (cektoken($_POST['token'])) {
+        if (cektoken($request->token)) {
             Kategori::create([
                 'client_id' => $request->client_id,
                 'nama' => $request->nama,
@@ -68,7 +68,6 @@ class KategoriController extends Controller
         } else {
             return response()->json('akses terlarang');
         }
-        
     }
 
     /**
@@ -100,9 +99,22 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request,$kategori)
     {
-        //
+        if (cektoken($request->token)) {
+            $kategori   = Kategori::find($kategori);
+            Kategori::where('id',$kategori->id)->update([
+                'nama' => $request->nama,
+                'keterangan' => $request->keterangan,
+            ]);
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
     }
 
     /**
