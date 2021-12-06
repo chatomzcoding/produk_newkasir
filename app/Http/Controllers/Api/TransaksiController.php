@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use App\Models\User;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -61,8 +63,9 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         if (cektoken($_POST['token'])) {
+            $userakses = Userakses::where('user_id',$request->user_id)->first();
             Transaksi::create([
-                'userakses_id' => $request->userakses_id,
+                'userakses_id' => $userakses->id,
                 'kode_transaksi' => 'TRX-'.time(),
                 'uang_pembeli' => $request->uang_pembeli,
                 'status_transaksi' => $request->status_transaksi,
