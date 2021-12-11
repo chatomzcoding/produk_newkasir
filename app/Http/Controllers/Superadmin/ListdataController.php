@@ -15,7 +15,14 @@ class ListdataController extends Controller
      */
     public function index()
     {
-        //
+        $menu   = 'listdata';
+        $kategori = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
+        if ($kategori == 'semua') {
+            $listdata   = Listdata::all();
+        } else {
+            $listdata   = Listdata::where('kategori',$_GET['kategori'])->get();
+        }
+        return view('superadmin.listdata.index', compact('menu','listdata','kategori'));
     }
 
     /**
@@ -36,7 +43,9 @@ class ListdataController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Listdata::create($request->all());
+
+        return back()->with('ds','List Data');
     }
 
     /**
@@ -68,9 +77,15 @@ class ListdataController extends Controller
      * @param  \App\Models\Listdata  $listdata
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Listdata $listdata)
+    public function update(Request $request)
     {
-        //
+        Listdata::where('id',$request->id)->update([
+            'nama' => $request->nama,
+            'kategori' => $request->kategori,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return back()->with('du','List Data');
     }
 
     /**
@@ -79,8 +94,10 @@ class ListdataController extends Controller
      * @param  \App\Models\Listdata  $listdata
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Listdata $listdata)
+    public function destroy($listdata)
     {
-        //
+        Listdata::find($listdata)->delete();
+
+        return back()->with('dd','List Data');
     }
 }
