@@ -1,13 +1,10 @@
-@php
-	$info = App\Models\Infowebsite::first(); 
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
-  <link href="{{  asset('img/'.$info->logo_brand)}}" rel="icon">
+  <link href="{{  asset('img/logo.png')}}" rel="icon">
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -20,13 +17,13 @@
 </head>
 <body class="hold-transition login-page" style="background-image: url({{ asset('img/bg-login.jpg')}}); background-size : cover;
 background-position: center; width : auto;
-background-repeat: no-repeat;">
+background-repeat: no-repeat;>
 <div class="login-box">
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <img src="{{ asset('img/bumdes-logo.png') }}" alt="" width="50%"><br>
-      <h3 class="font-weight-bold">Jantung Desa</h3>
+      <img src="{{ asset('img/logo.png') }}" alt="" width="50%"><br>
+      <h3 class="font-weight-bold">Cikara Kasir</h3>
     </div>
     <div class="card-body">
         @if ($errors->any())
@@ -70,9 +67,6 @@ background-repeat: no-repeat;">
         <a href="{{ url('/') }}"><i class="fas fa-home"></i> Halaman Utama</a>
         <a href="http://cikarastudio.com/" target="_blank" class="float-right">CIKARA STUDIO</a>
       </p>
-      {{-- <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
-      </p> --}}
     </div>
     <!-- /.card-body -->
   </div>

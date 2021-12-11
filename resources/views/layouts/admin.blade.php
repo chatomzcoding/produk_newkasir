@@ -1,5 +1,4 @@
 @php
-	  $info = App\Models\Infowebsite::first(); 
     $user = Auth::user();
 @endphp
 <!DOCTYPE html>
@@ -10,7 +9,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>@yield('title')</title>
-  <link href="{{  asset('img/'.$info->logo_brand)}}" rel="icon">
+  <link href="{{  asset('img/logo.png')}}" rel="icon">
 
 
   <!-- Google Font: Source Sans Pro -->
@@ -35,8 +34,6 @@
   <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/summernote/summernote-bs4.min.css')}}">
 
   <link rel="stylesheet" href="{{ asset('css/style.css')}}">
-
-  {{-- <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
 
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
@@ -72,25 +69,6 @@
     position: absolute !important;
     width: 1px !important
 }
-
-/* .form-control {
-    display: block;
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #555;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
-} */
 
 .select2-container--default .select2-selection--single,
 .select2-selection .select2-selection--single {
@@ -166,9 +144,7 @@
     </ul>
 
     <!-- SEARCH FORM -->
-    @if ($user->level == 'admin')
-      <form action="{{ url('penduduk') }}" method="get" class="form-inline ml-3">
-        @csrf
+      <form action="#" method="get" class="form-inline ml-3">
         <input type="hidden" name="data" value="cari">
         <div class="input-group input-group-sm">
           <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari NIK/Nama" aria-label="Search">
@@ -179,7 +155,6 @@
           </div>
         </div>
       </form>
-    @endif
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -187,26 +162,20 @@
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">{{ DbCikara::countData('forum') }}</span>
+          <span class="badge badge-danger navbar-badge">3</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          @foreach (DbCikara::showtable('forum') as $item)
             <a href="#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="{{  asset('img/'.$info->logo_brand)}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                <img src="{{  asset('img/logo.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
-                    {{ $item->nama }}
+                    asep
                     <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                   </h3>
                   <p class="text-sm">
-                    @php
-                        $diskusi = DbCikara::showtablefirst('forum_diskusi',['forum_id',$item->id]);
-                    @endphp  
-                    @if ($diskusi)
-                    {{ $diskusi->isi }}
-                    @endif
+                  saya adalah bot
                   </p>
                   <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
                 </div>
@@ -214,8 +183,7 @@
               <!-- Message End -->
             </a>
             <div class="dropdown-divider"></div>
-          @endforeach
-          <a href="{{ url('forumdiskusi') }}" class="dropdown-item dropdown-footer">Selengkapnya</a>
+          <a href="#" class="dropdown-item dropdown-footer">Selengkapnya</a>
         </div>
       </li>
       <!-- Notifications Dropdown Menu -->
@@ -251,11 +219,6 @@
         </a>
       </li> --}}
       <li class="nav-item">
-        <a class="nav-link" href="{{ url('/') }}" role="button">
-          <i class="fas fa-home"></i> Halaman Depan
-        </a>
-      </li>
-      <li class="nav-item">
         <form method="POST" action="{{ route('logout') }}">
          @csrf
          <a href="{{ route('logout') }}"  class="nav-link"
@@ -278,7 +241,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/dashboard')}}" class="brand-link">
-      <img src="{{  asset('img/'.$info->logo_brand)}}" alt="JantungDesa" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{  asset('img/logo.png')}}" alt="JantungDesa" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><strong>Jantung Desa</strong></span>
     </a>
 
@@ -290,11 +253,7 @@
           <img src="{{ asset(avatar($user))}}" class="img-circle elevation-2" alt="{{ avatar($user) }}">
         </div>
         <div class="info">
-          @if ($user->level == 'penduduk')
-            <a href="#" class="d-block text-capitalize">{{ DbCikara::datapenduduk($user->id,'id')->nama_penduduk.$user->profile_photo_path}}</a>
-          @else
-            <a href="#" class="d-block text-capitalize">{{ $user->name}}</a>
-          @endif
+            <a href="#" class="d-block text-capitalize">{{ $user->name}}</a> <small class="text-white">{{ $user->level }}</small>
         </div>
       </div>
 
@@ -320,13 +279,12 @@
             </a>
           </li>
           @switch(Auth::user()->level)
+              @case('superadmin')
+                @include('superadmin.menu')
+                @break
               @case('admin')
                 @include('admin.data.menu')
                 @break
-
-              @case('penduduk')
-                @include('penduduk.data.menu')
-                  @break
               @default
           @endswitch
           <li class="nav-header pt-0">SISTEM</li>

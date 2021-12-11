@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Superadmin\ListdataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Example; 
 use App\Http\Livewire\Members; //Load class Members 
@@ -27,6 +28,11 @@ Route::get('/','App\Http\Controllers\HomepageController@index');
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::get('/dashboard','App\Http\Controllers\HomeController@index')->name('dashboard');
     
+    // SUPERADMIN
+    Route::middleware(['superadmin'])->group(function () {
+        Route::resource('listdata', ListdataController::class);
+    });
+
     // CETAK
     Route::get('cetakdata','App\Http\Controllers\CetakController@cetak');
 

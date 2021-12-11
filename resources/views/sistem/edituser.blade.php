@@ -51,13 +51,7 @@
                             </div>
                             <div class="col-md-9">
                                 <div class="form-group">
-                                    @if ($user->level == 'admin')
                                     <input type="text" name="name" value="{{ $user->name}}" class="form-control">
-                                    
-                                    @else
-                                    <input type="text" value="{{ DbCikara::datapenduduk($user->id,'id')->nama_penduduk}}" class="form-control" disabled>
-                                    <input type="hidden" name="name" value="{{ $user->name}}">
-                                    @endif
                                 </div>
                             </div>
                         </div>

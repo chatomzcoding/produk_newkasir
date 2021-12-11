@@ -29,28 +29,6 @@ class HomepageController extends Controller
     
     public function index()
     {
-        $barang     = Barang::all();
-        $keranjang  = [];
-        foreach ($barang as $item) {
-            $detail     = [
-                'nama' => $item->nama_barang,
-                'harga_beli' => $item->harga_beli,
-                'harga_jual' => $item->harga_jual,
-            ];
-            $keranjang[$item->kode_barang] = $detail;
-        }
-
-        print_r($keranjang);
-
-        // ubah barang 1;
-        $keranjang['KD-1638452520'] = [
-            'nama' => $keranjang['KD-1638452520']['nama'],
-            'harga_beli' => 30000,
-            'harga_jual' => 38000,
-        ];
-
-        print_r($keranjang);
-
-        die();
+        return redirect('login');
     }
 }

@@ -55,7 +55,7 @@ class BarangController extends Controller
             $namafile   = uploadgambar($request,'barang');
             Barang::create([
                 'client_id' => $request->client_id,
-                'kode_barang' => 'KD-'.time(),
+                'kode_barang' => 'KD'.time(),
                 'nama_barang' => $request->nama_barang,
                 'kategori_id' => $request->kategori_id,
                 'satuan_id' => $request->satuan_id,
