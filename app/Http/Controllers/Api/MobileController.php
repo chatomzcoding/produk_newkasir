@@ -11,6 +11,9 @@ class MobileController extends Controller
 {
     public function ceklogin(Request $request)
     {
+        if (!cektoken($request->token)) {
+            return response()->json('akses dilarang');
+        }
         $user   = User::where('email',$request->email)->first();
         if ($user) {
             $password   = $user->password;
