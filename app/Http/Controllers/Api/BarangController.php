@@ -52,7 +52,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         if (cektoken($_POST['token'])) {
-            $namafile   = uploadgambar($request,'barang');
+            // $namafile   = uploadgambar($request,'barang');
             Barang::create([
                 'client_id' => $request->client_id,
                 'kode_barang' => 'KD'.time(),
@@ -62,7 +62,7 @@ class BarangController extends Controller
                 'harga_beli' => $request->harga_beli,
                 'harga_jual' => $request->harga_jual,
                 'stok' => $request->stok,
-                'gambar' => $namafile,
+                'gambar' => 'bulan.png',
                 'kode_barcode' => $request->kode_barcode,
                 'merk' => $request->merk,
                 'produsen_id' => $request->produsen_id,

@@ -67,32 +67,48 @@ class TransaksiController extends Controller
         if (cektoken($_POST['token'])) {
             if (isset($request->keranjang)) {
                 $transaksi  = Transaksi::find($request->transaksi_id);
-                $keranjang  = [
-                    $request->kode_barang => [
-                        'nama_barang' => $request->nama_barang,
-                        'jumlah' => $request->jumlah,
-                        'harga_beli' => $request->harga_beli,
-                        'harga_jual' => $request->harga_jual,
-                    ]
-                ];
-                if (!is_null($transaksi->keranjang)) {
-                    $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
-                    $keranjang      = array_merge($keranjang,$dkeranjang);
+                if ($transaksi) {
+                    $keranjang  = [
+                        $request->kode_barang => [
+                            'nama_barang' => $request->nama_barang,
+                            'jumlah' => $request->jumlah,
+                            'harga_beli' => $request->harga_beli,
+                            'harga_jual' => $request->harga_jual,
+                        ]
+                    ];
+                    if (!is_null($transaksi->keranjang)) {
+                        $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
+                        $keranjang      = array_merge($keranjang,$dkeranjang);
+                    }
+    
+                    Transaksi::where('id',$transaksi->id)->update([
+                        'keranjang' => json_encode($keranjang)
+                    ]);
+                    # code...
+                } else {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'transaksi tidak ada'
+                    ]);
                 }
-
-                Transaksi::where('id',$transaksi->id)->update([
-                    'keranjang' => json_encode($keranjang)
-                ]);
-                
             } else {
                 $userakses = Userakses::where('user_id',$request->user_id)->first();
-                Transaksi::create([
-                    'userakses_id' => $userakses->id,
-                    'kode_transaksi' => 'TRX-'.time(),
-                    'uang_pembeli' => $request->uang_pembeli,
-                    'status_transaksi' => $request->status_transaksi,
-                    'tipe_pembayaran' => $request->tipe_pembayaran,
-                ]);
+                if ($userakses) {
+                    Transaksi::create([
+                        'userakses_id' => $userakses->id,
+                        'kode_transaksi' => 'TRX-'.time(),
+                        'uang_pembeli' => $request->uang_pembeli,
+                        'status_transaksi' => $request->status_transaksi,
+                        'tipe_pembayaran' => $request->tipe_pembayaran,
+                    ]);
+                    # code...
+                } else {
+                    return response()->json([
+                        'success' => 0,
+                        'message' => 'akses user tidak ada'
+                    ]);
+                }
+                
             }
     
             return response()->json([
