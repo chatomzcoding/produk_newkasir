@@ -103,15 +103,23 @@ class KategoriController extends Controller
     {
         if (cektoken($request->token)) {
             $kategori   = Kategori::find($kategori);
-            Kategori::where('id',$kategori->id)->update([
-                'nama' => $request->nama,
-                'keterangan' => $request->keterangan,
-            ]);
-    
-            return response()->json([
-                'success' => 1,
-                'message' => 'success'
-            ]);
+            if ($kategori) {
+                Kategori::where('id',$kategori->id)->update([
+                    'nama' => $request->nama,
+                    'keterangan' => $request->keterangan,
+                ]);
+        
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'success'
+                ]);
+                # code...
+            } else {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'kategori tidak ada'
+                ]);
+            }
         } else {
             return response()->json('akses terlarang');
         }
