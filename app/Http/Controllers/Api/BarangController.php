@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -16,18 +17,35 @@ class BarangController extends Controller
      */
     public function index()
     {
-        if (cektoken($_GET['token'])) {
-            if (isset($_GET['filter'])) {
-                return Barang::where('client_id',$_GET['client_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
-            } else {
-                if (isset($_GET['kategori'])) {
-                    return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
-                } else {
-                    return Barang::where('client_id',$_GET['client_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
-                }
-            }
-        } else {
+
+        if (!cektoken($_GET['token'])) {
             return response()->json('akses terlarang');
+        }
+        if (isset($_GET['keranjang'])) {
+            $transaksi  = Transaksi::find($_GET['transaksi_id']);
+            if ($transaksi) {
+                if (!is_null($transaksi->keranjang)) {
+                    return json_decode($transaksi->keranjang);
+                } else {
+                   $barang = []; 
+                }
+                return $barang;
+            } else {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'transaksi tidak ada'
+                ]);
+            }
+        }
+
+        if (isset($_GET['filter'])) {
+            return Barang::where('client_id',$_GET['client_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
+        } else {
+            if (isset($_GET['kategori'])) {
+                return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+            } else {
+                return Barang::where('client_id',$_GET['client_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+            }
         }
         
         

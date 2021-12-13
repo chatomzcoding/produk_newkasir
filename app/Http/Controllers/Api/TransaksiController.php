@@ -100,6 +100,7 @@ class TransaksiController extends Controller
                         'uang_pembeli' => $request->uang_pembeli,
                         'status_transaksi' => $request->status_transaksi,
                         'tipe_pembayaran' => $request->tipe_pembayaran,
+                        'tipe_orderan' => $request->tipe_orderan,
                     ]);
                     # code...
                 } else {
@@ -127,9 +128,21 @@ class TransaksiController extends Controller
      * @param  \App\Models\Transaksi  $transaksi
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaksi $transaksi)
+    public function show($transaksi)
     {
-        //
+        if (!cektoken($_GET['token'])) {
+            return response()->json('akses terlarang');
+        }
+        $transaksi  = Transaksi::find($transaksi);
+        if ($transaksi) {
+            return $transaksi;
+        } else {
+            return response()->json([
+                'success' => 0,
+                'message' => 'transaksi tidak ada'
+            ]);
+        }
+        
     }
 
     /**

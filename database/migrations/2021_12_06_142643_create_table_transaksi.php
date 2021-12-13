@@ -18,6 +18,7 @@ class CreateTableTransaksi extends Migration
             $table->string('kode_transaksi');
             $table->string('status_transaksi');
             $table->string('tipe_pembayaran');
+            $table->string('tipe_orderan')->nullable();
             $table->integer('uang_pembeli');
             $table->longText('keranjang');
             $table->timestamps();
