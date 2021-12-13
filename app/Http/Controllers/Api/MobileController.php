@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,13 @@ class MobileController extends Controller
         if ($user) {
             $password   = $user->password;
             if (password_verify($request->password,$password)) {
+                Session::create([
+                    'id' => $user->id.time(),
+                    'user_id' => $user->id,
+                    'payload' => 1,
+                    'user_agent' => $request->nama_device,
+                    'last_activity' => 0,
+                ]);
                 return response()->json([
                     'success' => 1,
                     'message' => 'success'
