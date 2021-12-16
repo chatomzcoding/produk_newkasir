@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -47,12 +48,18 @@ class UserController extends Controller
      */
     public function show($user)
     {
-        // $token = $_GET['token'];
-        // if (cektoken($token)) {
-            return User::find($user);
-        // } else {
-            // return response()->json('akses dilarang');
-        // }
+        $token = $_GET['token'];
+        if (cektoken($token)) {
+            $result = DB::table('users')
+                        ->join('user_akses','users.id','=','user_akses.user_id')
+                        ->join('client','user_akses.client_id','=','client.id')
+                        ->select('client.*','users.*')
+                        ->where('users.id',$user)
+                        ->first();
+            return $result;
+        } else {
+            return response()->json('akses dilarang');
+        }
     }
 
     /**
