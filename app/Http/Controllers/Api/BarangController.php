@@ -41,7 +41,7 @@ class BarangController extends Controller
         if (isset($_GET['filter'])) {
             return Barang::where('client_id',$_GET['client_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
         } else {
-            if (isset($_GET['kategori'])) {
+            if (isset($_GET['kategori_id'])) {
                 return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
             } else {
                 return Barang::where('client_id',$_GET['client_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
