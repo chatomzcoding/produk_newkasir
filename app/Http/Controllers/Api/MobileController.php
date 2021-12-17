@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Session;
 use App\Models\User;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
 
 class MobileController extends Controller
@@ -41,5 +42,13 @@ class MobileController extends Controller
                 'message' => 'email salah'
             ]);
         }
+    }
+
+    public function userakses($user)
+    {
+        if (!cektoken($_GET['token'])) {
+            return response()->json('akses dilarang');
+        }
+        return Userakses::where('user_id',$user)->first();
     }
 }

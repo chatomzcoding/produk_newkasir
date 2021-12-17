@@ -69,8 +69,8 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        if (cektoken($_POST['token'])) {
-            // $namafile   = uploadgambar($request,'barang');
+        if (cektoken($request->token)) {
+            $namafile   = uploadgambar($request,'barang');
             Barang::create([
                 'client_id' => $request->client_id,
                 'kode_barang' => 'KD'.time(),
@@ -80,7 +80,7 @@ class BarangController extends Controller
                 'harga_beli' => $request->harga_beli,
                 'harga_jual' => $request->harga_jual,
                 'stok' => $request->stok,
-                'gambar' => 'bulan.png',
+                'gambar' => $namafile,
                 'kode_barcode' => $request->kode_barcode,
                 'merk' => $request->merk,
                 'produsen_id' => $request->produsen_id,
@@ -127,7 +127,28 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        //
+        if (cektoken($request->token)) {
+            $namafile   = uploadgambar($request,'barang');
+            Barang::where('id',$barang->id)->update([
+                'nama_barang' => $request->nama_barang,
+                'kategori_id' => $request->kategori_id,
+                'satuan_id' => $request->satuan_id,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual,
+                'stok' => $request->stok,
+                'gambar' => $namafile,
+                'kode_barcode' => $request->kode_barcode,
+                'merk' => $request->merk,
+                'produsen_id' => $request->produsen_id,
+            ]);
+    
+            return response()->json([
+                'success' => 1,
+                'message' => 'success'
+            ]);
+        } else {
+            return response()->json('akses terlarang');
+        }
     }
 
     /**

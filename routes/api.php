@@ -25,3 +25,4 @@ Route::resource('barang','App\Http\Controllers\Api\BarangController');
 Route::resource('transaksi','App\Http\Controllers\Api\TransaksiController');
 Route::resource('user','App\Http\Controllers\Api\UserController');
 Route::post('ceklogin','App\Http\Controllers\Api\MobileController@ceklogin');
+Route::get('userakses/{user}','App\Http\Controllers\Api\MobileController@userakses');
