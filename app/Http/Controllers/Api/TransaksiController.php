@@ -28,11 +28,30 @@ class TransaksiController extends Controller
                                 ->get();
                     break;
                 case 'kasir':
-                    $result = DB::table('transaksi')
+                    $data = DB::table('transaksi')
                                 ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
                                 ->where('user_akses.user_id',$_GET['id'])
                                 ->select('transaksi.*')
                                 ->get();
+                    $result = [];
+                    if (count($data) > 0) {
+                        foreach ($data as $item) {
+                            if (is_null($item->keranjang)) {
+                                $keranjang = [];
+                            } else {
+                                $keranjang  = json_decode($item->keranjang);
+                            }
+                            $data   = [
+                                'kode_transaksi' => $item->kode_transaksi,
+                                'status_transaksi' => $item->status_transaksi,
+                                'tipe_orderan' => $item->tipe_orderan,
+                                'tipe_pembayaran' => $item->tipe_pembayaran,
+                                'uang_pembeli' => $item->uang_pembeli,
+                                'keranjang' => $keranjang
+                            ];
+                            $result[] = $data;
+                        }
+                    }
                     break;
                 case 'filter':
                     switch ($_GET['status']) {
