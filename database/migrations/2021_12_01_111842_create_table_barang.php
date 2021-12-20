@@ -22,7 +22,7 @@ class CreateTableBarang extends Migration
             $table->string('harga_beli');
             $table->string('harga_jual');
             $table->integer('stok');
-            $table->text('gambar');
+            $table->text('gambar')->nullable();
             $table->string('kode_barcode')->nullable();
             $table->string('merk')->nullable();
             $table->string('produsen_id')->nullable();

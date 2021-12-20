@@ -34,7 +34,331 @@ class TransaksiController extends Controller
                                 ->select('transaksi.*')
                                 ->get();
                     break;
-                
+                case 'filter':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $result = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.*')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->get();
+                            break;
+                        case 'bulanan':
+                            $result = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.*')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        case 'tahunan':
+                            $result = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.*')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    break;
+                case 'totalpenjualan':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->get();
+                                
+                            break;
+                        case 'bulanan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        case 'tahunan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    $total  = 0;
+                    foreach ($data as $item) {
+                        $totalsub = 0;
+                        $keranjang = json_decode($item->keranjang);
+                        foreach ($keranjang as $key) {
+                            $totalsub = $totalsub + $key->harga_jual;
+                        }
+                        $total = $total + $totalsub;
+                    }
+                    $result     = [
+                        'totalpenjualan' => $total
+                    ];
+                    break;
+                case 'totalitem':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->get();
+                                
+                            break;
+                        case 'bulanan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        case 'tahunan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    $total  = 0;
+                    foreach ($data as $item) {
+                        $totalsub = 0;
+                        $keranjang = json_decode($item->keranjang);
+                        foreach ($keranjang as $key) {
+                            $totalsub = $totalsub + $key->jumlah;
+                        }
+                        $total = $total + $totalsub;
+                    }
+                    $result     = [
+                        'totalitem' => $total
+                    ];
+                    break;
+                case 'totallaba':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->get();
+                                
+                            break;
+                        case 'bulanan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        case 'tahunan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    $total  = 0;
+                    foreach ($data as $item) {
+                        $totalsub = 0;
+                        $keranjang = json_decode($item->keranjang);
+                        foreach ($keranjang as $key) {
+                            $laba   = $key->harga_jual - $key->harga_beli;
+                            $totalsub = $totalsub + $laba;
+                        }
+                        $total = $total + $totalsub;
+                    }
+                    $result     = [
+                        'totallaba' => $total
+                    ];
+                    break;
+                case 'totalproduk':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->get();
+                                
+                            break;
+                        case 'bulanan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        case 'tahunan':
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    $total  = 0;
+                    foreach ($data as $item) {
+                        $produk = NULL;
+                        $keranjang = json_decode($item->keranjang);
+                        foreach ($keranjang as $key) {
+                            $produk[] = $key->nama_barang.' - '.$key->jumlah;
+                        }
+                    }
+                    $result     = [
+                        'totalproduk' => $produk
+                    ];
+                    break;
+                case 'totalorderan':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                            $dinein = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','dine in')
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->count();
+                            $takaway = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','take away')
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->count();
+                            $delivery = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','delivery')
+                                ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                ->count();
+                            $result = [
+                                'dine-in' => $dinein,
+                                'take-away' => $takaway,
+                                'delivery' => $delivery
+                            ];
+                            break;
+                        case 'bulanan':
+                                $dinein = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','dine in')
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $takaway = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','take away')
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $delivery = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','delivery')
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $result = [
+                                'dine-in' => $dinein,
+                                'take-away' => $takaway,
+                                'delivery' => $delivery
+                            ];
+                            break;
+                        case 'tahunan':
+                            
+                                $dinein = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','dine in')
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $takaway = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','take away')
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $delivery = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.tipe_orderan')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.tipe_orderan','delivery')
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->count();
+                            $result = [
+                                'dine-in' => $dinein,
+                                'take-away' => $takaway,
+                                'delivery' => $delivery
+                            ];
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                    }
+                    break;
                 default:
                     $result = [];
                     break;
