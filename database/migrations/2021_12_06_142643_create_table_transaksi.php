@@ -20,7 +20,7 @@ class CreateTableTransaksi extends Migration
             $table->string('tipe_pembayaran');
             $table->string('tipe_orderan')->nullable();
             $table->integer('uang_pembeli');
-            $table->longText('keranjang');
+            $table->longText('keranjang')->nullable();
             $table->timestamps();
         });
     }

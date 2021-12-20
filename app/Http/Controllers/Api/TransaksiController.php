@@ -102,7 +102,12 @@ class TransaksiController extends Controller
                         'tipe_pembayaran' => $request->tipe_pembayaran,
                         'tipe_orderan' => $request->tipe_orderan,
                     ]);
-                    # code...
+                    $transaksi  = Transaksi::where('userakses_id',$userakses->id)->orderBy('id','DESC')->first();
+                    return response()->json([
+                        'success' => 1,
+                        'message' => 'success',
+                        'transaksi' => $transaksi
+                    ]);
                 } else {
                     return response()->json([
                         'success' => 0,
@@ -111,7 +116,6 @@ class TransaksiController extends Controller
                 }
                 
             }
-    
             return response()->json([
                 'success' => 1,
                 'message' => 'success'
