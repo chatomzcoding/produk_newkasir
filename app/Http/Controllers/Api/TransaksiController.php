@@ -35,6 +35,7 @@ class TransaksiController extends Controller
                                 $keranjang  = json_decode($item->keranjang);
                             }
                             $data   = [
+                                'id' => $item->id,
                                 'kode_transaksi' => $item->kode_transaksi,
                                 'status_transaksi' => $item->status_transaksi,
                                 'tipe_orderan' => $item->tipe_orderan,
@@ -61,6 +62,7 @@ class TransaksiController extends Controller
                                 $keranjang  = json_decode($item->keranjang);
                             }
                             $data   = [
+                                'id' => $item->id,
                                 'kode_transaksi' => $item->kode_transaksi,
                                 'status_transaksi' => $item->status_transaksi,
                                 'tipe_orderan' => $item->tipe_orderan,
@@ -171,6 +173,7 @@ class TransaksiController extends Controller
                                     $keranjang  = json_decode($item->keranjang);
                                 }
                                 $databarang   = [
+                                    'id' => $item->id,
                                     'kode_transaksi' => $item->kode_transaksi,
                                     'status_transaksi' => $item->status_transaksi,
                                     'tipe_orderan' => $item->tipe_orderan,
@@ -535,24 +538,14 @@ class TransaksiController extends Controller
             if (isset($request->keranjang)) {
                 $transaksi  = Transaksi::find($request->transaksi_id);
                 if ($transaksi) {
-                    // $keranjang  = [
-                    //     $request->kode_barang => [
-                    //         'nama_barang' => $request->nama_barang,
-                    //         'jumlah' => $request->jumlah,
-                    //         'harga_beli' => $request->harga_beli,
-                    //         'harga_jual' => $request->harga_jual,
-                    //     ]
-                    // ];
                     $keranjang  = [];
-                    return $request->barang;
                     $barang     = json_decode($request->barang);
-                    return $barang;
-                    for ($i=0; $i < count($barang); $i++) { 
-                        $keranjang[$barang[$i]['kode_barang']] = [
-                            'nama_barang' => $barang[$i]['nama_barang'],
-                            'jumlah' => $barang[$i]['jumlah'],
-                            'harga_beli' => $barang[$i]['harga_beli'],
-                            'harga_jual' => $barang[$i]['harga_jual'],
+                    foreach ($barang as $key) {
+                        $keranjang[$key->kode_barang] = [
+                            'nama_barang' => $key->nama_barang,
+                            'jumlah' => $key->jumlah,
+                            'harga_beli' => $key->harga_beli,
+                            'harga_jual' => $key->harga_jual,
                         ];
                     }
                     if (!is_null($transaksi->keranjang)) {
