@@ -283,7 +283,7 @@
                 @include('superadmin.menu')
                 @break
               @case('admin')
-                @include('admin.data.menu')
+                @include('admin.menu')
                 @break
               @default
           @endswitch

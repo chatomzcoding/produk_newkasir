@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFkToBarang extends Migration
+class AddFkToClient extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddFkToBarang extends Migration
      */
     public function up()
     {
-        Schema::table('barang', function (Blueprint $table) {
-            $table->unsignedBigInteger('cabang_id')->after('id');
-            $table->foreign('cabang_id')->references('id')->on('cabang')->onDelete('cascade');
+        Schema::table('client', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->after('id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -26,7 +26,7 @@ class AddFkToBarang extends Migration
      */
     public function down()
     {
-        Schema::table('barang', function (Blueprint $table) {
+        Schema::table('client', function (Blueprint $table) {
             //
         });
     }

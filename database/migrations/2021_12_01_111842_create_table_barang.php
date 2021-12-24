@@ -25,6 +25,7 @@ class CreateTableBarang extends Migration
             $table->text('gambar')->nullable();
             $table->string('kode_barcode')->nullable();
             $table->string('merk')->nullable();
+            $table->string('status_barang')->nullable();
             $table->string('produsen_id')->nullable();
             $table->timestamps();
         });

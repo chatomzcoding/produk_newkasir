@@ -16,8 +16,8 @@ class AddFkToUserAkses extends Migration
         Schema::table('user_akses', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->after('id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('client_id')->after('user_id');
-            $table->foreign('client_id')->references('id')->on('client')->onDelete('cascade');
+            $table->unsignedBigInteger('cabang_id')->after('user_id');
+            $table->foreign('cabang_id')->references('id')->on('cabang')->onDelete('cascade');
         });
     }
 
