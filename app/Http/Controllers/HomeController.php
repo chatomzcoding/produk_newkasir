@@ -15,6 +15,9 @@ class HomeController extends Controller
             case 'superadmin':
                 return view('superadmin.dashboard', compact('menu'));
                 break;
+            case 'kasir':
+                return view('kasir.dashboard', compact('menu'));
+                break;
             default:
                 # code...
                 break;

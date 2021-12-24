@@ -72,7 +72,7 @@
                   @include('sistem.notifikasi')
                   <section class="mb-3">
                       <form action="{{ url('listdata') }}" method="get">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="form-group col-md-2">
                                 <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
                                     <option value="semua">Semua</option>
@@ -83,7 +83,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </form>
                   </section>
                   <div class="table-responsive">

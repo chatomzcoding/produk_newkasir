@@ -1,3 +1,9 @@
+<li class="nav-item">
+  <a href="{{ url('/client')}}" class="nav-link small {{ menuaktif($menu,'client') }}">
+    <i class="nav-icon fas fa-user"></i>
+    <p class="text">Data Client</p>
+  </a>
+</li>
 
 <li class="nav-item @if ($menu == 'listdata')
 menu-is-opening menu-open
@@ -20,9 +26,3 @@ menu-is-opening menu-open
     </ul>
 </li>
 
-<li class="nav-item">
-  <a href="{{ url('/bantuan')}}" class="nav-link small {{ menuaktif($menu,'bantuan') }}">
-    <i class="nav-icon fas fa-people-carry"></i>
-    <p class="text">Bantuan</p>
-  </a>
-</li>

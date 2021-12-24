@@ -1,15 +1,8 @@
 <?php
 
+use App\Http\Controllers\Superadmin\ClientController;
 use App\Http\Controllers\Superadmin\ListdataController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Example; 
-use App\Http\Livewire\Members; //Load class Members 
-use App\Imports\DataPenduduk;
-use App\Imports\KategoriartikelImport;
-use App\Imports\PendudukImport;
-use App\Imports\PendudukpenyesuainaImport;
-use App\Imports\PenduduksimpleImport;
-use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     // SUPERADMIN
     Route::middleware(['superadmin'])->group(function () {
         Route::resource('listdata', ListdataController::class);
+        Route::resource('client', ClientController::class);
     });
 
     // CETAK

@@ -15,9 +15,9 @@ class ClientController extends Controller
      */
     public function index()
     {
+        $menu       = 'client';
         $client     = Client::all();
-
-        return view(['superadmin.client.index', compact('client')]);
+        return view('superadmin.client.index', compact('client','menu'));
     }
 
     /**
