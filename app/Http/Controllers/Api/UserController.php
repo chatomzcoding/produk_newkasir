@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -37,7 +38,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!cektoken($request->token)) {
+            return response()->json('akses terlarang');
+        }
+        $namafile   = uploadgambar($request,'user');
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'level' => $request->level,
+            'password' => Hash::make($request->password),
+            'profile_photo_path' => $namafile,
+        ]);
+
+        return response()->json([
+            'success' => 1,
+            'message' => 'success'
+        ]);
     }
 
     /**

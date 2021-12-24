@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Superadmin\ClientController;
 use App\Http\Controllers\Superadmin\ListdataController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,10 +27,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
         Route::resource('listdata', ListdataController::class);
         Route::resource('client', ClientController::class);
     });
-
+    
+    Route::resource('user', UserController::class);
     // CETAK
     Route::get('cetakdata','App\Http\Controllers\CetakController@cetak');
 
-    Route::resource('user', 'App\Http\Controllers\Admin\UserController');
     
 });

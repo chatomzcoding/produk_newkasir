@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Penduduk;
+use App\Models\Cabang;
 use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -23,24 +23,9 @@ class UserController extends Controller
 
     public function index()
     {
-        // $user   = User::where('level','penduduk')->get();
-        $user   = DB::table('users')
-                    ->join('user_akses','users.id','=','user_akses.user_id')
-                    ->join('penduduk','user_akses.penduduk_id','=','penduduk.id')
-                    ->select('users.*','penduduk.nama_penduduk')
-                    ->where('users.level','penduduk')
-                    ->get();
-        $judul  = 'User Penduduk';
-        $penduduk   = Penduduk::select('nik','nama_penduduk')->orderBy('nama_penduduk','ASC')->get();
-        $menu   = 'datauser';
-        $belumdaftar    = count($penduduk) - count($user);
-        $total   = [
-            'user' => count($user),
-            'penduduk' => count($penduduk),
-            'belumdaftar' => $belumdaftar
-        ];
-
-        return view('admin.user.index', compact('user','judul','penduduk','menu','total'));
+        $user   = User::where('level','client')->get();
+        $menu   = 'user';
+        return view('superadmin.user.index', compact('user','menu'));
     }
 
     /**
@@ -67,13 +52,17 @@ class UserController extends Controller
             'level' => $request->level,
             'password' => Hash::make($request->password),
         ]);
-        // tambahkan ke user akses
-        $penduduk   = Penduduk::where('nik',$request->name)->first();
-        $user       = User::where('name',$request->name)->first();
-        Userakses::create([
-            'user_id' => $user->id,
-            'penduduk_id' => $penduduk->id,
-        ]);
+
+        if ($request->level == 'gudang' || $request->level == 'kasir') {
+            $user       = User::where('name',$request->name)->first();
+            $cabang     = Cabang::where('user_id',Auth::user()->id)->first();
+            // $cabang     = Caba
+            // tambahkan ke user akses
+            Userakses::create([
+                'user_id' => $user->id,
+                'cabang' => $cabang->id,
+            ]);
+        }
 
         return redirect()->back()->with('ds','User');
     }
