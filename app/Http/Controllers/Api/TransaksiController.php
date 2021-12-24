@@ -54,41 +54,18 @@ class TransaksiController extends Controller
                     }
                     break;
                 case 'filter':
+                    // total orderan
+                    $tipe_order = ['dine in','take away','delivery'];
+                    $totalorderan = [];
                     switch ($_GET['status']) {
                         case 'tanggal':
-                            $result = DB::table('transaksi')
+                            // total transaksi
+                            $datatransaksi = DB::table('transaksi')
                                 ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
                                 ->select('transaksi.*')
                                 ->where('user_akses.user_id',$_GET['user_id'])
                                 ->whereDate('transaksi.created_at',$_GET['tanggal'])
                                 ->get();
-                            break;
-                        case 'bulanan':
-                            $result = DB::table('transaksi')
-                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
-                                ->select('transaksi.*')
-                                ->where('user_akses.user_id',$_GET['user_id'])
-                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
-                                ->whereYear('transaksi.created_at',$_GET['tahun'])
-                                ->get();
-                            break;
-                        case 'tahunan':
-                            $result = DB::table('transaksi')
-                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
-                                ->select('transaksi.*')
-                                ->where('user_akses.user_id',$_GET['user_id'])
-                                ->whereYear('transaksi.created_at',$_GET['tahun'])
-                                ->get();
-                            break;
-                        
-                        default:
-                            $result = NULL;
-                            break;
-                    }
-                    break;
-                case 'totalpenjualan':
-                    switch ($_GET['status']) {
-                        case 'tanggal':
                             $data = DB::table('transaksi')
                                 ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
                                 ->select('transaksi.keranjang')
@@ -96,6 +73,135 @@ class TransaksiController extends Controller
                                 ->where('transaksi.keranjang','<>',NULL)
                                 ->whereDate('transaksi.created_at',$_GET['tanggal'])
                                 ->get();
+                            for ($i=0; $i < count($tipe_order); $i++) { 
+                                $total = DB::table('transaksi')
+                                    ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                    ->select('transaksi.tipe_orderan')
+                                    ->where('user_akses.user_id',$_GET['user_id'])
+                                    ->where('transaksi.tipe_orderan',$tipe_order[$i])
+                                    ->whereDate('transaksi.created_at',$_GET['tanggal'])
+                                    ->count();
+                                $totalorderan[$tipe_order[$i]] = $total;
+                            }
+                            break;
+                        case 'bulanan':
+                            $datatransaksi = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.*')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            $data = DB::table('transaksi')
+                                ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                ->select('transaksi.keranjang')
+                                ->where('user_akses.user_id',$_GET['user_id'])
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                ->get();
+                            for ($i=0; $i < count($tipe_order); $i++) { 
+                                $total = DB::table('transaksi')
+                                    ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                    ->select('transaksi.tipe_orderan')
+                                    ->where('user_akses.user_id',$_GET['user_id'])
+                                    ->where('transaksi.tipe_orderan',$tipe_order[$i])
+                                    ->whereMonth('transaksi.created_at',$_GET['bulan'])
+                                    ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                    ->count();
+                                $totalorderan[$tipe_order[$i]] = $total;
+                            }
+                            break;
+                        case 'tahunan':
+                            $datatransaksi = DB::table('transaksi')
+                            ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                            ->select('transaksi.*')
+                            ->where('user_akses.user_id',$_GET['user_id'])
+                            ->whereYear('transaksi.created_at',$_GET['tahun'])
+                            ->get();
+                        $data = DB::table('transaksi')
+                            ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                            ->select('transaksi.keranjang')
+                            ->where('user_akses.user_id',$_GET['user_id'])
+                            ->where('transaksi.keranjang','<>',NULL)
+                            ->whereYear('transaksi.created_at',$_GET['tahun'])
+                            ->get();
+                            for ($i=0; $i < count($tipe_order); $i++) { 
+                                $total = DB::table('transaksi')
+                                    ->join('user_akses','transaksi.userakses_id','=','user_akses.id')
+                                    ->select('transaksi.tipe_orderan')
+                                    ->where('user_akses.user_id',$_GET['user_id'])
+                                    ->where('transaksi.tipe_orderan',$tipe_order[$i])
+                                    ->whereYear('transaksi.created_at',$_GET['tahun'])
+                                    ->count();
+                                $totalorderan[$tipe_order[$i]] = $total;
+                            }
+                            break;
+                        
+                        default:
+                            $result = NULL;
+                            break;
+                        }
+
+                        $transaksi = [];
+                        if (count($datatransaksi) > 0) {
+                            foreach ($datatransaksi as $item) {
+                                if (is_null($item->keranjang)) {
+                                    $keranjang = [];
+                                } else {
+                                    $keranjang  = json_decode($item->keranjang);
+                                }
+                                $databarang   = [
+                                    'kode_transaksi' => $item->kode_transaksi,
+                                    'status_transaksi' => $item->status_transaksi,
+                                    'tipe_orderan' => $item->tipe_orderan,
+                                    'tipe_pembayaran' => $item->tipe_pembayaran,
+                                    'uang_pembeli' => $item->uang_pembeli,
+                                    'keranjang' => $keranjang
+                                ];
+                                $transaksi[] = $databarang;
+                            }
+                        }
+                        // total penjualan
+                        $totalpenjualan  = 0;
+                        $totalitem  = 0;
+                        $totallaba  = 0;
+                        $produk = NULL;
+                        foreach ($data as $item) {
+                            $subpenjualan = 0;
+                            $subitem = 0;
+                            $sublaba = 0;
+                            $keranjang = json_decode($item->keranjang);
+                            foreach ($keranjang as $key) {
+                                $subpenjualan = $subpenjualan + $key->harga_jual;
+                                $subitem = $subitem + $key->jumlah;
+                                $laba   = $key->harga_jual - $key->harga_beli;
+                                $sublaba = $sublaba + $laba;
+                                $produk[] = [
+                                    'nama_barang' => $key->nama_barang,
+                                    'jumlah' => $key->jumlah
+                                ];
+                            }
+                            $totalpenjualan = $totalpenjualan + $subpenjualan;
+                            $totalitem = $totalitem + $subitem;
+                            $totallaba = $totallaba + $sublaba;
+                        }
+                      
+                       
+                        $result = [
+                            'transaksi' => $transaksi,
+                            'totalpenjualan' => $totalpenjualan,
+                            'totalitem' => $totalitem,
+                            'totallaba' => $totallaba,
+                            'totalproduk' => $produk,
+                            'totalorderan' => $totalorderan,
+                        ];
+                        
+                    break;
+                case 'totalpenjualan':
+                    switch ($_GET['status']) {
+                        case 'tanggal':
+                           
                                 
                             break;
                         case 'bulanan':
@@ -270,9 +376,8 @@ class TransaksiController extends Controller
                             $result = NULL;
                             break;
                     }
-                    $total  = 0;
+                    $produk = NULL;
                     foreach ($data as $item) {
-                        $produk = NULL;
                         $keranjang = json_decode($item->keranjang);
                         foreach ($keranjang as $key) {
                             $produk[] = $key->nama_barang.' - '.$key->jumlah;
