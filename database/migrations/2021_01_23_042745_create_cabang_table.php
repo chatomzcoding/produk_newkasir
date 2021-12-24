@@ -19,7 +19,6 @@ class CreateCabangTable extends Migration
             $table->string('pimpinan');
             $table->text('alamat');
             $table->string('telp');
-            $table->string('email')->nullable();
             $table->date('tgl_gabung')->nullable();
             $table->timestamps();
         });

@@ -5,7 +5,7 @@
     </a>
   </li>
   
-  <li class="nav-item @if ($menu == 'listdata')
+  {{-- <li class="nav-item @if ($menu == 'listdata')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -13,7 +13,7 @@
         <p>
           Data Master
           <i class="fas fa-angle-left right"></i>
-          {{-- <span class="badge badge-info right">6</span> --}}
+          <span class="badge badge-info right">6</span>
         </p>
       </a>
       <ul class="nav nav-treeview">
@@ -24,6 +24,6 @@
           </a>
         </li>
       </ul>
-  </li>
+  </li> --}}
   
   

@@ -282,8 +282,8 @@
               @case('superadmin')
                 @include('superadmin.menu')
                 @break
-              @case('admin')
-                @include('admin.menu')
+              @case('client')
+                @include('client.menu')
                 @break
               @default
           @endswitch

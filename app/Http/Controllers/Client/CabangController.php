@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cabang;
+use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CabangController extends Controller
 {
@@ -15,7 +19,11 @@ class CabangController extends Controller
      */
     public function index()
     {
-        //
+        $user       = Auth::user();
+        $client     = Client::where('user_id',$user->id)->first();
+        $cabang     = Cabang::where('client_id',$client->id)->get();
+        $menu       = 'cabang';
+        return view('client.cabang.index', compact('menu','cabang'));
     }
 
     /**
@@ -36,7 +44,26 @@ class CabangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        User::create([
+            'name' => $request->pimpinan,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'level' => $request->level,
+        ]);
+
+        $user       = User::where('email',$request->email)->first();
+        $client     = Client::where('user_id',Auth::user()->id)->first();
+        Cabang::create([
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'nama_cabang' => $request->nama_cabang,
+            'alamat' => $request->alamat,
+            'pimpinan' => $request->pimpinan,
+            'telp' => $request->telp,
+            'tgl_gabung' => $request->tgl_gabung,
+        ]);
+
+        return back()->with('ds','Cabang');
     }
 
     /**
