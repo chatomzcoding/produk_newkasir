@@ -411,14 +411,24 @@ class TransaksiController extends Controller
             if (isset($request->keranjang)) {
                 $transaksi  = Transaksi::find($request->transaksi_id);
                 if ($transaksi) {
-                    $keranjang  = [
-                        $request->kode_barang => [
+                    // $keranjang  = [
+                    //     $request->kode_barang => [
+                    //         'nama_barang' => $request->nama_barang,
+                    //         'jumlah' => $request->jumlah,
+                    //         'harga_beli' => $request->harga_beli,
+                    //         'harga_jual' => $request->harga_jual,
+                    //     ]
+                    // ];
+                    $keranjang = [];
+                    for ($i=0; $i < count($request->barang); $i++) { 
+                        $barang     = $request->barang;
+                        $keranjang[$barang[$i]['kode_barang']] = [
                             'nama_barang' => $request->nama_barang,
                             'jumlah' => $request->jumlah,
                             'harga_beli' => $request->harga_beli,
                             'harga_jual' => $request->harga_jual,
-                        ]
-                    ];
+                        ];
+                    }
                     if (!is_null($transaksi->keranjang)) {
                         $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
                         $keranjang      = array_merge($keranjang,$dkeranjang);
