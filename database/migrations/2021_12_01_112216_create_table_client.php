@@ -22,6 +22,7 @@ class CreateTableClient extends Migration
             $table->string('jenis_retail');
             $table->text('logo')->nullable();
             $table->date('tgl_bergabung');
+            $table->text('detail')->nullable();
             $table->timestamps();
         });
     }

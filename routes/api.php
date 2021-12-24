@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ListdataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::resource('kategori','App\Http\Controllers\Api\KategoriController');
 Route::resource('barang','App\Http\Controllers\Api\BarangController');
 Route::resource('transaksi','App\Http\Controllers\Api\TransaksiController');
 Route::resource('user','App\Http\Controllers\Api\UserController');
+Route::resource('listdata', ListdataController::class);
 
 // mobile api
 Route::get('userakses/{user}','App\Http\Controllers\Api\MobileController@userakses');

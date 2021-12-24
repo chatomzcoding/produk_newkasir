@@ -49,7 +49,7 @@
                 <div class="info-box-content">
                   <span class="info-box-text">Jenis Toko</span>
                   <span class="info-box-number">
-                    5
+                    {{ DbCikara::countdata('list_data',['kategori','jenis toko']) }}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -149,10 +149,10 @@
     <div class="modal fade" id="tambah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ url('/listdata')}}" method="post">
+            <form action="{{ url('/client')}}" method="post" enctype="multipart/form-data">
                 @csrf
             <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Kategori</h4>
+            <h4 class="modal-title">Tambah Data Client</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -160,20 +160,48 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-control col-md-8" required>
-                            @foreach (list_kategori() as $item)
-                                <option value="{{ $item }}">{{ strtoupper($item) }}</option>
+                        <label for="" class="col-md-4">Nama Pemilik</label>
+                        <input type="text" name="nama_pemilik" id="nama_pemilik" value="{{ old('nama_pemilik') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Nama Toko</label>
+                        <input type="text" name="nama_toko" id="nama_toko" value="{{ old('nama_toko') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">No Telp</label>
+                        <input type="text" name="no_telp" id="no_telp" value="{{ old('no_telp') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Alamat</label>
+                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <input type="date" name="tgl_bergabung" id="tgl_bergabung" value="{{ old('tgl_bergabung') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Logo</label>
+                        <input type="file" name="logo" id="logo" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Jenis Toko</label>
+                        <select name="jenis_retail" id="jenis_retail" class="form-control col-md-8" required>
+                            @foreach (DbCikara::showtable('list_data',['kategori','jenis toko']) as $item)
+                                <option value="{{ $item->nama }}">{{ strtoupper($item->nama) }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama List Data</label>
-                        <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
+                        <label for="" class="col-md-4">Nama User</label>
+                        <select name="user_id" id="user_id" class="form-control col-md-8" required>
+                            @foreach ($user as $item)
+                                <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Keterangan (opsional)</label>
-                        <textarea name="keterangan" id="keterangan" cols="30" rows="4" class="form-control col-md-8"></textarea>
+                        <label for="" class="col-md-4">Detail (opsional)</label>
+                        <textarea name="detail" id="detail" cols="30" rows="4" class="form-control col-md-8"></textarea>
                     </div>
                 </section>
             </div>

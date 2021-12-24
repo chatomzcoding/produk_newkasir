@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -17,7 +18,8 @@ class ClientController extends Controller
     {
         $menu       = 'client';
         $client     = Client::all();
-        return view('superadmin.client.index', compact('client','menu'));
+        $user       = User::where('level','client')->get();
+        return view('superadmin.client.index', compact('client','menu','user'));
     }
 
     /**
@@ -38,7 +40,30 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'logo' => 'required|file|image|mimes:jpeg,png,jpg|max:5000',
+        ]);
+        // menyimpan data file yang diupload ke variabel $file
+        $file = $request->file('logo');
+        
+        $logo = time()."_".$file->getClientOriginalName();
+        $tujuan_upload = 'public/img/client';
+        // isi dengan nama folder tempat kemana file diupload
+        $file->move($tujuan_upload,$logo);
+
+        Client::create([
+            'nama_pemilik' => $request->nama_pemilik,
+            'nama_toko' => $request->nama_toko,
+            'jenis_retail' => $request->jenis_retail,
+            'no_telp' => $request->no_telp,
+            'alamat' => $request->alamat,
+            'user_id' => $request->user_id,
+            'detail' => $request->detail,
+            'tgl_bergabung' => $request->tgl_bergabung,
+            'logo' => $logo,
+        ]);
+
+        return back()->with('ds','Client');
     }
 
     /**

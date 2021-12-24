@@ -25,7 +25,7 @@ menu-is-opening menu-open
       </li>
       <li class="nav-item">
         <a href="{{ url('/listdata')}}" class="nav-link small {{ menuaktif($menu,'listdata') }}">
-          &nbsp;&nbsp;<i class="far fa-circle nav-icon"></i>
+          &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
           <p>List Data</p>
         </a>
       </li>
