@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -15,7 +17,12 @@ class BarangController extends Controller
      */
     public function index()
     {
-        //
+        $menu       = 'barang';
+        $user       = Auth::user();
+        $akses      = Userakses::where('user_id',$user->id)->first();
+        $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
+
+        return view('sistem.barang.index', compact('menu','barang'));
     }
 
     /**

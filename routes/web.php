@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Client\CabangController;
+use App\Http\Controllers\Kasir\BarangController;
 use App\Http\Controllers\Superadmin\ClientController;
 use App\Http\Controllers\Superadmin\ListdataController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     });
     
     Route::resource('user', UserController::class);
+    Route::resource('barang', BarangController::class);
     // CETAK
     Route::get('cetakdata','App\Http\Controllers\CetakController@cetak');
 

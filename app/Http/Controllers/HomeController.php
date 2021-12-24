@@ -21,6 +21,9 @@ class HomeController extends Controller
             case 'cabang':
                 return view('cabang.dashboard', compact('menu'));
                 break;
+            case 'gudang':
+                return view('gudang.dashboard', compact('menu'));
+                break;
             case 'kasir':
                 return view('kasir.dashboard', compact('menu'));
                 break;
