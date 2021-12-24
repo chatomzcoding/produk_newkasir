@@ -24,5 +24,8 @@ Route::resource('kategori','App\Http\Controllers\Api\KategoriController');
 Route::resource('barang','App\Http\Controllers\Api\BarangController');
 Route::resource('transaksi','App\Http\Controllers\Api\TransaksiController');
 Route::resource('user','App\Http\Controllers\Api\UserController');
-Route::post('ceklogin','App\Http\Controllers\Api\MobileController@ceklogin');
+
+// mobile api
 Route::get('userakses/{user}','App\Http\Controllers\Api\MobileController@userakses');
+Route::post('ceklogin','App\Http\Controllers\Api\MobileController@ceklogin');
+Route::post('ubahpassword','App\Http\Controllers\Api\MobileController@ubahpassword');

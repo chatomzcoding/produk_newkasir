@@ -8,6 +8,7 @@ use App\Models\Session;
 use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class MobileController extends Controller
 {
@@ -59,5 +60,30 @@ class MobileController extends Controller
             return response()->json('akses dilarang');
         }
         return Userakses::where('user_id',$user)->first();
+    }
+
+    // UBAH PASSWORD
+    public function ubahpassword(Request $request)
+    {
+        if (!cektoken($request->token)) {
+            return response()->json('akses dilarang');
+        }
+        $user   = User::where('id',$request->id)->where('email',$request->email)->first();
+        if ($user) {
+            User::where('id',$request->id)->update([
+                'password' => Hash::make($request->password),
+            ]);
+    
+            $success    = [
+                'success' => 1,
+                'message' => 'success'
+            ];
+        } else {
+            $success    = [
+                'success' => 0,
+                'message' => 'user tidak ada'
+            ];
+        }
+        return $success;
     }
 }
