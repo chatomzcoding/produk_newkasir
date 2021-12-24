@@ -423,10 +423,10 @@ class TransaksiController extends Controller
                     for ($i=0; $i < count($request->barang); $i++) { 
                         $barang     = $request->barang;
                         $keranjang[$barang[$i]['kode_barang']] = [
-                            'nama_barang' => $request->nama_barang,
-                            'jumlah' => $request->jumlah,
-                            'harga_beli' => $request->harga_beli,
-                            'harga_jual' => $request->harga_jual,
+                            'nama_barang' => $barang[$i]['nama_barang'],
+                            'jumlah' => $barang[$i]['jumlah'],
+                            'harga_beli' => $barang[$i]['harga_beli'],
+                            'harga_jual' => $barang[$i]['harga_jual'],
                         ];
                     }
                     if (!is_null($transaksi->keranjang)) {
