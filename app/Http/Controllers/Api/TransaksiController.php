@@ -544,7 +544,9 @@ class TransaksiController extends Controller
                     //     ]
                     // ];
                     $keranjang  = [];
+                    return $request->barang;
                     $barang     = json_decode($request->barang);
+                    return $barang;
                     for ($i=0; $i < count($barang); $i++) { 
                         $keranjang[$barang[$i]['kode_barang']] = [
                             'nama_barang' => $barang[$i]['nama_barang'],
