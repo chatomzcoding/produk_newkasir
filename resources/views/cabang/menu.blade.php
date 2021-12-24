@@ -1,7 +1,7 @@
 <li class="nav-item">
-    <a href="{{ url('/cabang')}}" class="nav-link small {{ menuaktif($menu,'cabang') }}">
-      <i class="nav-icon fas fa-store"></i>
-      <p class="text">Data Cabang</p>
+    <a href="{{ url('/user')}}" class="nav-link small {{ menuaktif($menu,'cabang') }}">
+      <i class="nav-icon fas fa-user"></i>
+      <p class="text">Data Karyawan</p>
     </a>
   </li>
   

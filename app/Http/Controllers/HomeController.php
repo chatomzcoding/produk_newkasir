@@ -18,6 +18,9 @@ class HomeController extends Controller
             case 'client':
                 return view('client.dashboard', compact('menu'));
                 break;
+            case 'cabang':
+                return view('cabang.dashboard', compact('menu'));
+                break;
             case 'kasir':
                 return view('kasir.dashboard', compact('menu'));
                 break;

@@ -9,6 +9,7 @@ use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -23,9 +24,27 @@ class UserController extends Controller
 
     public function index()
     {
-        $user   = User::where('level','client')->get();
+        $user   = Auth::user();
         $menu   = 'user';
-        return view('superadmin.user.index', compact('user','menu'));
+        switch ($user->level) {
+            case 'superadmin':
+                $user   = User::where('level','client')->get();
+                return view('superadmin.user.index', compact('user','menu'));
+                break;
+            case 'cabang':
+                $cabang     = Cabang::where('user_id',$user->id)->first();
+                $user   = DB::table('users')
+                            ->join('user_akses','users.id','=','user_akses.user_id')
+                            ->select('users.*')
+                            ->where('user_akses.cabang_id',$cabang->id)
+                            ->get();
+                return view('cabang.user.index', compact('user','menu'));
+                break;
+            
+            default:
+                return redirect('dashboard');
+                break;
+        }
     }
 
     /**
@@ -60,7 +79,7 @@ class UserController extends Controller
             // tambahkan ke user akses
             Userakses::create([
                 'user_id' => $user->id,
-                'cabang' => $cabang->id,
+                'cabang_id' => $cabang->id,
             ]);
         }
 

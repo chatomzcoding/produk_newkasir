@@ -285,6 +285,12 @@
               @case('client')
                 @include('client.menu')
                 @break
+              @case('cabang')
+                @include('cabang.menu')
+                @break
+              @case('gudang')
+                @include('gudang.menu')
+                @break
               @default
           @endswitch
           <li class="nav-header pt-0">SISTEM</li>
