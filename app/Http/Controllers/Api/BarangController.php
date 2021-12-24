@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Client;
 use App\Models\Kategori;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -167,19 +168,44 @@ class BarangController extends Controller
      */
     public function destroy($barang)
     {
-        
-        if (cektoken($_GET['token'])) {
-            $barang     = Barang::find($barang);
-            deletefile('public/img/barang/'.$barang->gambar);
-    
-            $barang->delete();
-    
-            return response()->json([
-                'success' => 1,
-                'message' => 'success'
-            ]);
-        } else {
+        if (!cektoken($_GET['token'])) {
             return response()->json('akses terlarang');
         }
+
+        if (!isset($_GET['semua'])) {
+            $barang     = Barang::find($barang);
+            if ($barang) {
+                deletefile('public/img/barang/'.$barang->gambar);
+        
+                $barang->delete();
+        
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'success'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'barang tidak ada'
+                ]);
+            }
+        } else {
+            // cek client
+            $client     = Client::find($barang);
+            if ($client) {
+                Barang::where('client_id',$barang)->delete();
+                return response()->json([
+                    'success' => 1,
+                    'message' => 'success'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => 0,
+                    'message' => 'client tidak ada'
+                ]);
+            }
+        }
+        
+            
     }
 }
