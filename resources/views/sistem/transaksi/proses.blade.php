@@ -31,17 +31,29 @@
                         <div class="card">
                             <div class="card-header">
                                 <form action="{{ url('transaksi') }}" method="get">
-                                    <button type="submit" class="btn btn-outline-secondary btn-flat btn-sm pop-info" id="kembali"><i class="fas fa-angle-left"></i> Kembali</button>
+                                    <button type="submit" class="btn btn-outline-secondary btn-flat btn-sm pop-info" id="kembali"><i class="fas fa-angle-left"></i> Kembali</button> 
+                                    <div class="float-right">
+                                        {!! statustransaksi($transaksi->status_transaksi) !!}
+                                    </div>
                                 </form>
                             </div>
                             <div class="card-body">
                                 <section>
                                     <form action="{{ url('transaksi') }}" method="post">
                                         @csrf
-                                        <input type="hidden" name="sesi" value="tambahbarangbarcode">
-                                        <input type="text" name="barcode" pattern="[0-9]+" placeholder="barcode disini" class="form-control" @if ($s == 'index')
+                                        <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
+                                        <input type="hidden" name="sesi" value="tambahbarang">
+                                        <input type="hidden" name="status" value="barcode">
+                                        <input type="text" name="kode_barcode" pattern="[0-9]+" placeholder="barcode disini" class="form-control" @if ($s == 'index')
                                             autofocus
                                         @endif>
+                                    </form>
+                                </section>
+                                <section class="mt-2">
+                                    <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
+                                        @csrf
+                                        <input type="hidden" name="s" value="index">
+                                        <button type="submit" class="btn btn-primary btn-sm btn-block" id="keranjang"><i class="fas fa-shopping-cart"></i> KERANJANG <span class="float-right">[F10]</span></button>
                                     </form>
                                 </section>
                                 <section class="mt-2">
@@ -51,28 +63,31 @@
                                         <button type="submit" class="btn btn-info btn-sm btn-block" id="caribarang"><i class="fas fa-search"></i> CARI BARANG <span class="float-right">[insert]</span></button>
                                     </form>
                                 </section>
-                                <section class="mt-2">
-                                    <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
-                                        <input type="hidden" name="s" value="bayarnominal">
-                                        <button type="submit" class="btn btn-secondary btn-sm btn-block" id="klikbayar"><i class="fas fa-money-bill-wave"></i> BAYAR NOMINAL <span class="float-right">[-]</span></button>
-                                    </form>
-                                </section>-
-                                <section class="mt-2">
-                                    <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="s" value="bayarpas">
-                                        <input type="hidden" name="uang_pembeli" value="{{ totalpembayaran($transaksi->keranjang) }}">
-                                        <button type="submit" class="btn btn-success btn-sm btn-block" id="klikselesai"><i class="fas fa-money-bill-wave"></i> BAYAR PAS <span class="float-right">[Shift R]</span></button>
-                                    </form>
-                                </section>
-                                <section class="mt-2">
-                                    <form id="data-{{ $transaksi->id }}" action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                    </form>
-                                        <button onclick="deleteRow( {{ $transaksi->id }} )" class="btn btn-danger btn-sm btn-block" id="klikdelete"><i class="fas fa-trash"></i> HAPUS TRANSAKSI <span class="float-right">[Delete]</span></button>
-                                </section>
+                                {{-- muncul ketika keranjang tidak kosong --}}
+                                @if ($data['totalpembayaran'] > 0)
+                                    <section class="mt-2">
+                                        <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
+                                            <input type="hidden" name="s" value="bayarnominal">
+                                            <button type="submit" class="btn btn-secondary btn-sm btn-block" id="klikbayar"><i class="fas fa-money-bill-wave"></i> BAYAR NOMINAL <span class="float-right">[-]</span></button>
+                                        </form>
+                                    </section>
+                                    <section class="mt-2">
+                                        <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="s" value="bayarpas">
+                                            <input type="hidden" name="uang_pembeli" value="{{ totalpembayaran($transaksi->keranjang) }}">
+                                            <button type="submit" class="btn btn-success btn-sm btn-block" id="klikselesai"><i class="fas fa-money-bill-wave"></i> BAYAR PAS <span class="float-right">[Shift R]</span></button>
+                                        </form>
+                                    </section>
+                                    <section class="mt-2">
+                                        <form id="data-{{ $transaksi->id }}" action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                                            @csrf
+                                            @method('delete')
+                                        </form>
+                                            <button onclick="deleteRow( {{ $transaksi->id }} )" class="btn btn-danger btn-sm btn-block" id="klikdelete"><i class="fas fa-trash"></i> HAPUS TRANSAKSI <span class="float-right">[Delete]</span></button>
+                                    </section>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -103,6 +118,9 @@
                                             @case('bayarnominal')
                                                 @include('sistem.transaksi.s.bayarnominal')
                                                 @break
+                                            @case('jumlahbarang')
+                                                @include('sistem.transaksi.s.jumlahbarang')
+                                                @break
                                             @default
                                                 
                                         @endswitch
@@ -132,7 +150,16 @@
                     $( "#nama" ).val("" + suggestion.nama);
                 }
             });
-        })
+        });
+
+        $("#benih").on("change", function(){
+        // ambil nilai
+        var harga = $("#benih option:selected").attr("harga");
+
+        // pindahkan nilai ke input
+        $("#harga").val(harga);
+
+        });
     </script>
     <script type="text/javascript">
         function myFunction(){
@@ -175,6 +202,11 @@
             if(event.keyCode == 220) {
                 event.preventDefault()
                 $("#hapusitem").click();
+            }
+            /* tombol F10 */
+            if(event.keyCode == 121) {
+                event.preventDefault()
+                $("#keranjang").click();
             }
         }
     </script>

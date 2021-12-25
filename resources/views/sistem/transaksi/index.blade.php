@@ -54,28 +54,22 @@
                     <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
                     <input type="hidden" name="status_transaksi" value="proses">
                     <input type="hidden" name="uang_pembeli" value="0">
-                    <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi"><i class="fas fa-plus"></i> Tambah</button>
+                    <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah</button>
                 </form>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-                  {{-- <section class="mb-3">
-                      <form action="{{ url('listdata') }}" method="get">
+                  <section class="mb-3">
+                      <form action="{{ url('transaksi') }}" method="get">
                         <div class="row">
                             <div class="form-group col-md-2">
-                                <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
-                                    <option value="semua">Semua</option>
-                                    @foreach (list_kategori() as $item)
-                                        <option value="{{ $item}}" @if ($kategori == $item)
-                                            selected
-                                        @endif>{{ strtoupper($item)}}</option>
-                                    @endforeach
-                                </select>
+                                <input type="date" name='tanggal' class="form-control" value="{{ $tanggal }}" onchange="this.form.submit()">
                             </div>
                         </div>
                     </form>
-                  </section> --}}
+                  </section>
                   <div class="table-responsive">
+                      <p>Transaksi Tanggal {{ date_indo($tanggal) }}</p>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead class="text-center">
                             <tr>
@@ -116,9 +110,20 @@
                                     <td>{{ $item->kode_transaksi}}</td>
                                     <td>{{ $item->tipe_pembayaran}}</td>
                                     <td>{{ $item->tipe_orderan}}</td>
-                                    <td>{{ $item->uang_pembeli}}</td>
-                                    <td>{{ $item->keranjang}}</td>
-                                    <td>{{ $item->status}}</td>
+                                    <td class="text-right">{{ rupiah($item->uang_pembeli)}}</td>
+                                    <td>
+                                        @if (!is_null($item->keranjang))
+                                            <ul class="list-group">
+                                                @foreach (json_decode($item->keranjang) as $key)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center p-1">
+                                                        {{ $key->nama_barang }}
+                                                        <span class="badge badge-primary badge-pill">{{ $key->jumlah }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{!! statustransaksi($item->status_transaksi)!!}</td>
                                 </tr>
                             @empty
                                 <tr class="text-center">
@@ -245,6 +250,15 @@
                 "responsive": true,
             });
             });
+        </script>
+          <script type="text/javascript">
+            function myFunction(){
+                /* tombol enter */
+                if(event.keyCode == 13) {
+                    event.preventDefault()
+                    $("#tambahtransaksi").click();
+                }
+            } 
         </script>
     @endsection
 

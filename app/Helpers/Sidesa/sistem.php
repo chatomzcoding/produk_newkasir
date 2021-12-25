@@ -477,3 +477,21 @@ if (! function_exists('totalpembayaran')) {
         return $jumlah;
     }
 }
+if (! function_exists('statustransaksi')) {
+    function statustransaksi($status)
+    {
+       switch ($status) {
+           case 'selesai':
+               $html = "<span class='badge badge-success'>selesai</span>";
+               break;
+           case 'proses':
+               $html = "<span class='badge badge-warning'>proses</span>";
+               break;
+           
+           default:
+               # code...
+               break;
+       }
+       return $html;
+    }
+}

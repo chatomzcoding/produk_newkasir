@@ -42,7 +42,8 @@
     <h2>Cari Barang</h2>
     <form action="{{ url('transaksi') }}" method="post">
         @csrf
-        <input type="hidden" name="sesi" value="tambahbarangpencarian">
+        <input type="hidden" name="sesi" value="tambahbarang">
+        <input type="hidden" name="status" value="caribarang">
         <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
         <div class="form-group">
             <input type="text" id="nama" name="nama_barang" class="form-control" placeholder="Nama Barang" value=""  @if ($s == 'caribarang')

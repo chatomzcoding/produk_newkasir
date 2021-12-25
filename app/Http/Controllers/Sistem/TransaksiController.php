@@ -28,8 +28,9 @@ class TransaksiController extends Controller
                 break;
             
             default:
-                $transaksi  = Transaksi::where('user_id',$user->id)->get();
-                return view('sistem.transaksi.index', compact('menu','transaksi','user'));
+                $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
+                $transaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->orderby('id','DESC')->get();
+                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal'));
                 break;
         }
 
@@ -65,30 +66,38 @@ class TransaksiController extends Controller
                 $transaksi  = Transaksi::where('user_id',$request->user_id)->latest()->first();
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
                 break;
-            case 'tambahbarangbarcode':
-                echo $request->barcode;
-                break;
-            case 'tambahbarangpencarian':
+            case 'tambahbarang':
                 $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-                $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang',$request->nama_barang)->first();
                 $transaksi  = Transaksi::find($request->transaksi_id);
-                $keranjang[$barang->kode_barang] = [
-                    'kode_barang' => $barang->kode_barang,
-                    'nama_barang' => $barang->nama_barang,
-                    'jumlah' => 1,
-                    'harga_beli' => $barang->harga_beli,
-                    'harga_jual' => $barang->harga_jual,
-                ];
-                if (!is_null($transaksi->keranjang)) {
-                    $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
-                    $keranjang      = array_merge($keranjang,$dkeranjang);
+                if ($request->status == 'barcode') {
+                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kode_barcode',$request->kode_barcode)->first();
+                } else {
+                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang',$request->nama_barang)->first();
                 }
-
-                Transaksi::where('id',$transaksi->id)->update([
-                    'keranjang' => json_encode($keranjang)
-                ]);
-
-                return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success',$barang->nama_barang. ' berhasil ditambahkan  ke keranjang');
+                
+                if ($barang) {
+                    $keranjang[$barang->kode_barang] = [
+                        'kode_barang' => $barang->kode_barang,
+                        'nama_barang' => $barang->nama_barang,
+                        'jumlah' => 1,
+                        'harga_beli' => $barang->harga_beli,
+                        'harga_jual' => $barang->harga_jual,
+                    ];
+                    if (!is_null($transaksi->keranjang)) {
+                        $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
+                        $keranjang      = array_merge($keranjang,$dkeranjang);
+                    }
+    
+                    Transaksi::where('id',$transaksi->id)->update([
+                        'keranjang' => json_encode($keranjang)
+                    ]);
+    
+                    return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success',$barang->nama_barang. ' berhasil ditambahkan  ke keranjang');
+                } else {
+                    // jika tidak ada, berikan notifikasi barang tidak ada
+                    return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('warning','barang tidak ada digudang!');
+                }
+                
                 break;
             default:
                 # code...
@@ -194,6 +203,14 @@ class TransaksiController extends Controller
                     'status_transaksi' => 'selesai'
                 ]);
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success', 'transaksi telah selesai!');
+                break;
+            case 'tambahjumlahbarang':
+                $keranjang = json_decode($transaksi->keranjang,TRUE);
+                $keranjang[$request->kode_barang]['jumlah'] = $request->jumlah;
+                Transaksi::where('id',$transaksi->id)->update([
+                    'keranjang' => json_encode($keranjang)
+                ]);
+                return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','jumlah barang '.$request->nama_barang.' telah ditambahkan!');
                 break;
             default:
 

@@ -26,9 +26,21 @@
                         @endphp
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama_barang }}</td>
+                            <td class="text-capitalize">{{ $item->nama_barang }}</td>
                             <td class="text-right">{{ norupiah($item->harga_jual) }}</td>
-                            <td class="text-center">{{ $item->jumlah }}</td>
+                            <td class="text-center">
+                                @if ($loop->iteration == 1)
+                                    <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
+                                    <input type="hidden" name="s" value="jumlahbarang">
+                                    <input type="hidden" name="kode_barang" value="{{ $item->kode_barang }}">
+                                    <input type="hidden" name="nama_barang" value="{{ $item->nama_barang }}">
+                                    <input type="hidden" name="jumlah" value="{{ $item->jumlah }}">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block text-left" id="jumlahbarang">{{ $item->jumlah }} <span class="float-right">[+]</span></button>
+                                    </form>
+                                @else
+                                    {{ $item->jumlah }}
+                                @endif
+                            </td>
                             <td class="text-right">{{ norupiah($subtotal) }}</td>
                             <td class="text-center">
                                 @if ($loop->iteration == 1)
