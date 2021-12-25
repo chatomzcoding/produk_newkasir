@@ -17,7 +17,7 @@ class CreateTableKategori extends Migration
             $table->id();
             $table->string('nama');
             $table->string('label');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

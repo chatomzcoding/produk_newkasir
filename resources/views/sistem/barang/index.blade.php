@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-box-open"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Barang</span>
@@ -80,11 +80,43 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="{{ url('barang/create') }}" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
-                <a href="{{ url('cetakdata?s=user') }}" class="btn btn-outline-info btn-sm float-right pop-info" target="_blank" title="Cetak daftar User"><i class="fas fa-print"></i> CETAK</a>
+                    <div class="float-right">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-sm ">Option</button>
+                        <button type="button" class="btn btn-info btn-sm  dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                          <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                          <div class="dropdown-menu" role="menu">
+                            <div class="dropdown-divider"></div>
+                            <form action="{{url('/barang/semua')}}" method="post">
+                              @csrf
+                              @method('delete')
+                                <button class="dropdown-item text-danger" type="submit"><i class="fas fa-trash-alt"></i> Hapus Semua</button>
+                              </form>
+                          </div>
+                      </div>
+                    <a href="{{ url('cetakdata?s=user') }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar User"><i class="fas fa-print"></i> CETAK</a>
+                    </div>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-                 
+                  <section class="mb-3">
+                    <form action="{{ url('barang') }}" method="get">
+                      @csrf
+                      <div class="row">
+                          <div class="form-group col-md-2">
+                              <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
+                                  <option value="semua">-- Semua Kategori</option>
+                                  @foreach ($kategori as $item)
+                                      <option value="{{ $item->id}}" @if ($filter['kategori'] == $item->id)
+                                          selected
+                                      @endif>{{ strtoupper($item->nama)}}</option>
+                                  @endforeach
+                              </select>
+                          </div>
+                      </div>
+                  </form>
+                </section>
                   <div class="table-responsive">
                     <table id="example1" class="table table-bordered table-striped">
                         <thead class="text-center">
@@ -95,6 +127,7 @@
                                 <th>Nama Barang</th>
                                 <th>Harga Beli</th>
                                 <th>Harga Jual</th>
+                                <th>Kategori</th>
                                 <th>Stok</th>
                             </tr>
                         </thead>
@@ -123,9 +156,10 @@
                                     </td>
                                     <td>{{ $item->kode_barang }}</td>
                                     <td>{{ $item->nama_barang }}</td>
-                                    <td>{{ $item->harga_beli }} </td>
-                                    <td>{{ $item->harga_jual }} </td>
-                                    <td>{{ $item->stok }} </td>
+                                    <td>{{ rupiah($item->harga_beli) }} </td>
+                                    <td>{{ rupiah($item->harga_jual) }} </td>
+                                    <td>{{ DbCikara::namaKategori($item->kategori_id) }}</td>
+                                    <td class="text-center">{{ $item->stok }} </td>
                                 </tr>
                             @endforeach
                     </table>

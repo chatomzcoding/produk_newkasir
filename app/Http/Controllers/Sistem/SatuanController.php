@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Sistem;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class KategoriController extends Controller
+class SatuanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +17,10 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        //
+        $menu       = 'satuan';
+        $akses      = Userakses::where('user_id',Auth::user()->id)->first();
+        $kategori   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->get();
+        return view('sistem.satuan.index', compact('menu','kategori','akses'));
     }
 
     /**
@@ -38,7 +43,7 @@ class KategoriController extends Controller
     {
         Kategori::create($request->all());
 
-        return back()->with('ds','Jenis Vaksin');
+        return back()->with('ds','Satuan Barang');
     }
 
     /**
@@ -70,14 +75,9 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, Kategori $kategori)
     {
-        Kategori::where('id',$request->id)->update([
-            'nama_kategori' => $request->nama_kategori,
-            'keterangan_kategori' => $request->keterangan_kategori
-        ]);
-        return back()->with('du','Jenis Vaksin');
-
+        //
     }
 
     /**
@@ -89,6 +89,7 @@ class KategoriController extends Controller
     public function destroy(Kategori $kategori)
     {
         $kategori->delete();
-        return back()->with('dd','Jenis Vaksin');
+
+        return back()->with('dd','Satuan');
     }
 }

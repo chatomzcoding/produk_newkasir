@@ -7,7 +7,9 @@ use App\Models\Barang;
 use App\Models\Client;
 use App\Models\Kategori;
 use App\Models\Transaksi;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -43,9 +45,9 @@ class BarangController extends Controller
             return Barang::where('client_id',$_GET['client_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
         } else {
             if (isset($_GET['kategori_id'])) {
-                return Barang::where('client_id',$_GET['client_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                return Barang::where('cabang_id',$_GET['cabang_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
             } else {
-                return Barang::where('client_id',$_GET['client_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                return Barang::where('cabang_id',$_GET['cabang_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
             }
         }
         
@@ -59,7 +61,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        //
+      
     }
 
     /**
@@ -77,7 +79,7 @@ class BarangController extends Controller
                 $namafile   = uploadgambar($request,'barang');
             }
             Barang::create([
-                'client_id' => $request->client_id,
+                'cabang_id' => $request->cabang_id,
                 'kode_barang' => 'KD'.time(),
                 'nama_barang' => $request->nama_barang,
                 'kategori_id' => $request->kategori_id,

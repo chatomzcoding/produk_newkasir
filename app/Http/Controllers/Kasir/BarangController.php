@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Kategori;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +21,18 @@ class BarangController extends Controller
         $menu       = 'barang';
         $user       = Auth::user();
         $akses      = Userakses::where('user_id',$user->id)->first();
-        $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
-
-        return view('sistem.barang.index', compact('menu','barang'));
+        $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
+        if ($fkategori == 'semua') {
+            $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
+        } else {
+            $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+        }
+        
+        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
+        $filter         = [
+            'kategori' => $fkategori
+        ];
+        return view('sistem.barang.index', compact('menu','barang','kategori','filter'));
     }
 
     /**
@@ -32,7 +42,12 @@ class BarangController extends Controller
      */
     public function create()
     {
-        //
+        $menu           = 'barang';
+        $akses          = Userakses::where('user_id',Auth::user()->id)->first();
+        $satuan         = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->get();
+        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
+        $produsen       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','produsen')->get();
+        return view('sistem.barang.create', compact('satuan','kategori','produsen','menu','akses'));
     }
 
     /**
@@ -43,7 +58,36 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (isset($request->gambar)) {
+            $request->validate([
+                'gambar' => 'required|file|image|mimes:jpeg,png,jpg|max:5000',
+            ]);
+            // menyimpan data file yang diupload ke variabel $file
+            $file = $request->file('gambar');
+            
+            $gambar = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'public/img/barang';
+            // isi dengan nama folder tempat kemana file diupload
+            $file->move($tujuan_upload,$gambar);
+        } else {
+            $gambar  = NULL;
+        }
+        Barang::create([
+            'cabang_id' => $request->cabang_id,
+            'kode_barang' => $request->kode_barang,
+            'nama_barang' => $request->nama_barang,
+            'kategori_id' => $request->kategori_id,
+            'satuan_id' => $request->satuan_id,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
+            'stok' => $request->stok,
+            'kode_barcode' => $request->kode_barcode,
+            'merk' => $request->merk,
+            'status_barang' => $request->status_barang,
+            'gambar' => $gambar,
+        ]);
+
+        return redirect('barang')->with('ds','Barang');
     }
 
     /**
@@ -88,6 +132,9 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
-        //
+        deletefile('public/img/barang/'.$barang->gambar);
+        $barang->delete();
+
+        return back()->with('dd','Barang');
     }
 }

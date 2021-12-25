@@ -19,10 +19,10 @@ class KategoriController extends Controller
             $result = NULL;
             switch ($_GET['label']) {
                 case 'satuan':
-                    $result = Kategori::where('label','satuan')->orderBy('nama',$_GET['sortby'])->get();
+                    $result = Kategori::where('cabang_id',$_GET['cabang_id'])->where('label','satuan')->orderBy('nama',$_GET['sortby'])->get();
                     break;
                 case 'barang':
-                    $result = Kategori::where('label','barang')->orderBy('nama',$_GET['sortby'])->get();
+                    $result = Kategori::where('cabang_id',$_GET['cabang_id'])->where('label','barang')->orderBy('nama',$_GET['sortby'])->get();
                     break;
                 
                 default:
@@ -55,7 +55,7 @@ class KategoriController extends Controller
     {
         if (cektoken($request->token)) {
             Kategori::create([
-                'client_id' => $request->client_id,
+                'cabang_id' => $request->cabang_id,
                 'nama' => $request->nama,
                 'keterangan' => $request->keterangan,
                 'label' => $request->label,
