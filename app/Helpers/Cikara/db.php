@@ -11,6 +11,7 @@ use App\Models\Lapor;
 use App\Models\Penduduk;
 use App\Models\Penduduksurat;
 use App\Models\Profil;
+use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Userakses;
 use App\Models\Visitor;
@@ -134,6 +135,26 @@ class DbCikara {
         
     }
 
+    public static function kodeTransaksi($user_id)
+    {
+        $tgl    = ambil_tgl();
+        $bln    = ambil_bulan();
+        $thn    = substr(ambil_tahun(),2,2);
+        $kode   = 'TRX'.$user_id.'.'.$tgl.$bln.$thn.'.';
+        // cek barang terakhir
+        $transaksi     = Transaksi::where('user_id',$user_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
+        if ($transaksi) {
+            $kodetrx     = explode('.',$transaksi->kode_transaksi);
+            $nomor          = $kodetrx[2];
+            $urutbaru       = $nomor + 1;
+            $kodebarang = $kode.$urutbaru;
+        } else {
+            $kodebarang = $kode.'1';
+        }
+        return $kodebarang;
+        
+    }
+
     public static function namaKategori($id)
     {
         $kategori   = Kategori::find($id);
@@ -141,6 +162,13 @@ class DbCikara {
         if ($kategori) {
             $result = $kategori->nama;
         }
+        return $result;
+    }
+
+    public static function barangByKasir($user_id)
+    {
+        $akses      = Userakses::where('user_id',$user_id)->first();
+        $result     = Barang::where('cabang_id',$akses->cabang_id)->select('id','nama_barang')->get();
         return $result;
     }
 }

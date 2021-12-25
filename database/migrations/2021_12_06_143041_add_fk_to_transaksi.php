@@ -14,8 +14,8 @@ class AddFkToTransaksi extends Migration
     public function up()
     {
         Schema::table('transaksi', function (Blueprint $table) {
-            $table->unsignedBigInteger('userakses_id')->after('id');
-            $table->foreign('userakses_id')->references('id')->on('user_akses')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->after('id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

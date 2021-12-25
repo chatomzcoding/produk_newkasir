@@ -57,6 +57,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
+    @yield('head')
+
   <style>
 
 .select2-hidden-accessible {
@@ -128,7 +130,7 @@
   @livewireStyles
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed" onkeydown="myFunction()">
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -144,10 +146,11 @@
     </ul>
 
     <!-- SEARCH FORM -->
+    @if ($user->level == 'kasir')
       <form action="#" method="get" class="form-inline ml-3">
         <input type="hidden" name="data" value="cari">
         <div class="input-group input-group-sm">
-          <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari NIK/Nama" aria-label="Search">
+          <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari Barang" aria-label="Search">
           <div class="input-group-append">
             <button class="btn btn-navbar" type="submit">
               <i class="fas fa-search"></i>
@@ -155,6 +158,7 @@
           </div>
         </div>
       </form>
+    @endif
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -291,6 +295,9 @@
               @case('gudang')
                 @include('gudang.menu')
                 @break
+              @case('kasir')
+                @include('kasir.menu')
+                @break
               @default
           @endswitch
           <li class="nav-header pt-0">SISTEM</li>
@@ -413,7 +420,7 @@
 </script>
 <script type="text/javascript">
   $(document).ready(function() {
-      $(".penduduk").select2();
+      $(".listdata").select2();
   })
 </script>
 <script>

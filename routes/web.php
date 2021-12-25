@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\CabangController;
 use App\Http\Controllers\Kasir\BarangController;
 use App\Http\Controllers\Sistem\KategoriController;
 use App\Http\Controllers\Sistem\SatuanController;
+use App\Http\Controllers\Sistem\TransaksiController;
 use App\Http\Controllers\Superadmin\ClientController;
 use App\Http\Controllers\Superadmin\ListdataController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::resource('barang', BarangController::class);
     Route::resource('satuan', SatuanController::class);
     Route::resource('kategori', KategoriController::class);
+    Route::resource('transaksi', TransaksiController::class);
+
+    // TRANSAKSI
+    Route::get('kasir/transaksi/loadbarang','App\Http\Controllers\Sistem\TransaksiController@loadbarang')->name('loadBarang');
+
     // CETAK
     Route::get('cetakdata','App\Http\Controllers\CetakController@cetak');
 

@@ -21,8 +21,8 @@ class KategoriController extends Controller
                 case 'satuan':
                     $result = Kategori::where('cabang_id',$_GET['cabang_id'])->where('label','satuan')->orderBy('nama',$_GET['sortby'])->get();
                     break;
-                case 'barang':
-                    $result = Kategori::where('cabang_id',$_GET['cabang_id'])->where('label','barang')->orderBy('nama',$_GET['sortby'])->get();
+                case 'kategori':
+                    $result = Kategori::where('cabang_id',$_GET['cabang_id'])->where('label','kategori')->orderBy('nama',$_GET['sortby'])->get();
                     break;
                 
                 default:

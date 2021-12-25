@@ -386,179 +386,7 @@ if (! function_exists('format_surat')) {
         return $list;
     }
 }
-if (! function_exists('nama_label')) {
-    function nama_label($label,$kode)
-    {
-        switch ($kode) {
-            case 'S-05':
-                $cdata = [
-                    'barang' => 'Nama Barang',
-                    'jenis' => 'Jenis Barang',
-                    'nama' => 'Nama Pihak Kedua',
-                ];
-                break;
-            case 'S-09':
-                $cdata = [
-                    'perbedaan' => 'Data yang berbeda',
-                    'kartu_identitas' => 'Kartu Identitas Pembeda',
-                ];
-                break;
-            case 'S-12':
-                $cdata = [
-                    'jenis' => 'Jenis Keramaian',
-                ];
-                break;
-            case 'S-13':
-                $cdata = [
-                    'barang' => 'Nama barang yang hilang',
-                    'rincian' => 'Rincian Barang',
-                ];
-                break;
-            case 'S-14':
-                $cdata = [
-                    'usaha' => 'Nama Usaha',
-                ];
-                break;
-            case 'S-16':
-                $cdata = [
-                    'usaha' => 'Nama Usaha',
-                    'alamat' => 'Alamat Tempat Usaha',
-                ];
-                break;
-            case 'S-22':
-                $cdata = [
-                    'lama_kandungan' => 'Lama Kandungan (bulan)',
-                    'alamat' => 'Alamat Tempat Usaha',
-                ];
-                break;
-            case 'S-33':
-                $cdata = [
-                    'kecamatan' => 'KUA di kecamatan',
-                ];
-                break;
-            
-            default:
-                $cdata = [];
-                break;
-        }
-        $udata = [
-            'no_kk' => 'Nomor Kartu Keluarga',
-            'jk' => 'Jenis Kelamin'
-        ];
-        $data   = array_merge($cdata,$udata);
-        $dlabel     = str_replace('_',' ',$label);
-        $result = (isset($data[$label])) ? $data[$label] : $dlabel ;
-        return $result;
-    }
-}
-if (! function_exists('form_view')) {
-    function form_view($key)
-    {
-        $nomor      = ['no_kk','nik_ibu','nik_ayah','nik_saksi1','nik_saksi2','nik_pelapor','nik_anak','nik_istri','nik','nik_kuasa'];
-        $tanggal    = ['tgl_lahir','tanggal_pindah','tanggal_lahir_ibu','tanggal_lahir_ayah','tanggal_lahir_pelapor','tanggal_lahir_saksi1','tanggal_lahir_saksi2','tanggal_mati','tgl_nikah','tanggal_lahir_istri','tanggal_lahir_pasangan','tanggal_lahir','tanggal_lahir_kuasa'];
-        $angka      = ['jumlah_pengikut','kelahiran_ke','umur_ibu','umur_ayah','umur_pelapor','umur_saksi1','umur_saksi2','lama_kandungan','umur_kuasa'];
-        $pekerjaan  = ['pekerjaan','pekerjaan_ibu','pekerjaan_ayah','pekerjaan_pelapor','pekerjaan_saksi1','pekerjaan_saksi2','pekerjaan_istri','pekerjaan_pasangan','pekerjaan_kuasa'];
-        $waktu      = ['waktu_lahir','jam'];
-        $jk         = ['jk','jk_pelapor','jk_kuasa'];
-        $agama      = ['agama','agama_istri','agama_pasangan','agama_ayah','agama_ibu'];
-        $warganegara  = ['warga_negara_pasangan','warga_negara','warga_negara_ayah','warga_negara_ibu'];
-        if (in_array($key,$nomor)) {
-            $result     = 'nomor';
-        }elseif (in_array($key,$tanggal)) {
-            $result     = 'tanggal';
-        }elseif (in_array($key,$angka)) {
-            $result     = 'angka';
-        }elseif (in_array($key,$pekerjaan)) {
-            $result     = 'pekerjaan';
-        }elseif (in_array($key,$waktu)) {
-            $result     = 'waktu';
-        }elseif (in_array($key,$jk)) {
-            $result     = 'jk';
-        }elseif (in_array($key,$agama)) {
-            $result     = 'agama';
-        }elseif (in_array($key,$warganegara)) {
-            $result     = 'warganegara';
-        } else {
-            $result     = 'string';
-        }
-        return $result;
-    }
-}
-if (! function_exists('surataktif')) {
-    function surataktif($kode)
-    {
-        $result = FALSE;
-        $surat  = ['S-01','S-02','S-04','S-11','S-12','S-13','S-14','S-16','S-17','S-18'];
-        if (in_array($kode,$surat)) {
-            $result = TRUE;
-        }
-        return $result;
-    }
-}
-if (! function_exists('cekpost')) {
-    function cekpost($detail,$label)
-    {
-        $result = NULL;
-        if (isset($detail->$label)) {
-            $result   = $detail->$label;
-            if ($label == 'tanggal_pindah' || $label == 'tgl_lahir' || $label == 'tanggal_lahir_ibu' || $label == 'tanggal_lahir_pelapor' || $label == 'tanggal_lahir_saksi2' || $label == 'tanggal_lahir_saksi1') {
-                $result     = date_indo($result);
-            }
-        }
-        return $result;
-    }
-}
-if (! function_exists('jumlahlikelapor')) {
-    function jumlahlikelapor($data)
-    {
-        if (is_null($data)) {
-            $jumlah  = 0;
-        } else {
-            $data   = json_decode($data);
-            $jumlah = count($data);
-        }
-        return $jumlah;
-    }
-}
-if (! function_exists('ubahdatakey')) {
-    function ubahdatakey($key)
-    {
-        switch ($key) {
-            case 'jk':
-                $result = 'Jenis Kelamin';
-                break;
-            case 'tgl_lahir':
-                $result = 'Tanggal Lahir';
-                break;
-            default:
-                // jika data sesuai dengan nama
-                $cekarray = explode('_',$key);
-                if (count($cekarray) == 2) {
-                    $result = $cekarray[0].' '.$cekarray[1];
-                } else {
-                    $result  = $key;
-                }
-               break;
-       }
-        return $result;
-    }
-}
-if (! function_exists('historicovid')) {
-    function historicovid($data)
-    {
-        $data       = json_decode($data);
-        $result     = NULL;
-        foreach ($data as $row) {
-            $result .= 'Status : '.$row->status.' </br>';
-            $result .= 'Tanggal : '.date_indo($row->tanggal).' </br>';
-            if (isset($row->update)) {
-                $result .= 'Update : '.date_indo($row->update).'</br>';
-            }
-            $result .= '<hr>';
-        }
-        return $result;
-    }
-}
+
 if (! function_exists('css_statistik')) {
     function css_statistik($data)
     {
@@ -624,73 +452,6 @@ if (! function_exists('filter_data_get')) {
     }
 }
 
-if (! function_exists('nilai_kelengkapan')) {
-    function nilai_kelengkapan($data)
-    {
-        $nilai  = 0;
-        if (!is_null($data->status_rekam)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->kk_sebelum)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->hubungan_keluarga)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->no_akta)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->waktu_lahir)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->berat_lahir)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->panjang_lahir)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->nomor_paspor)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->tgl_akhirpaspor)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->nomor_kitas)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->lat_penduduk)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->long_penduduk)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->no_telp)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->email)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->alamat_sebelum)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->no_bukunikah)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->tgl_perkawinan)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->akta_perceraian)) {
-            $nilai = $nilai + 1;
-        }
-        if (!is_null($data->tgl_perceraian)) {
-            $nilai = $nilai + 1;
-        }
-        $jumlah = 19;
-
-        $persen     = $nilai/$jumlah * 100;
-        return round($persen);
-    }
-}
 if (! function_exists('get_filter')) {
     function get_filter($data)
     {
@@ -700,5 +461,19 @@ if (! function_exists('get_filter')) {
             $result[$data[$i]] = $filter;
         }
         return $result;
+    }
+}
+if (! function_exists('totalpembayaran')) {
+    function totalpembayaran($keranjang)
+    {
+        $jumlah = 0;
+        $data   = json_decode($keranjang);
+        if ((array)$data) {
+            foreach ($data as $item) {
+                $subtotal   = $item->jumlah * $item->harga_jual;
+                $jumlah     = $jumlah + $subtotal;
+            }
+        }
+        return $jumlah;
     }
 }
