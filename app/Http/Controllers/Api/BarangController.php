@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Client;
@@ -80,7 +81,7 @@ class BarangController extends Controller
             }
             Barang::create([
                 'cabang_id' => $request->cabang_id,
-                'kode_barang' => 'KD'.time(),
+                'kode_barang' => DbCikara::kodeBarang($request->cabang_id),
                 'nama_barang' => $request->nama_barang,
                 'kategori_id' => $request->kategori_id,
                 'satuan_id' => $request->satuan_id,
