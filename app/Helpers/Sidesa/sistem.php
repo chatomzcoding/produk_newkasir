@@ -477,15 +477,47 @@ if (! function_exists('totalpembayaran')) {
         return $jumlah;
     }
 }
+if (! function_exists('subtotal')) {
+    function subtotal($hargajual,$jumlah)
+    {
+        $subtotal = $hargajual * $jumlah;
+        return $subtotal;
+    }
+}
+if (! function_exists('datainvoice')) {
+    function datainvoice($keranjang,$uangpembeli)
+    {
+        $total  = 0;
+        $bruto  = 0;
+        $netto  = 0;
+        foreach (json_decode($keranjang) as $item) {
+            $subtotal = $item->harga_jual * $item->jumlah;
+            $total  = $total + $subtotal;
+            $bruto  = $bruto + ($item->harga_jual * $item->jumlah);
+            $netto  = $netto + ($item->harga_beli * $item->jumlah);
+        }
+        $kembalian  = $uangpembeli - $total;
+        $laba       = $bruto - $netto;
+        $result     = [
+            'total_pembayaran' => $total,
+            'uang_pembeli' => $uangpembeli,
+            'kembalian' => $kembalian,
+            'bruto' => $bruto,
+            'netto' => $netto,
+            'laba' => $laba,
+        ];
+        return $result;
+    }
+}
 if (! function_exists('statustransaksi')) {
     function statustransaksi($status)
     {
        switch ($status) {
            case 'selesai':
-               $html = "<span class='badge badge-success'>selesai</span>";
+               $html = "<span class='badge badge-success'>SELESAI</span>";
                break;
            case 'proses':
-               $html = "<span class='badge badge-warning'>proses</span>";
+               $html = "<span class='badge badge-warning'>PROSES</span>";
                break;
            
            default:

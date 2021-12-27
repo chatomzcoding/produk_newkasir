@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Sistem;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Cabang;
+use App\Models\Client;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -28,9 +30,17 @@ class TransaksiController extends Controller
                 break;
             
             default:
-                $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
+                $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
                 $transaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->orderby('id','DESC')->get();
-                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal'));
+                $statistik  = [
+                    'total' => Transaksi::where('user_id',$user->id)->count(),
+                    'totalhariini' => Transaksi::where('user_id',$user->id)->whereDate('created_at',tgl_sekarang())->count(),
+                ];
+                // cek status proses transaksi
+                // jika ada transaksi proses dan belum ada keranjang maka transaksi dilanjutkan
+                $cektransaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->where('status_transaksi','proses')->where('keranjang',NULL)->first();
+
+                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi'));
                 break;
         }
 
@@ -116,15 +126,21 @@ class TransaksiController extends Controller
         $menu       = 'transaksi';
         $transaksi  = Transaksi::find(Crypt::decryptString($transaksi));
         $user       = Auth::user();
+        $akses      = Userakses::where('user_id',$user->id)->first();
+        $cabang     = Cabang::find($akses->cabang_id);
+        $client     = Client::find($cabang->client_id);
         switch ($transaksi->status_transaksi) {
             case 'proses':
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
                 $data = [
                     'totalpembayaran' => totalpembayaran($transaksi->keranjang)
                 ];
-                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data'));
+                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','client'));
                 break;
-            
+            case 'selesai':
+                $invoice = datainvoice($transaksi->keranjang,$transaksi->uang_pembeli);
+                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','client','invoice'));
+                break;
             default:
                 # code...
                 break;
@@ -197,12 +213,29 @@ class TransaksiController extends Controller
                 }
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('danger',$nama_barang.' berhasil dihapus dari keranjang!');
                 break;
-            case 'bayarpas':
+            case 'bayar':
+                if (!is_null($request->nominalmanual)) {
+                    $uangpembeli = $request->nominalmanual; 
+                } else {
+                    $uangpembeli = $request->nominal;
+                }
+                
                 Transaksi::where('id',$transaksi->id)->update([
-                    'uang_pembeli' => $request->uang_pembeli,
+                    'uang_pembeli' => $uangpembeli,
                     'status_transaksi' => 'selesai'
                 ]);
-                return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success', 'transaksi telah selesai!');
+
+                // kurangi barang dari stok sesuai dengan jumlah barang pembelian
+                foreach (json_decode($transaksi->keranjang) as $item) {
+                    $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
+                    if ($barang) {
+                        $stok   = $barang->stok - $item->jumlah;
+                        Barang::where('id',$barang->id)->update([
+                            'stok' => $stok
+                        ]);
+                    }
+                }
+                return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
                 break;
             case 'tambahjumlahbarang':
                 $keranjang = json_decode($transaksi->keranjang,TRUE);
@@ -226,6 +259,16 @@ class TransaksiController extends Controller
      */
     public function destroy(Transaksi $transaksi)
     {
+        // jika transaksi dihapus, maka stok dikembalikan seperti semula
+        foreach (json_decode($transaksi->keranjang) as $item) {
+            $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
+            if ($barang) {
+                $stok   = $barang->stok + $item->jumlah;
+                Barang::where('id',$barang->id)->update([
+                    'stok' => $stok
+                ]);
+            }
+        }
         $transaksi->delete();
 
         return redirect('transaksi')->with('dd','Transaksi');

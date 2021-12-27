@@ -27,13 +27,11 @@
 {{-- notifikasi data berhasil di simpan --}}
 @if (session('ds'))
 <div class="callout callout-success">
-    <h5>Berhasil!</h5>
     <p>Data {{ session('ds') }} telah ditambahkan.</p>
   </div>
 @endif
 @if (session('dsc'))
 <div class="callout callout-success">
-    <h5>Berhasil!</h5>
     <p>{{ session('dsc') }}</p>
   </div>
 @endif
@@ -41,13 +39,11 @@
 {{-- notifikasi data berhasil di update --}}
 @if (session('du'))
 <div class="callout callout-info">
-    <h5>Berhasil!</h5>
     <p>Data {{ session('du') }} telah diperbaharui.</p>
   </div>
 @endif
 @if (session('duc'))
 <div class="callout callout-info">
-    <h5>Berhasil!</h5>
     <p>{{ session('duc') }}</p>
   </div>
 @endif

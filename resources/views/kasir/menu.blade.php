@@ -1,6 +1,6 @@
 <li class="nav-item">
     <a href="{{ url('/transaksi')}}" class="nav-link small {{ menuaktif($menu,'transaksi') }}">
-      <i class="nav-icon fas fa-user"></i>
+      <i class="nav-icon fas fa-shopping-cart"></i>
       <p class="text">Data Transaksi</p>
     </a>
   </li>
