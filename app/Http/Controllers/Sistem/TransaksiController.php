@@ -86,22 +86,35 @@ class TransaksiController extends Controller
                 }
                 
                 if ($barang) {
-                    $keranjang[$barang->kode_barang] = [
-                        'kode_barang' => $barang->kode_barang,
-                        'nama_barang' => $barang->nama_barang,
-                        'jumlah' => 1,
-                        'harga_beli' => $barang->harga_beli,
-                        'harga_jual' => $barang->harga_jual,
-                    ];
-                    if (!is_null($transaksi->keranjang)) {
-                        $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
-                        $keranjang      = array_merge($keranjang,$dkeranjang);
+                    $keranjang = json_decode($transaksi->keranjang,TRUE);
+                    // cek jika barang sudah ada dikeranjang, maka ditambahkan 1
+                    if (isset($keranjang[$barang->kode_barang]['jumlah'])) {
+                        $stokkeranjang  = $keranjang[$barang->kode_barang]['jumlah'];
+                        $jumlah     = $stokkeranjang + 1;
+                        $keranjang[$barang->kode_barang]['jumlah'] = $jumlah;
+                    } else {
+                        $keranjang[$barang->kode_barang] = [
+                            'kode_barang' => $barang->kode_barang,
+                            'nama_barang' => $barang->nama_barang,
+                            'jumlah' => 1,
+                            'harga_beli' => $barang->harga_beli,
+                            'harga_jual' => $barang->harga_jual,
+                        ];
+                        if (!is_null($transaksi->keranjang)) {
+                            $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
+                            $keranjang      = array_merge($dkeranjang,$keranjang);
+                        }
                     }
-    
+                    
                     Transaksi::where('id',$transaksi->id)->update([
                         'keranjang' => json_encode($keranjang)
                     ]);
-    
+                    
+                    // kurangi stok barang dengan jumlah barang
+                    $stok   = $barang->stok - 1;
+                    Barang::where('id',$barang->id)->update([
+                        'stok' => $stok
+                    ]);
                     return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success',$barang->nama_barang. ' berhasil ditambahkan  ke keranjang');
                 } else {
                     // jika tidak ada, berikan notifikasi barang tidak ada
@@ -134,6 +147,18 @@ class TransaksiController extends Controller
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
                 $data = [
                     'totalpembayaran' => totalpembayaran($transaksi->keranjang)
+                ];
+                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','client'));
+                break;
+            case 'retur':
+                $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
+                $totalpembayaranselesai     = totalpembayaran($transaksi->keranjang);
+                $totalpembayaran            = $totalpembayaranselesai - $transaksi->uang_pembeli;
+                $sisapembayaran             = $transaksi->uang_pembeli - $totalpembayaranselesai;
+                $data = [
+                    'totalpembayaranselesai' => $totalpembayaranselesai,
+                    'totalpembayaran' => $totalpembayaran,
+                    'sisapembayaran' => $sisapembayaran,
                 ];
                 return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','client'));
                 break;
@@ -199,6 +224,7 @@ class TransaksiController extends Controller
                 $kode_barang    = $request->kode_barang;
                 $keranjang      = json_decode($transaksi->keranjang);
                 $nama_barang    = $keranjang->$kode_barang->nama_barang;
+                $jumlah         = $keranjang->$kode_barang->jumlah;
                 unset($keranjang->$kode_barang);
                 // cek jika keranjang masih ada barang
                 if ((array)$keranjang) {
@@ -209,6 +235,14 @@ class TransaksiController extends Controller
                     // jika tidak ada kasih NULL
                     Transaksi::where('id',$transaksi->id)->update([
                         'keranjang' => NULL
+                    ]);
+                }
+                // kembalikan barang ke stok barang
+                $barang     = Barang::where('kode_barang',$kode_barang)->first();
+                if ($barang) {
+                    $stok   = $barang->stok + $jumlah;
+                    Barang::where('kode_barang',$kode_barang)->update([
+                        'stok' => $stok
                     ]);
                 }
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('danger',$nama_barang.' berhasil dihapus dari keranjang!');
@@ -238,12 +272,30 @@ class TransaksiController extends Controller
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
                 break;
             case 'tambahjumlahbarang':
-                $keranjang = json_decode($transaksi->keranjang,TRUE);
+                $keranjang          = json_decode($transaksi->keranjang,TRUE);
+                $jumlahkeranjang    = $keranjang[$request->kode_barang]['jumlah'];
                 $keranjang[$request->kode_barang]['jumlah'] = $request->jumlah;
                 Transaksi::where('id',$transaksi->id)->update([
                     'keranjang' => json_encode($keranjang)
                 ]);
+                // ubah stok barang
+                $barang     = Barang::where('kode_barang',$request->kode_barang)->first();
+                if ($barang) {
+                    $stok   = $barang->stok - ($request->jumlah - $jumlahkeranjang);
+                    Barang::where('id',$barang->id)->update([
+                        'stok' => $stok
+                    ]);
+                }
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','jumlah barang '.$request->nama_barang.' telah ditambahkan!');
+                break;
+            case 'retur':
+                // retur mengubah status dan uang pembeli dengan total pembayaran
+                Transaksi::where('id',$transaksi->id)->update([
+                    'status_transaksi' => $request->status_transaksi,
+                    'uang_pembeli' => $request->uang_pembeli,
+                ]);
+                return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
+
                 break;
             default:
 
@@ -259,14 +311,16 @@ class TransaksiController extends Controller
      */
     public function destroy(Transaksi $transaksi)
     {
-        // jika transaksi dihapus, maka stok dikembalikan seperti semula
-        foreach (json_decode($transaksi->keranjang) as $item) {
-            $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
-            if ($barang) {
-                $stok   = $barang->stok + $item->jumlah;
-                Barang::where('id',$barang->id)->update([
-                    'stok' => $stok
-                ]);
+        if (!is_null($transaksi->keranjang)) {
+            // jika transaksi dihapus, maka stok dikembalikan seperti semula
+            foreach (json_decode($transaksi->keranjang) as $item) {
+                $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
+                if ($barang) {
+                    $stok   = $barang->stok + $item->jumlah;
+                    Barang::where('id',$barang->id)->update([
+                        'stok' => $stok
+                    ]);
+                }
             }
         }
         $transaksi->delete();

@@ -152,10 +152,20 @@
                                     <button type="submit" class="btn btn-outline-primary btn-block text-left" id="tambahtransaksi"><i class="fas fa-plus"></i> TRANSAKSI BARU <span class="float-right">[Enter]</span></button>
                                 </form>
                           </section>
-                          <section>
-                              <a href="" class="btn btn-outline-info btn-block text-left"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
+                          <section class="mb-2">
+                            <a href="" class="btn btn-outline-info btn-block text-left"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
                           </section>
-                      </div>
+                          <section class="mb-2">
+                                <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                                    @csrf
+                                    @method('patch')
+                                    <input type="hidden" name="s" value="retur">
+                                    <input type="hidden" name="status_transaksi" value="retur">
+                                    <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
+                                    <button type="submit" class="btn btn-outline-dark btn-block text-left" id="returntransaksi"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
+                                </form>
+                          </section>
+                        </div>
                   </div>
               </div>
             </div>

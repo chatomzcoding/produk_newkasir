@@ -519,9 +519,12 @@ if (! function_exists('statustransaksi')) {
            case 'proses':
                $html = "<span class='badge badge-warning'>PROSES</span>";
                break;
+           case 'retur':
+               $html = "<span class='badge badge-dark'>RETUR</span>";
+               break;
            
            default:
-               # code...
+               $html = NULL;
                break;
        }
        return $html;

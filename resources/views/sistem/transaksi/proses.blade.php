@@ -47,6 +47,9 @@
                                             </form>
                                         </div>
                                         <div class="card-body">
+                                            @if ($transaksi->status_transaksi == 'retur')
+                                                @include('sistem.transaksi.s.retur')
+                                            @endif
                                             @switch($s)
                                                 @case('caribarang')
                                                     @include('sistem.transaksi.s.caribarang')
