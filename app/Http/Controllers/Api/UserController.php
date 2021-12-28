@@ -68,8 +68,8 @@ class UserController extends Controller
         if (cektoken($token)) {
             $result = DB::table('users')
                         ->join('user_akses','users.id','=','user_akses.user_id')
-                        ->join('client','user_akses.client_id','=','client.id')
-                        ->select('client.*','users.*')
+                        ->join('cabang','user_akses.cabang_id','=','cabang.id')
+                        ->select('cabang.*','users.*')
                         ->where('users.id',$user)
                         ->first();
             return $result;
