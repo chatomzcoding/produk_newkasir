@@ -169,7 +169,7 @@ class TransaksiController extends Controller
                             $subitem = 0;
                             $sublaba = 0;
                             $keranjang = json_decode($item->keranjang);
-                            if ($keranjang) {
+                            if (!is_null($keranjang)) {
                                 foreach ($keranjang as $key) {
                                     $subpenjualan = $subpenjualan + $key->harga_jual;
                                     $subitem = $subitem + $key->jumlah;
