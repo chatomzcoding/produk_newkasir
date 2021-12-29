@@ -26,8 +26,8 @@ class MobileController extends Controller
                 $sesi   = Session::where('user_id',$user->id)->where('payload',1)->first();
                 if ($sesi) {
                     $result    = [
-                        'success' => 0,
-                        'message' => $sesi->user_agent
+                        'success' => 2,
+                        'message' => $sesi->user_agent,
                     ];
                 } else {
                     Session::create([
@@ -39,7 +39,8 @@ class MobileController extends Controller
                     ]);
                     $success    = [
                         'success' => 1,
-                        'message' => 'success'
+                        'message' => 'success',
+                        'device' => $request->nama_device,
                     ];
                     $userakses  = Userakses::where('user_id',$user->id)->first();
                     $cabang     = Cabang::find($userakses->cabang_id);
