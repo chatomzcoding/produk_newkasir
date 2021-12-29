@@ -361,8 +361,13 @@ class TransaksiController extends Controller
     public function destroy($transaksi)
     {
         if (cektoken($_GET['token'])) {
-            $transaksi  = Transaksi::find($transaksi);
-            $transaksi->delete();
+            if (isset($_GET['user_id'])) {
+                Transaksi::where('user_id',$_GET['user_id'])->delete();
+            } else {
+                $transaksi  = Transaksi::find($transaksi);
+                $transaksi->delete();
+            }
+            
     
             return response()->json([
                 'success' => 1,
