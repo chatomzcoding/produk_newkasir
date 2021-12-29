@@ -193,6 +193,8 @@ class TransaksiController extends Controller
                             $totallaba = $totallaba + $sublaba;
                             
                         }
+
+                        usort($produk, 'sortByOrder');
                       
                        
                         $result = [

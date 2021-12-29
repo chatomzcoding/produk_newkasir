@@ -540,6 +540,12 @@ if (! function_exists('disablenominal')) {
         return $result;
     }
 }
+if (! function_exists('sortByOrder')) {
+    function sortByOrder($a,$b)
+    {
+            return $b['jumlah'] - $a['jumlah'];
+    }
+}
 
 if (! function_exists('space')) {
     function space($sesi,$jumlah,$harga=null)
