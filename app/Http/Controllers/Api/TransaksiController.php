@@ -171,10 +171,10 @@ class TransaksiController extends Controller
                             $keranjang = json_decode($item->keranjang);
                             if (!is_null($keranjang)) {
                                 foreach ($keranjang as $key) {
-                                    $subpenjualan = $subpenjualan + $key->harga_jual;
+                                    $subpenjualan = $subpenjualan + ($key->harga_jual * $key->jumlah);
                                     $subitem = $subitem + $key->jumlah;
                                     $laba   = $key->harga_jual - $key->harga_beli;
-                                    $sublaba = $sublaba + $laba;
+                                    $sublaba = $sublaba + ($laba * $key->jumlah);
                                     // cek apakah tidak ada barang
                                     if (isset($produk[$key->kode_barang])) {
                                         $jumlah = $key->jumlah + $produk[$key->kode_barang]['jumlah'];
