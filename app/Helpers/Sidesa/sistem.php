@@ -530,3 +530,63 @@ if (! function_exists('statustransaksi')) {
        return $html;
     }
 }
+if (! function_exists('disablenominal')) {
+    function disablenominal($total,$nominal)
+    {
+        $result   = NULL;
+        if ($total > $nominal) {
+            $result = 'disabled';
+        }
+        return $result;
+    }
+}
+
+if (! function_exists('space')) {
+    function space($sesi,$jumlah,$harga=null)
+    {
+        $ukuran     = 32 - 2; // Rp 
+        $space      = NULL;
+        switch ($sesi) {
+            case 'harga':
+                $batas      = $ukuran - 5; 
+                $total      = $jumlah * $harga;
+                $djumlah    = strlen($jumlah);
+                $dharga     = strlen(norupiah($harga));
+                $dtotal     = strlen(norupiah($total));
+                $djarak     = 10 - $dtotal;
+                $dsisa      = $batas - $djumlah - $dharga - $dtotal - $djarak;
+            break;
+            case 'total':
+                $djumlah    = strlen(norupiah($jumlah));
+                $dkata      = 5; // TOTAL
+                $djarak     = 10 - $djumlah;
+                $dsisa      = $ukuran - $djumlah - $dkata - $djarak;
+            break;
+            case 'bayar':
+                $djumlah    = strlen(norupiah($jumlah));
+                $dkata      = 5; // BAYAR
+                $djarak     = 10 - $djumlah;
+                $dsisa      = $ukuran - $djumlah - $dkata - $djarak;
+            break;
+            case 'kembalian':
+                $djumlah    = strlen(norupiah($jumlah));
+                $dkata      = 9; // KEMBALIAN
+                $djarak     = 10 - $djumlah;
+                $dsisa      = $ukuran - $djumlah - $dkata - $djarak;
+                break;
+            default:
+                
+                break;
+        }
+        for ($i=0; $i < $dsisa; $i++) { 
+            $space .= ' ';
+        }
+        $space .= 'Rp';
+        for ($i=0; $i < $djarak; $i++) { 
+            $space .= ' ';
+        }
+        return $space;
+    }
+}
+
+

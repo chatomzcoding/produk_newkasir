@@ -175,6 +175,11 @@
                 event.preventDefault()
                 $("#keranjang").click();
             }
+            /* tombol End */
+            if(event.keyCode == 35) {
+                event.preventDefault()
+                $("#batalretur").click();
+            }
         }
     </script>
     <script>

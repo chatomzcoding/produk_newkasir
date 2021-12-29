@@ -253,6 +253,10 @@ class TransaksiController extends Controller
                 } else {
                     $uangpembeli = $request->nominal;
                 }
+
+                if ($transaksi->status_transaksi == 'retur') {
+                    $uangpembeli = $uangpembeli + $transaksi->uang_pembeli;
+                }
                 
                 Transaksi::where('id',$transaksi->id)->update([
                     'uang_pembeli' => $uangpembeli,
@@ -295,6 +299,14 @@ class TransaksiController extends Controller
                     'uang_pembeli' => $request->uang_pembeli,
                 ]);
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
+
+                break;
+            case 'batalretur':
+                // ubah status tanpa ada pengurangan apapun
+                Transaksi::where('id',$transaksi->id)->update([
+                    'status_transaksi' => $request->status_transaksi,
+                ]);
+                return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','Retur Dibatalkan!');
 
                 break;
             default:

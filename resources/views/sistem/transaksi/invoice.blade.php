@@ -153,7 +153,7 @@
                                 </form>
                           </section>
                           <section class="mb-2">
-                            <a href="" class="btn btn-outline-info btn-block text-left"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
+                            <a href="" onclick="onClick()" class="btn btn-outline-info btn-block text-left" id="cetak"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
                           </section>
                           <section class="mb-2">
                                 <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
@@ -162,7 +162,7 @@
                                     <input type="hidden" name="s" value="retur">
                                     <input type="hidden" name="status_transaksi" value="retur">
                                     <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
-                                    <button type="submit" class="btn btn-outline-dark btn-block text-left" id="returntransaksi"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
+                                    <button type="submit" class="btn btn-outline-dark btn-block text-left" id="retur"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
                                 </form>
                           </section>
                         </div>
@@ -173,6 +173,57 @@
         </div>
     </div>
     @section('script')
+
+    <script src="{{ asset('js/recta.js')}}"></script>
+
+<script type="text/javascript">
+    // var printer = new Recta('{{ $client->app_key}}', '{{ $client->app_port}}')
+    var printer = new Recta('8284151256', '1811')
+    function onClick () {
+      printer.open().then(function () {
+          printer.align('center')
+                .bold(true)
+                .underline(false)
+                .text('')
+                .text('{{ strtoupper($client->nama_toko)}}')
+                .bold(false)
+                .text('selaawi')
+                .text('--------------------------------')
+                .align('left')
+                .text('{{ date_indo(db_datetime($transaksi->created_at,'tgl')).' | '.db_datetime($transaksi->created_at,'jam')}}')
+                .text('No. Trx: {{ $transaksi->kode_transaksi}}')
+                .align('center')
+                .text('--------------------------------')
+                @foreach (json_decode($transaksi->keranjang) as $item)
+                .align('left')
+                .text('{{ $item->nama_barang}}')
+                .align('right')
+                .text('{{ $item->jumlah }} x {{norupiah($item->harga_jual).space('harga',$item->jumlah,$item->harga_jual).norupiah(subtotal($item->harga_jual,$item->jumlah))}}')
+                @endforeach
+                .text('--------------------------------')
+                .align('right')
+                .text('TOTAL{{ space('total',$invoice['total_pembayaran']).norupiah($invoice['total_pembayaran'])}}')
+                .align('center')
+                .align('right')
+                .text('BAYAR{{ space('bayar',$transaksi->uang_pembeli).norupiah($transaksi->uang_pembeli)}}')
+                .text('KEMBALIAN{{ space('kembalian',$invoice['kembalian']).norupiah($invoice['kembalian'])}}')
+                .align('center')
+                .text('--------------------------------')
+                .align('left')
+                .text('Kasir : {{ Auth::user()->name}}')
+                .align('center')
+                .text('')
+                .text('Barang Yang Sudah Dibeli Tidak')
+                .text('Dapat Dikembalikan/ditukar')
+                .text('TERIMA KASIH ATAS KUNJUNGANNYA')
+                // .underline(false)
+                // .barcode('UPC-A', '123456789012')
+                .cut()
+            printer.raw([0x1b, 0x70, 0x00])
+          .print()
+      })
+    }
+  </script>
           <script type="text/javascript">
             function myFunction(){
                 /* tombol enter */
@@ -180,10 +231,20 @@
                     event.preventDefault()
                     $("#tambahtransaksi").click();
                 }
-                 /* tombol backspace <- */
+                 /* tombol backspace */
                 if(event.keyCode == 37) {
                     event.preventDefault()
                     $("#kembali").click();
+                }
+                 /* tombol R  */
+                if(event.keyCode == 82) {
+                    event.preventDefault()
+                    $("#retur").click();
+                }
+                 /* tombol P */
+                if(event.keyCode == 80) {
+                    event.preventDefault()
+                    $("#cetak").click();
                 }
             } 
         </script>

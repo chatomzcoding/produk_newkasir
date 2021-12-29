@@ -46,5 +46,19 @@
             </form>
                 <button onclick="deleteRow( {{ $transaksi->id }} )" class="btn btn-danger btn-block text-left" id="klikdelete"><i class="fas fa-trash"></i> HAPUS TRANSAKSI <span class="float-right">[Delete]</span></button>
         </section>
+    @else
+        {{-- TOMBOL UNTUK BATAL RETUR --}}
+        @if ($transaksi->status_transaksi == 'retur')
+        <section class="mt-1">
+            <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                @csrf
+                @method('patch')
+                <input type="hidden" name="s" value="batalretur">
+                <input type="hidden" name="status_transaksi" value="selesai">
+                <button type="submit" class="btn btn-dark btn-block text-left" id="batalretur"><i class="fas fa-ban"></i> BATALKAN RETUR <span class="float-right">[End]</span></button>
+            </form>
+            </section>
+        @endif
     @endif
+
 </div>

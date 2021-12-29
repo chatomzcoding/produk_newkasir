@@ -16,7 +16,11 @@
                     <strong>Sisa Pembayaran</strong>
                 </div>
                 <div class="card-body">
-                    {{ $data['sisapembayaran'] }}
+                    @if ($data['sisapembayaran'] > 0)
+                        {{ $data['sisapembayaran'] }}
+                    @else
+                        -
+                    @endif
                 </div>
             </div>
         </div>

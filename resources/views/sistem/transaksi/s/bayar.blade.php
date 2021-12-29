@@ -4,6 +4,7 @@
         @csrf
         @method('patch')
         <input type="hidden" name="s" value="bayar">
+        <input type="hidden" name="uangretur" value="{{ $transaksi->uang_pembeli }}">
         <div class="row mb-1">
             <div class="col-md-12 p-1">
                 <div class="input-group">
@@ -21,7 +22,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
-                            <input type="radio" name="nominal" value="2000" id="2000">
+                            <input type="radio" name="nominal" value="2000" id="2000" {{ disablenominal($data['totalpembayaran'],2000) }}>
                         </span>
                     </div>
                     <input type="text" value="2.000" class="form-control" readonly>
@@ -34,7 +35,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="5000" id="5000">
+                        <input type="radio" name="nominal" value="5000" id="5000"  {{ disablenominal($data['totalpembayaran'],5000) }}>
                       </span>
                     </div>
                     <input type="text" value="5.000" class="form-control" readonly>
@@ -47,7 +48,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="10000" id="10000">
+                        <input type="radio" name="nominal" value="10000" id="10000"  {{ disablenominal($data['totalpembayaran'],10000) }}>
                       </span>
                     </div>
                     <input type="text" value="10.000" class="form-control" readonly>
@@ -60,7 +61,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="20000" id="20000">
+                        <input type="radio" name="nominal" value="20000" id="20000"  {{ disablenominal($data['totalpembayaran'],20000) }}>
                       </span>
                     </div>
                     <input type="text" value="20.000" class="form-control" readonly>
@@ -73,7 +74,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="50000" id="50000">
+                        <input type="radio" name="nominal" value="50000" id="50000"  {{ disablenominal($data['totalpembayaran'],50000) }}>
                       </span>
                     </div>
                     <input type="text" value="50.000" class="form-control" readonly>
@@ -86,7 +87,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="100000" id="100000">
+                        <input type="radio" name="nominal" value="100000" id="100000"  {{ disablenominal($data['totalpembayaran'],100000) }}>
                       </span>
                     </div>
                     <input type="text" value="100.000" class="form-control" readonly>
@@ -99,7 +100,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="150000" id="150000">
+                        <input type="radio" name="nominal" value="150000" id="150000"  {{ disablenominal($data['totalpembayaran'],150000) }}>
                       </span>
                     </div>
                     <input type="text" value="150.000" class="form-control" readonly>
@@ -112,7 +113,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <input type="radio" name="nominal" value="200000" id="200000">
+                        <input type="radio" name="nominal" value="200000" id="200000"  {{ disablenominal($data['totalpembayaran'],200000) }}>
                       </span>
                     </div>
                     <input type="text" value="200.000" class="form-control" readonly>
