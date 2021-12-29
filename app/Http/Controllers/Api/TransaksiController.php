@@ -150,6 +150,7 @@ class TransaksiController extends Controller
                                     'id' => $item->id,
                                     'kode_transaksi' => $item->kode_transaksi,
                                     'status_transaksi' => $item->status_transaksi,
+                                    'diskon' => $item->diskon,
                                     'tipe_orderan' => $item->tipe_orderan,
                                     'tipe_pembayaran' => $item->tipe_pembayaran,
                                     'uang_pembeli' => $item->uang_pembeli,
@@ -173,10 +174,17 @@ class TransaksiController extends Controller
                                 $subitem = $subitem + $key->jumlah;
                                 $laba   = $key->harga_jual - $key->harga_beli;
                                 $sublaba = $sublaba + $laba;
-                                $produk[] = [
-                                    'nama_barang' => $key->nama_barang,
-                                    'jumlah' => $key->jumlah
-                                ];
+                                // cek apakah tidak ada barang
+                                if (isset($produk[$key->kode_barang])) {
+                                    $jumlah = $key->jumlah + $produk[$key->kode_barang]['jumlah'];
+                                    $produk[$key->kode_barang]['jumlah'] = $jumlah;
+                                } else {
+                                    $produk[$key->kode_barang] = [
+                                        'nama_barang' => $key->nama_barang,
+                                        'jumlah' => $key->jumlah
+                                    ];
+                                }
+                                
                             }
                             $totalpenjualan = $totalpenjualan + $subpenjualan;
                             $totalitem = $totalitem + $subitem;
