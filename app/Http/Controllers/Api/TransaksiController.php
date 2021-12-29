@@ -243,6 +243,7 @@ class TransaksiController extends Controller
                     $barang     = json_decode($request->barang);
                     foreach ($barang as $key) {
                         $keranjang[$key->kode_barang] = [
+                            'kode_barang' => $key->kode_barang,
                             'nama_barang' => $key->nama_barang,
                             'jumlah' => $key->jumlah,
                             'harga_beli' => $key->harga_beli,
