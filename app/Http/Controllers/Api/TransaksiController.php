@@ -169,26 +169,29 @@ class TransaksiController extends Controller
                             $subitem = 0;
                             $sublaba = 0;
                             $keranjang = json_decode($item->keranjang);
-                            foreach ($keranjang as $key) {
-                                $subpenjualan = $subpenjualan + $key->harga_jual;
-                                $subitem = $subitem + $key->jumlah;
-                                $laba   = $key->harga_jual - $key->harga_beli;
-                                $sublaba = $sublaba + $laba;
-                                // cek apakah tidak ada barang
-                                if (isset($produk[$key->kode_barang])) {
-                                    $jumlah = $key->jumlah + $produk[$key->kode_barang]['jumlah'];
-                                    $produk[$key->kode_barang]['jumlah'] = $jumlah;
-                                } else {
-                                    $produk[$key->kode_barang] = [
-                                        'nama_barang' => $key->nama_barang,
-                                        'jumlah' => $key->jumlah
-                                    ];
+                            if ($keranjang) {
+                                foreach ($keranjang as $key) {
+                                    $subpenjualan = $subpenjualan + $key->harga_jual;
+                                    $subitem = $subitem + $key->jumlah;
+                                    $laba   = $key->harga_jual - $key->harga_beli;
+                                    $sublaba = $sublaba + $laba;
+                                    // cek apakah tidak ada barang
+                                    if (isset($produk[$key->kode_barang])) {
+                                        $jumlah = $key->jumlah + $produk[$key->kode_barang]['jumlah'];
+                                        $produk[$key->kode_barang]['jumlah'] = $jumlah;
+                                    } else {
+                                        $produk[$key->kode_barang] = [
+                                            'nama_barang' => $key->nama_barang,
+                                            'jumlah' => $key->jumlah
+                                        ];
+                                    }
+                                    
                                 }
-                                
                             }
                             $totalpenjualan = $totalpenjualan + $subpenjualan;
                             $totalitem = $totalitem + $subitem;
                             $totallaba = $totallaba + $sublaba;
+                            
                         }
                       
                        
