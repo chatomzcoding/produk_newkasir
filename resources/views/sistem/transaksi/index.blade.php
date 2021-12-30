@@ -60,22 +60,25 @@
             <!-- general form elements -->
             <div class="card">
               <div class="card-header">
-                {{-- <h3 class="card-title">Daftar Unit</h3> --}}
-                @if ($cektransaksi)
-                    <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
-                      <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
-                      
+                @if ($user->level == 'kasir')
+                  @if ($cektransaksi)
+                      <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
+                        <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
+                      </form>
+                  @else
+                    <form action="{{ url('transaksi') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="sesi" value="tambah">
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
+                        <input type="hidden" name="status_transaksi" value="proses">
+                        <input type="hidden" name="uang_pembeli" value="0">
+                        <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
                     </form>
+                  @endif
                 @else
-                  <form action="{{ url('transaksi') }}" method="post">
-                      @csrf
-                      <input type="hidden" name="sesi" value="tambah">
-                      <input type="hidden" name="user_id" value="{{ $user->id }}">
-                      <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
-                      <input type="hidden" name="status_transaksi" value="proses">
-                      <input type="hidden" name="uang_pembeli" value="0">
-                      <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
-                  </form>
+                  <h3 class="card-title">Daftar Transaksi</h3>
+                  <a href="{{ url('cetakdata?s=transaksi') }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
                 @endif
               </div>
               <div class="card-body">

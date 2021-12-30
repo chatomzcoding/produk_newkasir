@@ -86,7 +86,7 @@
                           <h4><i class="fas fa-shopping-basket text-secondary"></i> Daftar Barang Belanjaan</h4>
                           <div class="table-responsive">
                               <table class="table table-bordered">
-                                  <thead>
+                                  <thead class="table-dark">
                                       <tr class="text-center">
                                           <th>No</th>
                                           <th>Nama Barang</th>
@@ -134,37 +134,41 @@
                                           </tr>
                                           <tr>
                                               <th>Kasir</th>
-                                              <td>: {{ $user->name }}</td>
+                                              <td class="text-capitalize">: {{ $user->name }}</td>
                                           </tr>
                                         </table>
                                     </div>
                                 </section>
                             </div>
                           </div>
-                          <section class="mb-2">
-                                <form action="{{ url('transaksi') }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="sesi" value="tambah">
-                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                    <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
-                                    <input type="hidden" name="status_transaksi" value="proses">
-                                    <input type="hidden" name="uang_pembeli" value="0">
-                                    <button type="submit" class="btn btn-outline-primary btn-block text-left" id="tambahtransaksi"><i class="fas fa-plus"></i> TRANSAKSI BARU <span class="float-right">[Enter]</span></button>
-                                </form>
-                          </section>
-                          <section class="mb-2">
-                            <a href="" onclick="onClick()" class="btn btn-outline-info btn-block text-left" id="cetak"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
-                          </section>
-                          <section class="mb-2">
-                                <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
-                                    @csrf
-                                    @method('patch')
-                                    <input type="hidden" name="s" value="retur">
-                                    <input type="hidden" name="status_transaksi" value="retur">
-                                    <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
-                                    <button type="submit" class="btn btn-outline-dark btn-block text-left" id="retur"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
-                                </form>
-                          </section>
+                          {{-- button invoice --}}
+                          @if ($user->level == 'kasir')
+                            <section class="mb-2">
+                                  <form action="{{ url('transaksi') }}" method="post">
+                                      @csrf
+                                      <input type="hidden" name="sesi" value="tambah">
+                                      <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                      <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
+                                      <input type="hidden" name="status_transaksi" value="proses">
+                                      <input type="hidden" name="uang_pembeli" value="0">
+                                      <button type="submit" class="btn btn-outline-primary btn-block text-left" id="tambahtransaksi"><i class="fas fa-plus"></i> TRANSAKSI BARU <span class="float-right">[Enter]</span></button>
+                                  </form>
+                            </section>
+                            <section class="mb-2">
+                              <a href="" onclick="onClick()" class="btn btn-outline-info btn-block text-left" id="cetak"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
+                            </section>
+                            <section class="mb-2">
+                                  <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                                      @csrf
+                                      @method('patch')
+                                      <input type="hidden" name="s" value="retur">
+                                      <input type="hidden" name="status_transaksi" value="retur">
+                                      <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
+                                      <button type="submit" class="btn btn-outline-dark btn-block text-left" id="retur"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
+                                  </form>
+                            </section>
+                          @endif
+                          {{-- end button invoice --}}
                         </div>
                   </div>
               </div>

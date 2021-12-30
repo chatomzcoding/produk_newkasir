@@ -11,6 +11,7 @@ use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -24,21 +25,49 @@ class TransaksiController extends Controller
         $menu       = 'transaksi';
         $user       = Auth::user();
         $sesi = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
+        $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
         switch ($sesi) {
             case 'pelayanan':
 
                 break;
             
             default:
-                $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
-                $transaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->orderby('id','DESC')->get();
+                switch ($user->level) {
+                    case 'kasir':
+                        $transaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->orderby('id','DESC')->get();
+                        // cek status proses transaksi
+                        // jika ada transaksi proses dan belum ada keranjang maka transaksi dilanjutkan
+                        $cektransaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->where('status_transaksi','proses')->where('keranjang',NULL)->first();
+                        $total          = Transaksi::where('user_id',$user->id)->count();
+                        $totalhariini   = Transaksi::where('user_id',$user->id)->whereDate('created_at',tgl_sekarang())->count();
+                        break;
+                    case 'cabang':
+                        $cabang     = Cabang::where('user_id',$user->id)->first();
+                        $transaksi      = DB::table('transaksi')
+                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$cabang->id)
+                                        ->whereDate('transaksi.created_at',$tanggal)
+                                        ->select('transaksi.*')
+                                        ->get();
+                        $total      = DB::table('transaksi')
+                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$cabang->id)
+                                        ->count();
+                        $totalhariini      = DB::table('transaksi')
+                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$cabang->id)
+                                        ->whereDate('transaksi.created_at',tgl_sekarang())
+                                        ->count();
+                        $cektransaksi = FALSE;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
                 $statistik  = [
-                    'total' => Transaksi::where('user_id',$user->id)->count(),
-                    'totalhariini' => Transaksi::where('user_id',$user->id)->whereDate('created_at',tgl_sekarang())->count(),
+                    'total' => $total,
+                    'totalhariini' => $totalhariini,
                 ];
-                // cek status proses transaksi
-                // jika ada transaksi proses dan belum ada keranjang maka transaksi dilanjutkan
-                $cektransaksi  = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->where('status_transaksi','proses')->where('keranjang',NULL)->first();
 
                 return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi'));
                 break;
@@ -139,8 +168,21 @@ class TransaksiController extends Controller
         $menu       = 'transaksi';
         $transaksi  = Transaksi::find(Crypt::decryptString($transaksi));
         $user       = Auth::user();
-        $akses      = Userakses::where('user_id',$user->id)->first();
-        $cabang     = Cabang::find($akses->cabang_id);
+        switch ($user->level) {
+            case 'kasir':
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $cabang     = Cabang::find($akses->cabang_id);
+                # code...
+                break;
+            case 'cabang':
+                $cabang     = Cabang::where('user_id',$user->id)->first();
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
         $client     = Client::find($cabang->client_id);
         switch ($transaksi->status_transaksi) {
             case 'proses':

@@ -15,6 +15,8 @@ class CreateTableUserAkses extends Migration
     {
         Schema::create('user_akses', function (Blueprint $table) {
             $table->id();
+            $table->string('app_key')->nullable();
+            $table->string('app_port')->nullable();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Client\CabangController;
 use App\Http\Controllers\Kasir\BarangController;
+use App\Http\Controllers\Kasir\UseraksesController;
 use App\Http\Controllers\Sistem\KategoriController;
 use App\Http\Controllers\Sistem\SatuanController;
 use App\Http\Controllers\Sistem\TransaksiController;
@@ -43,12 +44,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::resource('satuan', SatuanController::class);
     Route::resource('kategori', KategoriController::class);
     Route::resource('transaksi', TransaksiController::class);
+    Route::resource('userakses', UseraksesController::class);
 
     // TRANSAKSI
     Route::get('kasir/transaksi/loadbarang','App\Http\Controllers\Sistem\TransaksiController@loadbarang')->name('loadBarang');
 
     // CETAK
-    Route::get('cetakdata','App\Http\Controllers\CetakController@cetak');
+    Route::get('cetakdata','App\Http\Controllers\Sistem\CetakController@cetak');
 
     
 });
