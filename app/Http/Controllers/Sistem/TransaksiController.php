@@ -206,7 +206,8 @@ class TransaksiController extends Controller
                 break;
             case 'selesai':
                 $invoice = datainvoice($transaksi->keranjang,$transaksi->uang_pembeli);
-                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','client','invoice'));
+                $userakses  = Userakses::where('user_id',$user->id)->first();
+                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','client','invoice','userakses'));
                 break;
             default:
                 # code...

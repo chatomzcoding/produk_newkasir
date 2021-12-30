@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cetak Data Transaksi Cabang</title>
-	<link rel="stylesheet" href="{{ asset('css/bootstrap4.3.1.css') }} " integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Cetak Data Transaksi</title>
+    <link rel="stylesheet" href="{{ asset('css/cetak.css') }}">
 </head>
 <body>
 	<div class="container-fluid">
 		<section class="text-center">
-            <h4>Data Transaksi Cabang</h4>
+            <h4>
+                Data Transaksi <br>
+                {{ date_indo($tanggal) }} <br>
+                Kasir : {{ $data['nama_kasir'] }}
+            </h4>
             <hr>
         </section>
         <table class="table table-bordered table-striped small">
@@ -25,7 +29,7 @@
                 @forelse ($transaksi as $item)
                 <tr>
                         <td class="text-center">{{ $loop->iteration}}</td>
-                        <td>{{ $item->kode_transaksi}}</td>
+                        <td> <small>{{ $item->kode_transaksi}}</small></td>
                         <td>{{ $item->tipe_pembayaran}}</td>
                         <td>{{ $item->tipe_orderan}}</td>
                         <td>{{ rupiah($item->uang_pembeli)}}</td>
@@ -35,20 +39,15 @@
                         <th colspan="2">Daftar Keranjang</th>
                         <td colspan="4">
                             @if (!is_null($item->keranjang))
-                            <ul>
                                 @foreach (json_decode($item->keranjang) as $key)
-                                <li>
-                                    {{ $key->nama_barang }}
-                                    <span class="badge badge-secondary badge-pill">{{ $key->jumlah }}</span> <br>
-                                </li>
+                                    - {{ ucwords($key->nama_barang) }} ({{ $key->jumlah }}) <br>
                                 @endforeach
-                            </ul>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr class="text-center">
-                        <td colspan="7">tidak ada data</td>
+                        <td colspan="6">tidak ada data</td>
                     </tr>
                 @endforelse
         </table>

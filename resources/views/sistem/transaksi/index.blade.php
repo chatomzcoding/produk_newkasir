@@ -78,8 +78,8 @@
                   @endif
                 @else
                   <h3 class="card-title">Daftar Transaksi</h3>
-                  <a href="{{ url('cetakdata?s=transaksi') }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
-                @endif
+                  @endif
+                  <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')

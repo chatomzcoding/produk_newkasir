@@ -155,18 +155,27 @@
                                   </form>
                             </section>
                             <section class="mb-2">
-                              <a href="" onclick="onClick()" class="btn btn-outline-info btn-block text-left" id="cetak"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
+                            @if ($userakses->app_key == NULL)
+                            <form action="{{ url('userakses') }}" method="get">
+                              <button type="submit" class="btn btn-outline-dark btn-block text-left" id="cetak"><i class="fas fa-print"></i> SETTING PRINTER<span class="float-right">[P]</span></button>
+                            </form>
+                            @else
+                            <a href="" onclick="onClick()" class="btn btn-outline-info btn-block text-left" id="cetak"><i class="fas fa-print"></i> CETAK STRUK <span class="float-right">[P]</span></a>
+                                
+                            @endif
                             </section>
-                            <section class="mb-2">
-                                  <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
-                                      @csrf
-                                      @method('patch')
-                                      <input type="hidden" name="s" value="retur">
-                                      <input type="hidden" name="status_transaksi" value="retur">
-                                      <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
-                                      <button type="submit" class="btn btn-outline-dark btn-block text-left" id="retur"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
-                                  </form>
-                            </section>
+                            @if ($transaksi->created_at->format('Y-m-d') == tgl_sekarang())
+                              <section class="mb-2">
+                                    <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="s" value="retur">
+                                        <input type="hidden" name="status_transaksi" value="retur">
+                                        <input type="hidden" name="uang_pembeli" value="{{ $invoice['total_pembayaran'] }}">
+                                        <button type="submit" class="btn btn-outline-dark btn-block text-left" id="retur"><i class="fas fa-sync"></i> RETUR TRANSAKSI <span class="float-right">[R]</span></button>
+                                    </form>
+                              </section>
+                            @endif
                           @endif
                           {{-- end button invoice --}}
                         </div>
@@ -181,8 +190,7 @@
     <script src="{{ asset('js/recta.js')}}"></script>
 
 <script type="text/javascript">
-    // var printer = new Recta('{{ $client->app_key}}', '{{ $client->app_port}}')
-    var printer = new Recta('8284151256', '1811')
+    var printer = new Recta('{{ $userakses->app_key }}', '{{ $userakses->app_port }}')
     function onClick () {
       printer.open().then(function () {
           printer.align('center')

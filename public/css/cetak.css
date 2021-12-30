@@ -1,0 +1,20 @@
+body{
+    font-size: small;
+    font-family: sans-serif;
+}
+.text-center {
+    text-align: center;
+}
+.table {
+    width: 100%;
+  
+    border-collapse: collapse;
+}
+.table, th, td {
+    border: 1px solid #999;
+    padding: 4px 10px;
+}
+.table-secondary {
+    background-color: black;
+    color: white;
+}
