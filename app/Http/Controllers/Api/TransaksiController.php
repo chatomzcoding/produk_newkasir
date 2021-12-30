@@ -193,8 +193,9 @@ class TransaksiController extends Controller
                             $totallaba = $totallaba + $sublaba;
                             
                         }
-
-                        usort($produk, 'sortByOrder');
+                        if (!is_null($produk)) {
+                            usort($produk, 'sortByOrder');
+                        }
                       
                        
                         $result = [
