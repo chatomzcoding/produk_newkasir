@@ -41,51 +41,27 @@ class BarangController extends Controller
                 ]);
             }
         }
+        $kategori   = Kategori::where('label','kategori')->orderby('nama','ASC')->get();
+        $satuan   = Kategori::where('label','satuan')->orderby('nama','ASC')->get();
+
 
         if (isset($_GET['filter'])) {
             $barang = Barang::where('cabang_id',$_GET['cabang_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
-            $result = [];
-            foreach ($barang as $key) {
-                $kategori   = DbCikara::namaKategori($key->kategori_id);
-                $satuan     = DbCikara::namaKategori($key->satuan_id);
-                $result     = [
-                    'barang' => $key,
-                    'kategori' => $kategori,
-                    'satuan' => $satuan,
-                ];
-            }
-            return $result;
         } else {
             if (isset($_GET['kategori_id'])) {
                 $barang = Barang::where('cabang_id',$_GET['cabang_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
-                $result = [];
-                foreach ($barang as $key) {
-                    $kategori   = DbCikara::namaKategori($key->kategori_id);
-                    $satuan     = DbCikara::namaKategori($key->satuan_id);
-                    $result[]     = [
-                        'barang' => $key,
-                        'kategori' => $kategori,
-                        'satuan' => $satuan,
-                    ];
-                }
-                return $result;
             } else {
                 $barang = Barang::where('cabang_id',$_GET['cabang_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
-                $result = [];
-                foreach ($barang as $key) {
-                    $kategori   = DbCikara::namaKategori($key->kategori_id);
-                    $satuan     = DbCikara::namaKategori($key->satuan_id);
-                    $result[]     = [
-                        'barang' => $key,
-                        'kategori' => $kategori,
-                        'satuan' => $satuan,
-                    ];
-                }
-                return $result;
-                
             }
         }
-        
+
+        $result[]     = [
+            'barang' => $barang,
+            'kategori' => $kategori,
+            'satuan' => $satuan,
+        ];
+
+        return $result;
         
     }
 
