@@ -16,6 +16,13 @@
     </div><!-- /.row -->
 @endsection
 
+@section('head')
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+@endsection
+
 @section('container')
     
   
@@ -26,12 +33,12 @@
             <div class="row">
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-map-marked"></i></span>
+                  <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-shopping-cart"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Client</span>
+                    <span class="info-box-text">Total Transaksi</span>
                     <span class="info-box-number">
-                        10
+                        {{ $statistik['totaltransaksi'] }}
                       {{-- <small>%</small> --}}
                     </span>
                   </div>
@@ -42,11 +49,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user"></i></span>
+                  <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-cube"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Barang</span>
-                    <span class="info-box-number">3</span>
+                    <span class="info-box-text">Total Barang</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalbarang'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -59,11 +69,14 @@
     
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
+                  <span class="info-box-icon bg-success elevation-1"><i class="fas fa-cart-arrow-down"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Kategori</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">Transaksi Hari ini</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totaltransaksihariini'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -72,11 +85,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-people-carry"></i></span>
+                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-money-bill-wave-alt"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Transaksi</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">Omzet Hari ini</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalomzethariini'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -85,7 +101,67 @@
               <!-- /.col -->
             </div>
             <!-- /.row -->
-            {{-- @include('admin.chart') --}}
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    Statistik Omzet Transaksi
+                  </div>
+                  <div class="card-body">
+                    <figure class="highcharts-figure">
+                      <div id="container"></div>
+                      <p class="highcharts-description">
+                          Omzet didapat harian hasil dari penjumlahan barang dan harga jual per item
+                      </p>
+                      <table id="datatable" style="display: none">
+                          <thead>
+                              <tr>
+                                  <th></th>
+                                  <th>Tanggal</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            @foreach ($chart['omzet-harian'] as $item)
+                              <tr>
+                                  <th>{{ $item['tanggal'] }}</th>
+                                  <td>{{ $item['nilai'] }}</td>
+                              </tr>
+                            @endforeach
+                          </tbody>
+                      </table>
+                  </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
+    @endsection
+
+    @section('script')
+        <script>
+          Highcharts.chart('container', {
+    data: {
+        table: 'datatable'
+    },
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Grafik Omzet Transaksi per Hari'
+    },
+    yAxis: {
+        allowDecimals: false,
+        title: {
+            text: 'Omzet'
+        }
+    },
+    tooltip: {
+        formatter: function () {
+            return '<b>' + this.series.name + '</b><br/>' +
+            this.point.y + ' | ' + this.point.name.toLowerCase();
+        }
+    }
+});
+        </script>
     @endsection

@@ -171,4 +171,48 @@ class DbCikara {
         $result     = Barang::where('cabang_id',$akses->cabang_id)->select('id','nama_barang')->get();
         return $result;
     }
+
+    // DASHBOARD
+    public static function omzetByUser($sesi,$data)
+    {
+        $omzet  = 0;
+        switch ($sesi) {
+            case 'hariini':
+                $transaksi  = Transaksi::select('keranjang')->where('user_id',$data['user_id'])->where('keranjang','<>',NULL)->whereDate('created_at',tgl_sekarang())->get();
+                if (count($transaksi) > 0) {
+                    foreach ($transaksi as $item) {
+                        foreach (json_decode($item->keranjang) as $key) {
+                            $omzet = $omzet + ($key->harga_jual * $key->jumlah);
+                        }
+                    }
+                }
+                break;
+            
+            case 'chartharianperbulan':
+                $result    = [];
+                for ($i=1; $i <= 31; $i++) {
+                    $nilai = 0; 
+                    $transaksi  = Transaksi::select('keranjang')->where('user_id',$data['user_id'])->where('keranjang','<>',NULL)->whereMonth('created_at',ambil_bulan())->whereDay('created_at',$i)->get();
+                    if (count($transaksi) > 0) {
+                        foreach ($transaksi as $item) {
+                            foreach (json_decode($item->keranjang) as $key) {
+                                $nilai = $nilai + ($key->harga_jual * $key->jumlah);
+                            }
+                        }
+                        $result[] = [
+                            'tanggal' => 'tgl - '.$i,
+                            'nilai' => $nilai
+                        ];
+                    }
+                }
+                $omzet  = $result;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return $omzet;
+    }
 }
