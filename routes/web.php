@@ -5,6 +5,7 @@ use App\Http\Controllers\Kasir\BarangController;
 use App\Http\Controllers\Kasir\UseraksesController;
 use App\Http\Controllers\Sistem\KategoriController;
 use App\Http\Controllers\Sistem\SatuanController;
+use App\Http\Controllers\Sistem\Suppliercontroller;
 use App\Http\Controllers\Sistem\TransaksiController;
 use App\Http\Controllers\Superadmin\ClientController;
 use App\Http\Controllers\Superadmin\ListdataController;
@@ -42,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::resource('user', UserController::class);
     Route::resource('barang', BarangController::class);
     Route::resource('satuan', SatuanController::class);
+    Route::resource('supplier', Suppliercontroller::class);
     Route::resource('kategori', KategoriController::class);
     Route::resource('transaksi', TransaksiController::class);
     Route::resource('userakses', UseraksesController::class);

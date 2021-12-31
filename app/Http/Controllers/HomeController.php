@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Cikara\DbCikara;
 use App\Models\Barang;
+use App\Models\Cabang;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -26,8 +27,20 @@ class HomeController extends Controller
                 return view('cabang.dashboard', compact('menu'));
                 break;
             case 'gudang':
-                return view('gudang.dashboard', compact('menu'));
+                $cabang         = Userakses::where('user_id',$user->id)->first();
+                $totalbarang    = Barang::where('cabang_id',$cabang->id)->count();
+                $totaldistribusi= 0;
+                $totalsupplier  = 0;
+                $totalbarangstokkosong    = Barang::where('cabang_id',$cabang->id)->where('stok','<=',0)->count();
+                $statistik = [
+                    'totalbarang' => $totalbarang,
+                    'totaldistribusi' => $totaldistribusi,
+                    'totalsupplier' => $totalsupplier,
+                    'totalbarangstokkosong' => $totalbarangstokkosong,
+                ];
+                return view('gudang.dashboard', compact('menu','statistik'));
                 break;
+
             case 'kasir':
                 $cabang                 = Userakses::where('user_id',$user->id)->first();
                 $totaltransaksi         = Transaksi::where('user_id',$user->id)->count();

@@ -9,7 +9,7 @@
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
-        <i class="nav-icon fas fa-envelope-open"></i>
+        <i class="nav-icon fas fa-cube"></i>
         <p>
           Data Barang
           <i class="fas fa-angle-left right"></i>
@@ -65,19 +65,19 @@
       <ul class="nav nav-treeview">
         <li class="nav-item">
           <a href="{{ url('/kategori')}}" class="nav-link small {{ menuaktif($menu,'kategori') }}">
-            &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>
             <p>Kategori Barang</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('/satuan')}}" class="nav-link small {{ menuaktif($menu,'satuan') }}">
-            &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>
             <p>Satuan Barang</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('/supplier')}}" class="nav-link small {{ menuaktif($menu,'supplier') }}">
-            &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>
             <p>Data Supplier</p>
           </a>
         </li>

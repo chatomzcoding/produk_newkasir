@@ -26,12 +26,12 @@
             <div class="row">
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-map-marked"></i></span>
+                  <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-cube"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Client</span>
+                    <span class="info-box-text">Total Barang</span>
                     <span class="info-box-number">
-                        10
+                        {{ $statistik['totalbarang'] }}
                       {{-- <small>%</small> --}}
                     </span>
                   </div>
@@ -42,11 +42,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user"></i></span>
+                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-luggage-cart"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Barang</span>
-                    <span class="info-box-number">3</span>
+                    <span class="info-box-text">Total Distribusi</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totaldistribusi'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -59,11 +62,14 @@
     
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
+                  <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-tag"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Kategori</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">Total Supplier</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalsupplier'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -72,11 +78,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-people-carry"></i></span>
+                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Transaksi</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">Barang Stok Kosong</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalbarangstokkosong'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
