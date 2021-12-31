@@ -79,6 +79,7 @@ class TransaksiController extends Controller
                     $totalorderan = [];
                     switch ($_GET['status']) {
                         case 'tanggal':
+                            $tglsebelum     = date('Y-m-d', strtotime('-1 days', strtotime($_GET['tanggal'])));
                             // total transaksi
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereDate('created_at',$_GET['tanggal'])
@@ -86,6 +87,10 @@ class TransaksiController extends Controller
                             $data           = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->where('keranjang','<>',NULL)
                                                 ->whereDate('created_at',$_GET['tanggal'])
+                                                ->get();
+                            $datasebelum    = Transaksi::where('user_id',$_GET['user_id'])
+                                                ->where('keranjang','<>',NULL)
+                                                ->whereDate('created_at',$tglsebelum)
                                                 ->get();
                            
                             for ($i=0; $i < count($tipe_order); $i++) { 
@@ -97,6 +102,13 @@ class TransaksiController extends Controller
                             }
                             break;
                         case 'bulanan':
+                            $bulanbaru      = $_GET['bulan'] - 1;
+                            if ($bulanbaru == 0) {
+                                $bulanbaru = 12;
+                                $tahunbaru = $_GET['tahun'] - 1;
+                            } else {
+                                $tahunbaru = $_GET['tahun'];
+                            }
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereMonth('created_at',$_GET['bulan'])
                                                 ->whereYear('created_at',$_GET['tahun'])
@@ -105,6 +117,11 @@ class TransaksiController extends Controller
                                                 ->where('keranjang','<>',NULL)
                                                 ->whereMonth('created_at',$_GET['bulan'])
                                                 ->whereYear('created_at',$_GET['tahun'])
+                                                ->get();
+                            $datasebelum    = Transaksi::where('user_id',$_GET['user_id'])
+                                                ->where('keranjang','<>',NULL)
+                                                ->whereMonth('created_at',$bulanbaru)
+                                                ->whereYear('created_at',$tahunbaru)
                                                 ->get();
                             for ($i=0; $i < count($tipe_order); $i++) { 
                                 $total      = Transaksi::where('user_id',$_GET['user_id'])
@@ -116,12 +133,17 @@ class TransaksiController extends Controller
                             }
                             break;
                         case 'tahunan':
+                            $tahun  = $_GET['tahun'] -1;
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereYear('created_at',$_GET['tahun'])
                                                 ->get();
                             $data           = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->where('keranjang','<>',NULL)
                                                 ->whereYear('created_at',$_GET['tahun'])
+                                                ->get();
+                            $datasebelum           = Transaksi::where('user_id',$_GET['user_id'])
+                                                ->where('keranjang','<>',NULL)
+                                                ->whereYear('created_at',$tahun)
                                                 ->get();
                             for ($i=0; $i < count($tipe_order); $i++) { 
                                 $total      = Transaksi::where('user_id',$_GET['user_id'])
@@ -193,6 +215,23 @@ class TransaksiController extends Controller
                             $totallaba = $totallaba + $sublaba;
                             
                         }
+                        // total sebelumnya
+                        $totalpenjualans  = 0;
+                        $totalitems  = 0;
+                        foreach ($datasebelum as $item) {
+                            $subpenjualan = 0;
+                            $subitem = 0;
+                            $keranjang = json_decode($item->keranjang);
+                            if (!is_null($keranjang)) {
+                                foreach ($keranjang as $key) {
+                                    $subpenjualan = $subpenjualan + ($key->harga_jual * $key->jumlah);
+                                    $subitem = $subitem + $key->jumlah;
+                                }
+                            }
+                            $totalpenjualans = $totalpenjualans + $subpenjualan;
+                            $totalitems = $totalitems + $subitem;
+                            
+                        }
                         if (!is_null($produk)) {
                             usort($produk, 'sortByOrder');
                         }
@@ -205,6 +244,10 @@ class TransaksiController extends Controller
                             'totallaba' => $totallaba,
                             'totalproduk' => $produk,
                             'totalorderan' => $totalorderan,
+                            'sebelum' => [
+                                'totalpenjualan' => $totalpenjualans,
+                                'totalitem' => $totalitems,
+                            ]
                         ];
                         
                     break;
