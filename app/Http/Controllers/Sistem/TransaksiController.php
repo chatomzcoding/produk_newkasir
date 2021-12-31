@@ -115,36 +115,41 @@ class TransaksiController extends Controller
                 }
                 
                 if ($barang) {
-                    $keranjang = json_decode($transaksi->keranjang,TRUE);
-                    // cek jika barang sudah ada dikeranjang, maka ditambahkan 1
-                    if (isset($keranjang[$barang->kode_barang]['jumlah'])) {
-                        $stokkeranjang  = $keranjang[$barang->kode_barang]['jumlah'];
-                        $jumlah     = $stokkeranjang + 1;
-                        $keranjang[$barang->kode_barang]['jumlah'] = $jumlah;
-                    } else {
-                        $keranjang[$barang->kode_barang] = [
-                            'kode_barang' => $barang->kode_barang,
-                            'nama_barang' => $barang->nama_barang,
-                            'jumlah' => 1,
-                            'harga_beli' => $barang->harga_beli,
-                            'harga_jual' => $barang->harga_jual,
-                        ];
-                        if (!is_null($transaksi->keranjang)) {
-                            $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
-                            $keranjang      = array_merge($dkeranjang,$keranjang);
+                    if ($barang->stok > 0) {
+                        $keranjang = json_decode($transaksi->keranjang,TRUE);
+                        // cek jika barang sudah ada dikeranjang, maka ditambahkan 1
+                        if (isset($keranjang[$barang->kode_barang]['jumlah'])) {
+                            $stokkeranjang  = $keranjang[$barang->kode_barang]['jumlah'];
+                            $jumlah     = $stokkeranjang + 1;
+                            $keranjang[$barang->kode_barang]['jumlah'] = $jumlah;
+                        } else {
+                            $keranjang[$barang->kode_barang] = [
+                                'kode_barang' => $barang->kode_barang,
+                                'nama_barang' => $barang->nama_barang,
+                                'jumlah' => 1,
+                                'harga_beli' => $barang->harga_beli,
+                                'harga_jual' => $barang->harga_jual,
+                            ];
+                            if (!is_null($transaksi->keranjang)) {
+                                $dkeranjang     = json_decode($transaksi->keranjang,TRUE);
+                                $keranjang      = array_merge($dkeranjang,$keranjang);
+                            }
                         }
+                        
+                        Transaksi::where('id',$transaksi->id)->update([
+                            'keranjang' => json_encode($keranjang)
+                        ]);
+                        
+                        // kurangi stok barang dengan jumlah barang
+                        $stok   = $barang->stok - 1;
+                        Barang::where('id',$barang->id)->update([
+                            'stok' => $stok
+                        ]);
+                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','<strong>'.ucwords($barang->nama_barang).'</strong> berhasil ditambahkan  ke keranjang');
+                    } else {
+                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('danger','<strong>'.ucwords($barang->nama_barang).'</strong> stok tidak ada!');
                     }
                     
-                    Transaksi::where('id',$transaksi->id)->update([
-                        'keranjang' => json_encode($keranjang)
-                    ]);
-                    
-                    // kurangi stok barang dengan jumlah barang
-                    $stok   = $barang->stok - 1;
-                    Barang::where('id',$barang->id)->update([
-                        'stok' => $stok
-                    ]);
-                    return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success',$barang->nama_barang. ' berhasil ditambahkan  ke keranjang');
                 } else {
                     // jika tidak ada, berikan notifikasi barang tidak ada
                     return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('warning','barang tidak ada digudang!');
