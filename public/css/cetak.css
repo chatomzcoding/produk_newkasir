@@ -5,6 +5,9 @@ body{
 .text-center {
     text-align: center;
 }
+.text-right {
+    text-align: right;
+}
 .table {
     width: 100%;
   
@@ -17,4 +20,7 @@ body{
 .table-secondary {
     background-color: black;
     color: white;
+}
+.small {
+    font-size: small;
 }

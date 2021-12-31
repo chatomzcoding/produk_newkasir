@@ -162,15 +162,13 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Messages Dropdown Menu -->
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-comments"></i>
           <span class="badge badge-danger navbar-badge">3</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
             <a href="#" class="dropdown-item">
-              <!-- Message Start -->
               <div class="media">
                 <img src="{{  asset('img/logo.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                 <div class="media-body">
@@ -184,14 +182,13 @@
                   <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
                 </div>
               </div>
-              <!-- Message End -->
             </a>
             <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item dropdown-footer">Selengkapnya</a>
         </div>
-      </li>
+      </li> --}}
       <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
+      {{-- <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
           <span class="badge badge-warning navbar-badge">15</span>
@@ -216,7 +213,7 @@
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
-      </li>
+      </li> --}}
       {{-- <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
@@ -245,8 +242,8 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/dashboard')}}" class="brand-link">
-      <img src="{{  asset('img/logo.png')}}" alt="JantungDesa" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light"><strong>Jantung Desa</strong></span>
+      <img src="{{  asset('img/logo.png')}}" alt="CikaraKasir" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light"><strong>Cikara Kasir</strong></span>
     </a>
 
     <!-- Sidebar -->
@@ -257,7 +254,7 @@
           <img src="{{ asset(avatar($user))}}" class="img-circle elevation-2" alt="{{ avatar($user) }}">
         </div>
         <div class="info">
-            <a href="#" class="d-block text-capitalize">{{ $user->name}}</a> <small class="text-white">{{ $user->level }}</small>
+            <a href="#" class="d-block text-capitalize">{{ $user->name}}</a> <small class="text-white font-italic">{{ $user->level }}</small>
         </div>
       </div>
 
@@ -369,17 +366,17 @@
 <!-- Bootstrap 4 -->
 <script src="{{ asset('template/admin/lte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- ChartJS -->
-<script src="{{ asset('template/admin/lte/plugins/chart.js/Chart.min.js')}}"></script>
+{{-- <script src="{{ asset('template/admin/lte/plugins/chart.js/Chart.min.js')}}"></script> --}}
 <!-- Sparkline -->
 <script src="{{ asset('template/admin/lte/plugins/sparklines/sparkline.js')}}"></script>
 <!-- JQVMap -->
-<script src="{{ asset('template/admin/lte/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
-<script src="{{ asset('template/admin/lte/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script>
+{{-- <script src="{{ asset('template/admin/lte/plugins/jqvmap/jquery.vmap.min.js')}}"></script> --}}
+{{-- <script src="{{ asset('template/admin/lte/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script> --}}
 <!-- jQuery Knob Chart -->
-<script src="{{ asset('template/admin/lte/plugins/jquery-knob/jquery.knob.min.js')}}"></script>
+{{-- <script src="{{ asset('template/admin/lte/plugins/jquery-knob/jquery.knob.min.js')}}"></script> --}}
 <!-- daterangepicker -->
-<script src="{{ asset('template/admin/lte/plugins/moment/moment.min.js')}}"></script>
-<script src="{{ asset('template/admin/lte/plugins/daterangepicker/daterangepicker.js')}}"></script>
+{{-- <script src="{{ asset('template/admin/lte/plugins/moment/moment.min.js')}}"></script> --}}
+{{-- <script src="{{ asset('template/admin/lte/plugins/daterangepicker/daterangepicker.js')}}"></script> --}}
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('template/admin/lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
 <!-- Summernote -->
@@ -398,7 +395,7 @@
 <script src="{{ asset('template/admin/lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{ asset('template/admin/lte/plugins/jszip/jszip.min.js')}}"></script>
+{{-- <script src="{{ asset('template/admin/lte/plugins/jszip/jszip.min.js')}}"></script> --}}
 <script src="{{ asset('template/admin/lte/plugins/pdfmake/pdfmake.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/pdfmake/vfs_fonts.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>

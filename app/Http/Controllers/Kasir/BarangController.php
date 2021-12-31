@@ -29,10 +29,17 @@ class BarangController extends Controller
         }
         
         $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
+        $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();
+        $totalitem    = Barang::where('cabang_id',$akses->cabang_id)->sum('stok');
         $filter         = [
             'kategori' => $fkategori
         ];
-        return view('sistem.barang.index', compact('menu','barang','kategori','filter'));
+        $statistik      = [
+            'totalbarang' => $totalbarang,
+            'totalitem' => $totalitem
+        ];
+
+        return view('sistem.barang.index', compact('menu','barang','kategori','filter','statistik'));
     }
 
     /**

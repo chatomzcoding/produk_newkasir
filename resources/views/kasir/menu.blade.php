@@ -5,6 +5,12 @@
   </a>
 </li>
 <li class="nav-item">
+  <a href="{{ url('/barang')}}" class="nav-link small {{ menuaktif($menu,'barang') }}">
+    <i class="nav-icon fas fa-cube"></i>
+    <p class="text">Data Barang</p>
+  </a>
+</li>
+<li class="nav-item">
   <a href="{{ url('/userakses')}}" class="nav-link small {{ menuaktif($menu,'userakses') }}">
     <i class="nav-icon fas fa-user-lock"></i>
     <p class="text">Akses Kasir</p>

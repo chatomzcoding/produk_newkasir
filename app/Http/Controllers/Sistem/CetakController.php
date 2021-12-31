@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Sistem;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Cabang;
 use App\Models\Transaksi;
+use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +48,20 @@ class CetakController extends Controller
                 $namafile   = 'Transaksi';
                 break;
             
+            case 'barang':
+                $namafile   = 'Barang';
+                $akses          = Userakses::where('user_id',$user->id)->first();
+                $kategori       = $_GET['kategori'];
+                if ($kategori == 'semua') {
+                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
+                } else {
+                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$kategori)->get();
+                }
+                $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','kategori'));
+                break;
+
             default:
-                # code...
+                return 'sesi tidak ada';
                 break;
         }
         return $pdf->download($namafile.'.pdf');
