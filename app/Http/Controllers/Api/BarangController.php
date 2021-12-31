@@ -62,7 +62,7 @@ class BarangController extends Controller
                 foreach ($barang as $key) {
                     $kategori   = DbCikara::namaKategori($key->kategori_id);
                     $satuan     = DbCikara::namaKategori($key->satuan_id);
-                    $result     = [
+                    $result[]     = [
                         'barang' => $key,
                         'kategori' => $kategori,
                         'satuan' => $satuan,
@@ -75,7 +75,7 @@ class BarangController extends Controller
                 foreach ($barang as $key) {
                     $kategori   = DbCikara::namaKategori($key->kategori_id);
                     $satuan     = DbCikara::namaKategori($key->satuan_id);
-                    $result     = [
+                    $result[]     = [
                         'barang' => $key,
                         'kategori' => $kategori,
                         'satuan' => $satuan,
