@@ -123,7 +123,9 @@
                         <thead class="text-center">
                             <tr>
                                 <th width="5%">No</th>
+                                @if ($user->level == 'gudang')
                                 <th width="12%">Aksi</th>
+                                @endif
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Harga Beli</th>
@@ -136,29 +138,29 @@
                             @foreach ($barang as $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td class="text-center">
+                                    @if ($user->level == 'gudang')
+                                      <td class="text-center">
                                         <form id="data-{{ $item->id }}" action="{{url('/barang',$item->id)}}" method="post">
-                                            @csrf
-                                            @method('delete')
-                                            </form>
-                                            <div class="btn-group">
-                                              <button type="button" class="btn btn-info btn-sm btn-flat">Aksi</button>
-                                              <button type="button" class="btn btn-info btn-sm btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                              </button>
-                                              <div class="dropdown-menu" role="menu">
-                                                <a href="{{ url('barang/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">DETAIL <span class="float-right"><i class="fas fa-file"></i></span></a>
-                                                @if ($user->level == 'gudang')
-                                                  <div class="dropdown-divider"></div>
-                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS <span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
-                                                </div>
-                                                @endif
+                                          @csrf
+                                          @method('delete')
+                                        </form>
+                                        <div class="btn-group">
+                                          <button type="button" class="btn btn-info btn-sm btn-flat">Aksi</button>
+                                          <button type="button" class="btn btn-info btn-sm btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                          </button>
+                                          <div class="dropdown-menu" role="menu">
+                                            <a href="{{ url('barang/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">DETAIL <span class="float-right"><i class="fas fa-file text-primary"></i></span></a>
+                                            <div class="dropdown-divider"></div>
+                                            <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS <span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
                                           </div>
-                                    </td>
+                                        </div>
+                                      </td>
+                                    @endif
                                     <td>{{ $item->kode_barang }}</td>
-                                    <td>{{ $item->nama_barang }}</td>
-                                    <td>{{ rupiah($item->harga_beli) }} </td>
-                                    <td>{{ rupiah($item->harga_jual) }} </td>
+                                    <td class="text-capitalize">{{ $item->nama_barang }}</td>
+                                    <td class="text-right">{{ norupiah($item->harga_beli) }} </td>
+                                    <td class="text-right">{{ norupiah($item->harga_jual) }} </td>
                                     <td>{{ DbCikara::namaKategori($item->kategori_id) }}</td>
                                     <td class="text-center">{{ $item->stok }} </td>
                                 </tr>

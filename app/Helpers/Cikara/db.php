@@ -217,11 +217,25 @@ class DbCikara {
     }
 
     // perihal barang
-    public function statistikBarang($sesi,$id)
+    public static function statistikBarang($sesi,$id)
     {
         switch ($sesi) {
             case 'totalterjual':
-                $total = 0;
+                $total  = 0;
+                $barang = Barang::find($id);    
+                $kodebarang     = $barang->kode_barang;
+                $transaksi  = DB::table('transaksi')
+                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                ->select('transaksi.keranjang')
+                                ->where('transaksi.keranjang','<>',NULL)
+                                ->where('user_akses.cabang_id',$barang->cabang_id)
+                                ->get();
+                foreach ($transaksi as $key) {
+                    $keranjang = json_decode($key->keranjang);
+                    if (isset($keranjang->$kodebarang)) {
+                        $total = $total + $keranjang->$kodebarang->jumlah;
+                    }
+                }
                 return $total;
                 break;
             

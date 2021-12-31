@@ -87,14 +87,14 @@
                     @if ($barang->stok <= 0)
                         <div class="alert alert-warning">
                             <strong>Segera Tambah Stok !</strong>
-                        </div>    
+                        </div>
                     @endif
                     <div class="row">
                         <div class="col-md-4">
                             @if (is_null($barang->gambar))
                                 <img src="{{ asset('img/produk.jpg') }}" alt="" class="img-fluid">
                             @else
-                                
+                                <img src="{{ asset('img/barang/'.$barang->gambar) }}" alt="" class="img-fluid">
                             @endif
                         </div>
                         <div class="col-md-8">
