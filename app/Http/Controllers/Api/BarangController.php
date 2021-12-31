@@ -43,12 +43,46 @@ class BarangController extends Controller
         }
 
         if (isset($_GET['filter'])) {
-            return Barang::where('cabang_id',$_GET['cabang_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
+            $barang = Barang::where('cabang_id',$_GET['cabang_id'])->where($_GET['field'],$_GET['nilai_field'])->orderBy($_GET['field_sortby'],$_GET['sortby'])->get();
+            $result = [];
+            foreach ($barang as $key) {
+                $kategori   = DbCikara::namaKategori($key->kategori_id);
+                $satuan     = DbCikara::namaKategori($key->satuan_id);
+                $result     = [
+                    'barang' => $key,
+                    'kategori' => $kategori,
+                    'satuan' => $satuan,
+                ];
+            }
+            return $result;
         } else {
             if (isset($_GET['kategori_id'])) {
-                return Barang::where('cabang_id',$_GET['cabang_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                $barang = Barang::where('cabang_id',$_GET['cabang_id'])->where('kategori_id',$_GET['kategori_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                $result = [];
+                foreach ($barang as $key) {
+                    $kategori   = DbCikara::namaKategori($key->kategori_id);
+                    $satuan     = DbCikara::namaKategori($key->satuan_id);
+                    $result     = [
+                        'barang' => $key,
+                        'kategori' => $kategori,
+                        'satuan' => $satuan,
+                    ];
+                }
+                return $result;
             } else {
-                return Barang::where('cabang_id',$_GET['cabang_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                $barang = Barang::where('cabang_id',$_GET['cabang_id'])->orderBy('nama_barang',$_GET['sortby'])->get();
+                $result = [];
+                foreach ($barang as $key) {
+                    $kategori   = DbCikara::namaKategori($key->kategori_id);
+                    $satuan     = DbCikara::namaKategori($key->satuan_id);
+                    $result     = [
+                        'barang' => $key,
+                        'kategori' => $kategori,
+                        'satuan' => $satuan,
+                    ];
+                }
+                return $result;
+                
             }
         }
         
