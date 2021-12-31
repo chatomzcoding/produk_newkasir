@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Kasir;
 
+use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class BarangController extends Controller
 {
@@ -31,15 +33,17 @@ class BarangController extends Controller
         $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
         $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();
         $totalitem    = Barang::where('cabang_id',$akses->cabang_id)->sum('stok');
+        $totalbarangstokkosong    = Barang::where('cabang_id',$akses->cabang_id)->where('stok','<=',0)->count();
         $filter         = [
             'kategori' => $fkategori
         ];
         $statistik      = [
             'totalbarang' => $totalbarang,
-            'totalitem' => $totalitem
+            'totalitem' => $totalitem,
+            'totalbarangstokkosong' => $totalbarangstokkosong
         ];
 
-        return view('sistem.barang.index', compact('menu','barang','kategori','filter','statistik'));
+        return view('sistem.barang.index', compact('menu','user','barang','kategori','filter','statistik'));
     }
 
     /**
@@ -103,9 +107,15 @@ class BarangController extends Controller
      * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function show(Barang $barang)
+    public function show($barang)
     {
-        //
+        $menu       = 'barang';
+        $barang     = Barang::find(Crypt::decryptString($barang));
+        $statistik  = [
+            'stokbarang' => $barang->stok,
+            'totalterjual' => DbCikara::statistikBarang('totalterjual',$barang->id)
+        ];
+        return view('sistem.barang.show', compact('menu','barang','statistik'));
     }
 
     /**

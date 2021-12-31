@@ -215,4 +215,19 @@ class DbCikara {
 
         return $omzet;
     }
+
+    // perihal barang
+    public function statistikBarang($sesi,$id)
+    {
+        switch ($sesi) {
+            case 'totalterjual':
+                $total = 0;
+                return $total;
+                break;
+            
+            default:
+                return 'sesi tidak ada';
+                break;
+        }
+    }
 }

@@ -57,26 +57,45 @@
                   </div>
                   <!-- /.info-box -->
                 </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                  <div class="info-box">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+      
+                    <div class="info-box-content">
+                      <span class="info-box-text">Total Barang Stok Kosong</span>
+                      <span class="info-box-number">
+                        {{ $statistik['totalbarangstokkosong'] }}
+                        {{-- <small>%</small> --}}
+                      </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
               </div>
             <div class="card">
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
+                  @if ($user->level == 'gudang')
                     <a href="{{ url('barang/create') }}" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
+                  @endif
                     <div class="float-right">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-info btn-sm ">Option</button>
-                        <button type="button" class="btn btn-info btn-sm  dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                          <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                          <div class="dropdown-menu" role="menu">
-                            <div class="dropdown-divider"></div>
-                            <form action="{{url('/barang/semua')}}" method="post">
-                              @csrf
-                              @method('delete')
-                                <button class="dropdown-item text-danger" type="submit"><i class="fas fa-trash-alt"></i> Hapus Semua</button>
-                              </form>
-                          </div>
-                      </div>
+                      @if ($user->level == 'gudang')
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-info btn-sm ">Option</button>
+                          <button type="button" class="btn btn-info btn-sm  dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                            <div class="dropdown-menu" role="menu">
+                              <div class="dropdown-divider"></div>
+                              <form action="{{url('/barang/semua')}}" method="post">
+                                @csrf
+                                @method('delete')
+                                  <button class="dropdown-item text-danger" type="submit"><i class="fas fa-trash-alt"></i> Hapus Semua</button>
+                                </form>
+                            </div>
+                        </div>
+                      @endif
                     <a href="{{ url('cetakdata?s=barang&kategori='.$filter['kategori']) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar barang"><i class="fas fa-print"></i> CETAK</a>
                     </div>
               </div>
@@ -128,12 +147,12 @@
                                                 <span class="sr-only">Toggle Dropdown</span>
                                               </button>
                                               <div class="dropdown-menu" role="menu">
-                                                  <button type="button" data-toggle="modal" data-name ="{{ $item->name }}" data-email ="{{ $item->email }}" data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
-                                                  <i class="fa fa-edit"></i> Edit User
-                                                  </button>
-                                                <div class="dropdown-divider"></div>
-                                                <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item text-danger"><i class="fas fa-trash-alt"></i> Hapus</button>
-                                              </div>
+                                                <a href="{{ url('barang/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">DETAIL <span class="float-right"><i class="fas fa-file"></i></span></a>
+                                                @if ($user->level == 'gudang')
+                                                  <div class="dropdown-divider"></div>
+                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS <span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
+                                                </div>
+                                                @endif
                                           </div>
                                     </td>
                                     <td>{{ $item->kode_barang }}</td>
