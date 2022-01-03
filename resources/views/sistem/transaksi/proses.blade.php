@@ -93,24 +93,6 @@
     <script src="{{ asset('js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{ asset('js/jquery.autocomplete.min.js')}}"></script>
     <script type="text/javascript">
-        window.onload = maxWindow;
-    
-        function maxWindow() {
-            window.moveTo(0, 0);
-    
-            if (document.all) {
-                top.window.resizeTo(screen.availWidth, screen.availHeight);
-            }
-    
-            else if (document.layers || document.getElementById) {
-                if (top.window.outerHeight < screen.availHeight || top.window.outerWidth < screen.availWidth) {
-                    top.window.outerHeight = screen.availHeight;
-                    top.window.outerWidth = screen.availWidth;
-                }
-            }
-        }
-    </script> 
-    <script type="text/javascript">
         $(document).ready(function() {
 
             // Selector input yang akan menampilkan autocomplete.

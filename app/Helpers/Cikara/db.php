@@ -4,6 +4,7 @@ namespace App\Helpers\Cikara;
 use App\Models\Barang;
 use App\Models\Daftarakun;
 use App\Models\Daftarakunpembantu;
+use App\Models\Distribusi;
 use App\Models\Jurnalakun;
 use App\Models\Kategori;
 use App\Models\Keluarga;
@@ -141,10 +142,30 @@ class DbCikara {
         $bln    = ambil_bulan();
         $thn    = substr(ambil_tahun(),2,2);
         $kode   = 'TRX'.$user_id.'.'.$tgl.$bln.$thn.'.';
-        // cek barang terakhir
+        // cek transaksi terakhir
         $transaksi     = Transaksi::where('user_id',$user_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
         if ($transaksi) {
             $kodetrx     = explode('.',$transaksi->kode_transaksi);
+            $nomor          = $kodetrx[2];
+            $urutbaru       = $nomor + 1;
+            $kodebarang = $kode.$urutbaru;
+        } else {
+            $kodebarang = $kode.'1';
+        }
+        return $kodebarang;
+        
+    }
+    public static function kodeDistribusi($user_id)
+    {
+        $tgl    = ambil_tgl();
+        $bln    = ambil_bulan();
+        $thn    = substr(ambil_tahun(),2,2);
+        $kode   = 'DB'.$user_id.'.'.$tgl.$bln.$thn.'.';
+        // cek distribusi terakhir
+        $akses          = Userakses::where('user_id',$user_id)->first();
+        $distribusi     = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
+        if ($distribusi) {
+            $kodetrx     = explode('.',$distribusi->kode);
             $nomor          = $kodetrx[2];
             $urutbaru       = $nomor + 1;
             $kodebarang = $kode.$urutbaru;
