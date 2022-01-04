@@ -215,6 +215,13 @@ if (! function_exists('sortByOrder')) {
             return $b['jumlah'] - $a['jumlah'];
     }
 }
+if (! function_exists('sisauangeod')) {
+    function sisauangeod($item)
+    {
+        $sisa   = $item->modal + $item->total_penjualan - $item->pengambilan;
+        return $sisa;
+    }
+}
 
 if (! function_exists('space')) {
     function space($sesi,$jumlah,$harga=null)

@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\CabangController;
 use App\Http\Controllers\Gudang\DistribusiController;
 use App\Http\Controllers\Gudang\ReturController;
 use App\Http\Controllers\Kasir\BarangController;
+use App\Http\Controllers\Kasir\LaporanController;
 use App\Http\Controllers\Kasir\UseraksesController;
 use App\Http\Controllers\Sistem\KategoriController;
 use App\Http\Controllers\Sistem\ProdusenController;
@@ -45,6 +46,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     
     Route::resource('user', UserController::class);
     Route::resource('barang', BarangController::class);
+    Route::resource('laporan', LaporanController::class);
     Route::resource('satuan', SatuanController::class);
     Route::resource('supplier', Suppliercontroller::class);
     Route::resource('produsen', ProdusenController::class);
@@ -58,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::get('kasir/transaksi/loadbarang','App\Http\Controllers\Sistem\TransaksiController@loadbarang')->name('loadBarang');
 
     // PAGE
+    Route::get('cetakdata','App\Http\Controllers\Sistem\CetakController@cetak');
     Route::get('laporan/{sesi}','App\Http\Controllers\Sistem\LaporanController@index');
     Route::get('migrasi','App\Http\Controllers\Sistem\MigrasidatabaseController@index');
     Route::get('page/{sesi}','App\Http\Controllers\Sistem\MigrasidatabaseController@page');

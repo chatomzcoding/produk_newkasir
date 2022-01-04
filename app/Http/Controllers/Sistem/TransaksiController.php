@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Cabang;
 use App\Models\Client;
+use App\Models\Laporan;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -69,7 +70,9 @@ class TransaksiController extends Controller
                     'totalhariini' => $totalhariini,
                 ];
 
-                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi'));
+                $laporan    = Laporan::where('tgl_laporan',$tanggal)->first();
+
+                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi','laporan'));
                 break;
         }
 

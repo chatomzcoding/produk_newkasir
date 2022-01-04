@@ -61,7 +61,15 @@
             <div class="card">
               <div class="card-header">
                   <a href="{{ url('transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
-                  <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                  <div class="float-right">
+                    @if ($laporan)
+                    <a href="#" class="btn btn-outline-dark btn-sm"><i class="fas fa-file"></i> TRANSAKSI SUDAH DITUTUP</a>
+                    @else
+                    <a href="#" data-toggle="modal" data-target="#laporan" class="btn btn-outline-success btn-sm"><i class="fas fa-file"></i> TUTUP TRANSAKSI</a>
+                        
+                    @endif
+                    <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                  </div>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -69,27 +77,29 @@
                   <section class="mb-1 mt-1">
                         <div class="row">
                           @if ($user->level == 'kasir')
-                          <div class="col-md-3">
-                              @if ($cektransaksi)
-                              <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
-                                <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
-                              </form>
-                          @else
-                            <form action="{{ url('transaksi') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="sesi" value="tambah">
-                                <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
-                                <input type="hidden" name="status_transaksi" value="proses">
-                                <input type="hidden" name="uang_pembeli" value="0">
-                                <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
-                            </form>
+                          @if (!$laporan)
+                            <div class="col-md-3">
+                                @if ($cektransaksi)
+                                    <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
+                                      <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
+                                    </form>
+                                @else
+                                <form action="{{ url('transaksi') }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="sesi" value="tambah">
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
+                                    <input type="hidden" name="status_transaksi" value="proses">
+                                    <input type="hidden" name="uang_pembeli" value="0">
+                                    <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
+                                </form>
+                              @endif
+                            </div>
                           @endif
-                        </div>
                           @endif
                           <div class="form-group col-md-2">
                               <form action="{{ url('transaksi') }}" method="get">
-                                <input type="date" name='tanggal' class="form-control" value="{{ $tanggal }}" onchange="this.form.submit()">
+                                <input type="date" name='tanggal' class="form-control" value="{{ $tanggal }}" max="{{ tgl_sekarang() }}" onchange="this.form.submit()">
                               </form>
                             </div>
                         </div>
@@ -165,6 +175,40 @@
           </div>
         </div>
     </div>
+    <div class="modal fade" id="laporan">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form action="{{ url('/laporan')}}" method="post">
+              @csrf
+              <input type="hidden" name="user_id" value="{{ $user->id }}">
+              <input type="hidden" name="tgl_laporan" value="{{ $tanggal }}">
+          <div class="modal-header">
+          <h4 class="modal-title">INFORMASI TUTUP LAPORAN TANGGAL {{ date_indo($tanggal) }}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body p-3">
+              <section class="p-3">
+                  <div class="form-group row">
+                      <label for="" class="col-md-4">Modal Awal</label>
+                      <input type="text" name="modal" id="rupiah" value="{{ old('modal') }}" class="form-control col-md-8" required>
+                    </div>
+                  <div class="form-group row">
+                      <label for="" class="col-md-4">Pengeluaran Kebutuhan</label>
+                      <input type="text" name="pengambilan" id="rupiah1" value="{{ old('pengambilan') }}" class="form-control col-md-8" required>
+                  </div>
+              </section>
+          </div>
+          <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> SIMPAN LAPORAN</button>
+          </div>
+      </form>
+      </div>
+      </div>
+  </div>
+  <!-- /.modal -->
     @section('script')
         <script>
             $(function () {
