@@ -29,6 +29,7 @@ class MigrasidatabaseController extends Controller
                     // simpan ke table baru
                     $cabang     = Userakses::where('user_id',Auth::user()->id)->first();
                     $data   = DB::table('kasir_barang')->get();
+                    $no     = 1;
                     foreach ($data as $row) {
                         $satuanbarang   = strtolower($row->satuan_barang);
                         $kategoribarang   = strtolower($row->kategori);
@@ -67,21 +68,34 @@ class MigrasidatabaseController extends Controller
                             ]);
                             $produsen_id = Kategori::where('cabang_id',$cabang->cabang_id)->where('label','produsen')->latest()->first()->id;
                         }
-                        // Barang::create([
-                        //     'cabang_id' => $cabang->cabang_id,
-                        //     'kode_barang' => DbCikara::kodeBarang($cabang->cabang_id),
-                        //     'nama_barang' => $row->nama_barang,
-                        //     'kategori_id' => $kategori_id,
-                        //     'satuan_id' => $satuan_id,
-                        //     'harga_beli' => $row->harga_beli,
-                        //     'harga_jual' => $row->harga_jual,
-                        //     'stok' => $row->stok,
-                        //     'gambar' => $row->gambar,
-                        //     'kode_barcode' => $row->kode_barcode,
-                        //     'merk' => $row->merk,
-                        //     'status_barang' => $row->status_barang,
-                        //     'produsen_id' => $produsen_id,
-                        // ]);
+                        // kode barang
+                        if ($no < 10 ) {
+                            $urutan = '000'.$no;
+                        }elseif ($no >= 10 AND $no < 100) {
+                            $urutan = '00'.$no;
+                        }elseif ($no >= 100 AND $no < 1000) {
+                            $urutan = '0'.$no;
+                        } else {
+                            $urutan = $no;
+                        }
+
+                        $kodebarang = 'CK'.$cabang->cabang_id.'.'.$urutan;
+                        Barang::create([
+                            'cabang_id' => $cabang->cabang_id,
+                            'kode_barang' => $kodebarang,
+                            'nama_barang' => $row->nama_barang,
+                            'kategori_id' => $kategori_id,
+                            'satuan_id' => $satuan_id,
+                            'harga_beli' => $row->harga_beli,
+                            'harga_jual' => $row->harga_jual,
+                            'stok' => $row->stok,
+                            'gambar' => $row->gambar,
+                            'kode_barcode' => $row->kode_barcode,
+                            'merk' => $row->merk,
+                            'status_barang' => $row->status_barang,
+                            'produsen_id' => $produsen_id,
+                        ]);
+                        $no++;
                     }
                 }
                 $data   = DB::table('kasir_barang')->paginate(20);

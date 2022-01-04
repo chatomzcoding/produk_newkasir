@@ -23,28 +23,58 @@
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-6">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-shopping-cart"></i></span>
   
                 <div class="info-box-content">
                   <span class="info-box-text">Total Transaksi</span>
                   <span class="info-box-number">
-                        {{ $statistik['total']}}
+                        {{ $statistik['data']['total']}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
               <!-- /.info-box -->
             </div>
-            <div class="col-12 col-sm-6 col-md-6">
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Item Terjual</span>
+                  <span class="info-box-number">
+                    {{ $statistik['data']['itemterjual']}}
+
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
-  
                 <div class="info-box-content">
-                  <span class="info-box-text">Total Transaksi Hari ini</span>
+                  <span class="info-box-text">Total Omzet</span>
                   <span class="info-box-number">
-                        {{ $statistik['totalhariini']}}
+                    {{ rupiah($statistik['data']['omzet'])}}
+
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Laba</span>
+                  <span class="info-box-number">
+                    {{ rupiah($statistik['data']['laba'])}}
+
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -61,38 +91,42 @@
             <div class="card">
               <div class="card-header">
                   <a href="{{ url('transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
-                  <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                  {{-- <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a> --}}
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
   
                   <section class="mb-1 mt-1">
+                      <form action="{{ url('laporan/transaksi') }}" method="get">
                         <div class="row">
-                          @if ($user->level == 'kasir')
-                          <div class="col-md-3">
-                              @if ($cektransaksi)
-                              <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
-                                <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
-                              </form>
-                          @else
-                            <form action="{{ url('transaksi') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="sesi" value="tambah">
-                                <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
-                                <input type="hidden" name="status_transaksi" value="proses">
-                                <input type="hidden" name="uang_pembeli" value="0">
-                                <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
-                            </form>
-                          @endif
-                        </div>
-                          @endif
-                          <div class="form-group col-md-2">
-                              <form action="{{ url('transaksi') }}" method="get">
-                                <input type="date" name='tanggal' class="form-control" value="{{ $tanggal }}" onchange="this.form.submit()">
-                              </form>
+                            <div class="col-md-2">
+                                <select name="s" id="" class="form-control" onchange="this.form.submit()">
+                                    <option value="harian" @if ($filter['s'] == 'harian')
+                                        selected
+                                    @endif>Harian</option>
+                                    <option value="bulanan" @if ($filter['s'] == 'bulanan')
+                                        selected
+                                    @endif>Bulanan</option>
+                                    <option value="tahunan" @if ($filter['s'] == 'tahunan')
+                                        selected
+                                    @endif>Tahunan</option>
+                                </select>
                             </div>
+                            @switch($filter['s'])
+                                @case('harian')
+                                    @include('sistem.laporan.filter.harian')
+                                    @break
+                                @case('bulanan')
+                                    @include('sistem.laporan.filter.bulanan')
+                                    @break
+                                @case('tahunan')
+                                    @include('sistem.laporan.filter.tahunan')
+                                    @break
+                                @default
+                                    
+                            @endswitch
                         </div>
+                    </form>
                   </section>
                   <div class="table-responsive">
                     <table id="example1" class="table table-bordered table-striped">
@@ -123,15 +157,11 @@
                                                   <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
-                                                    @if ($item->status_transaksi == 'proses')
-                                                      <a href="{{ url('transaksi/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">  LANJUTKAN <span class="float-right"><i class="fas fa-shopping-cart text-info"></i></span></a>
-                                                    @else
+                                                    @if ($item->status_transaksi == 'selesai')
                                                       <a href="{{ url('transaksi/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">  INVOICE <span class="float-right"><i class="fas fa-receipt text-primary"></i></span></a>
                                                     @endif
-                                                  @if ($tanggal == tgl_sekarang())
                                                     <div class="dropdown-divider"></div>
                                                     <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS<span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
-                                                  @endif
                                                 </div>
                                             </div>
                                     </td>
@@ -170,7 +200,7 @@
             $(function () {
             $("#example1").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy","excel"]
+                // "buttons": ["copy","excel"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
                 "paging": true,

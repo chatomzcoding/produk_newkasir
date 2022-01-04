@@ -25,6 +25,26 @@
         </li>
       </ul>
   </li>
+  <li class="nav-item @if ($menu == 'laporantransaksi')
+  menu-is-opening menu-open
+  @endif">
+      <a href="#" class="nav-link small">
+        <i class="nav-icon fas fa-file"></i>
+        <p>
+          Laporan
+          <i class="fas fa-angle-left right"></i>
+          {{-- <span class="badge badge-info right">6</span> --}}
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{{ url('/laporan/transaksi?s=harian')}}" class="nav-link small {{ menuaktif($menu,'laporantransaksi') }}">
+            &nbsp;&nbsp;<i class="fas fa-shopping-cart nav-icon"></i>
+            <p>Transaksi</p>
+          </a>
+        </li>
+      </ul>
+  </li>
   <li class="nav-item @if ($menu == 'distribusi' || $menu == 'retur')
   menu-is-opening menu-open
   @endif">
@@ -51,7 +71,7 @@
         </li>
       </ul>
   </li>
-  <li class="nav-item @if ($menu == 'kategori' || $menu == 'satuan')
+  <li class="nav-item @if ($menu == 'kategori' || $menu == 'satuan' || $menu == 'supplier'|| $menu == 'produsen')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -79,6 +99,12 @@
           <a href="{{ url('/supplier')}}" class="nav-link small {{ menuaktif($menu,'supplier') }}">
             &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>
             <p>Data Supplier</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('/produsen')}}" class="nav-link small {{ menuaktif($menu,'produsen') }}">
+            &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>
+            <p>Data Produsen</p>
           </a>
         </li>
       </ul>
