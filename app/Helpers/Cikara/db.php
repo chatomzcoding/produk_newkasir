@@ -12,6 +12,7 @@ use App\Models\Lapor;
 use App\Models\Penduduk;
 use App\Models\Penduduksurat;
 use App\Models\Profil;
+use App\Models\Retur;
 use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Userakses;
@@ -168,11 +169,31 @@ class DbCikara {
             $kodetrx     = explode('.',$distribusi->kode);
             $nomor          = $kodetrx[2];
             $urutbaru       = $nomor + 1;
-            $kodebarang = $kode.$urutbaru;
+            $kodedistribusi = $kode.$urutbaru;
         } else {
-            $kodebarang = $kode.'1';
+            $kodedistribusi = $kode.'1';
         }
-        return $kodebarang;
+        return $kodedistribusi;
+        
+    }
+    public static function kodeRetur($user_id)
+    {
+        $tgl    = ambil_tgl();
+        $bln    = ambil_bulan();
+        $thn    = substr(ambil_tahun(),2,2);
+        $kode   = 'RB'.$user_id.'.'.$tgl.$bln.$thn.'.';
+        // cek distribusi terakhir
+        $akses          = Userakses::where('user_id',$user_id)->first();
+        $retur     = Retur::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
+        if ($retur) {
+            $kodetrx     = explode('.',$retur->kode_retur);
+            $nomor          = $kodetrx[2];
+            $urutbaru       = $nomor + 1;
+            $koderetur = $kode.$urutbaru;
+        } else {
+            $koderetur = $kode.'1';
+        }
+        return $koderetur;
         
     }
 

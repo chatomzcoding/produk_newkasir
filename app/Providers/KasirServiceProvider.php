@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class SidesaServiceProvider extends ServiceProvider
+class KasirServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -13,8 +13,9 @@ class SidesaServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        require_once app_path() . '/Helpers/Sidesa/list.php';
-        require_once app_path() . '/Helpers/Sidesa/sistem.php';
+        require_once app_path() . '/Helpers/Kasir/list.php';
+        require_once app_path() . '/Helpers/Kasir/sistem.php';
+        require_once app_path() . '/Helpers/Kasir/view.php';
     }
 
     /**
