@@ -242,7 +242,7 @@ class DbCikara {
                             }
                         }
                         $result[] = [
-                            'tanggal' => 'tgl - '.$i,
+                            'tanggal' => $i,
                             'nilai' => $nilai
                         ];
                     }
