@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Cabang;
 use App\Models\Distribusi;
 use App\Models\Kategori;
+use App\Models\Retur;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -24,9 +25,22 @@ class DistribusiController extends Controller
     {
         $menu       = 'distribusi';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $distribusi = Distribusi::where('cabang_id',$akses->cabang_id)->get();
+        $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : 'semua' ;
+        if ($tanggal == 'semua') {
+            $distribusi = Distribusi::where('cabang_id',$akses->cabang_id)->get();
+        } else {
+            $distribusi = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('created_at',$tanggal)->get();
+        }
         $supplier   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','supplier')->get();
-        return view('gudang.distribusi.index', compact('menu','distribusi','akses','supplier'));
+        $statistik  = [
+            'total' => Distribusi::where('cabang_id',$akses->cabang_id)->count(),
+            'totalbulanini' => Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('created_at',ambil_bulan())->whereYear('created_at',ambil_tahun())->count(),
+            'totalproses' => Distribusi::where('cabang_id',$akses->cabang_id)->where('status_stok','proses')->count(),
+        ];
+        $filter     = [
+            'tanggal' => $tanggal
+        ];
+        return view('gudang.distribusi.index', compact('menu','distribusi','akses','supplier','statistik','filter'));
     }
 
     /**
@@ -83,11 +97,10 @@ class DistribusiController extends Controller
     {
         $menu       = 'distribusi';
         $distribusi = Distribusi::find(Crypt::decryptString($distribusi));
+        $akses      = Userakses::where('user_id',Auth::user()->id)->first();
         $s = (isset($_GET['s'])) ? $_GET['s'] : 'show' ;
         switch ($s) {
             case 'tambahbarang':
-              
-               
                 if (!empty($_GET['barcode'])) {
                     $barang = Barang::where('cabang_id',$distribusi->cabang_id)->where('kode_barcode',$_GET['barcode'])->first();
                     $info   = 'Barcode : '.$_GET['barcode'];
@@ -109,7 +122,9 @@ class DistribusiController extends Controller
                 break;
             
             default:
-                return view('gudang.distribusi.show', compact('menu','distribusi'));
+                // kode untuk cek apakah distribusi sudah ada retur atau tidak
+                $retur  = Retur::where('distribusi_id',$distribusi->id)->first();
+                return view('gudang.distribusi.show', compact('menu','distribusi','akses','retur'));
                 break;
         }
     }
@@ -136,6 +151,19 @@ class DistribusiController extends Controller
     {
         $distribusi     = Distribusi::find($request->id);
         switch ($request->s) {
+            case 'editdistribusi':
+                Distribusi::where('id',$request->id)->update([                                                                                            
+                    'no_faktur' => $request->no_faktur,
+                    'tgl_faktur' => $request->tgl_faktur,
+                    'tgl_tempo' => $request->tgl_tempo,
+                    'pembayaran' => $request->pembayaran,
+                    'potongan' => $request->potongan,
+                    'kategori_id' => $request->kategori_id,
+                ]);
+        
+                return redirect('distribusi/'.Crypt::encryptString($request->id));
+                break;
+
             case 'tambahbarang':
                 $barangbaru[$request->kode_barang] = [
                     'kode_barang' => $request->kode_barang,
@@ -212,6 +240,8 @@ class DistribusiController extends Controller
      */
     public function destroy(Distribusi $distribusi)
     {
-        dd($distribusi);
+        $distribusi->delete();
+
+        return back()->with('dd','Distribusi');
     }
 }

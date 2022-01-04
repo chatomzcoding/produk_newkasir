@@ -130,6 +130,29 @@ if (! function_exists('subtotal')) {
         return $subtotal;
     }
 }
+if (! function_exists('jumlahretur')) {
+    function jumlahretur($barang,$kodebarang)
+    {
+        $jumlah     = 0;
+        if (!is_null($barang)) {
+            $barang     = json_decode($barang);
+            if (isset($barang->$kodebarang)) {
+                $jumlah = $barang->$kodebarang->jumlah;
+            }
+        }
+        return $jumlah;
+    }
+}
+if (! function_exists('datajumlahretur')) {
+    function datajumlahretur($jumlahretur,$jumlah)
+    {
+        $result = $jumlahretur;
+        if ($jumlahretur == 0) {
+            $result = $jumlah;
+        }
+        return $result;
+    }
+}
 if (! function_exists('datainvoice')) {
     function datainvoice($keranjang,$uangpembeli)
     {

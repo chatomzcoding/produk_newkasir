@@ -39,13 +39,13 @@
       <ul class="nav nav-treeview">
         <li class="nav-item">
           <a href="{{ url('/distribusi')}}" class="nav-link small {{ menuaktif($menu,'distribusi') }}">
-            &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-truck nav-icon"></i>
             <p>Disribusi Barang</p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{{ url('/retur')}}" class="nav-link small {{ menuaktif($menu,'retur') }}">
-            &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-undo nav-icon"></i>
             <p>Retur Barang</p>
           </a>
         </li>

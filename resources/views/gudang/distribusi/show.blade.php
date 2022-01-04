@@ -7,7 +7,7 @@
 @section('head')
 <style>
     input[type=text] {
-        border: 2px solid #bdbdbd;
+        border: 1px solid #bdbdbd;
         font-family: 'Roboto', Arial, Sans-serif;
         font-size: 15px;
         font-weight: 400;
@@ -71,7 +71,9 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="{{ url('distribusi') }}" class="btn btn-outline-secondary btn-sm pop-info" title="Kembali Ke Daftar Distribusi"><i class="fas fa-angle-left"></i> Kembali</a>
-                    <button class="float-right btn btn-success btn-sm">{{ $distribusi->status_stok }} <i class="fas fa-check"></i></button>
+                    <div class="float-right">
+                        {!! showstatus($distribusi->status_stok) !!}
+                    </div>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -94,7 +96,7 @@
                                         </tr>
                                         <tr>
                                             <th>Pembayaran</th>
-                                            <td>{{ $distribusi->pembayaran }}</td>
+                                            <td class="text-uppercase">{{ $distribusi->pembayaran }}</td>
                                         </tr>
                                         <tr>
                                             <th>Potongan</th>
@@ -107,22 +109,43 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <section class="text-right">
-                                        <a href="" data-toggle="modal" data-target="#distribusikan" class="btn btn-success">DISTRIBUSIKAN</a>
-                                    </section>
-                                    <hr>
-                                   <form action="{{ url('distribusi/'.Crypt::encryptString($distribusi->id)) }}" method="get">
-                                       @csrf
-                                       <input type="hidden" name="s" value="tambahbarang">
-                                       <div class="form-group">
-                                            <label for="">Tambah Barang Distribusi</label>
-                                            <input type="text" name="barcode" class="form-control" placeholder="scan barcode disini" autofocus>
-                                            <input type="text" id="nama" name="nama_barang" class="form-control" placeholder="Cari barang dengan Nama" value="">
+                                    @if ($distribusi->status_stok == 'proses')
+                                        <section class="text-right">
+                                            <a href="" data-toggle="modal" data-target="#distribusikan" class="btn btn-success"><i class="fas fa-truck-loading"></i> DISTRIBUSIKAN</a>
+                                        </section>
+                                        <hr>
+                                    <form action="{{ url('distribusi/'.Crypt::encryptString($distribusi->id)) }}" method="get">
+                                        @csrf
+                                        <input type="hidden" name="s" value="tambahbarang">
+                                        <div class="form-group">
+                                                <label for="">Tambah Barang Distribusi</label>
+                                                <input type="text" name="barcode" class="form-control" placeholder="scan barcode disini" autofocus>
+                                                <input type="text" id="nama" name="nama_barang" class="form-control" placeholder="Cari barang dengan Nama" value="">
+                                            </div>
+                                            <div class="form-group text-right">
+                                            <button type="submit" class="btn btn-primary btn-sm" id="tambahbarang"><i class="fas fa-search"></i> CARI BARANG [Shift-R]</button>
                                         </div>
-                                        <div class="form-group text-right">
-                                           <button type="submit" class="btn btn-primary btn-sm" id="tambahbarang"><i class="fas fa-search"></i> CARI BARANG</button>
-                                       </div>
-                                   </form>
+                                    </form>
+                                    @else
+                                        <div class="callout callout-info">
+                                            Barang telah di distribusikan. Stok barang telah otomatis bertambah sesuai dengan jumlah barang pada list barang distribusi
+                                        </div>
+                                        @if ($retur)
+                                            @if ($retur->status_retur == 'proses')
+                                            <div class="callout callout-warning">
+                                                Distribusi dalam proses pengembalian barang (retur barang). <a href="{{ url('retur/'.Crypt::encryptString($retur->id)) }}">Lihat Disini</a>
+                                            </div>
+                                            @else
+                                            <div class="callout callout-warning">
+                                                Proses Retur barang telah selesai dilakukan. <a href="{{ url('retur/'.Crypt::encryptString($retur->id)) }}">Lihat Disini</a>
+                                            </div>
+                                            @endif
+                                        @else
+                                            <div class="callout callout-warning">
+                                                Apabila barang ingin dikembalikan ke supplier (retur barang). <a href="" data-toggle="modal" data-target="#tambah">klik Disini</a>
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -145,12 +168,13 @@
                             </tr>
                         </thead>
                         <tbody class="text-capitalize">
-                            @forelse (json_decode($distribusi->barang) as $item)
-                            <tr>
+                            @if (!is_null($distribusi->barang))
+                                @foreach (json_decode($distribusi->barang) as $item)
+                                <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     @if ($distribusi->status_stok == 'proses')
                                         <td class="text-center">
-                                            <form id="data-{{ $distribusi->id }}" action="{{url('distribusi/'.$distribusi->id)}}" method="post">
+                                            <form id="data-{{ $loop->iteration }}" action="{{url('distribusi/'.$loop->iteration)}}" method="post">
                                                 @csrf
                                                 @method('patch')
                                                 <input type="hidden" name="s" value="hapusbarang">
@@ -168,7 +192,7 @@
                                                         EDIT <i class="fa fa-edit float-right text-success"></i>
                                                         </button>
                                                     <div class="dropdown-divider"></div>
-                                                    <button onclick="deleteRow( {{ $distribusi->id }} )" class="dropdown-item"> HAPUS <i class="fas fa-trash-alt float-right text-danger"></i></button>
+                                                    <button onclick="deleteRow( {{ $loop->iteration }} )" class="dropdown-item"> HAPUS <i class="fas fa-trash-alt float-right text-danger"></i></button>
                                                     </div>
                                                 </div>
                                         </td>
@@ -179,11 +203,13 @@
                                     <td class="text-right">{{ norupiah($item->harga_jual)}}</td>
                                     <td class="text-center">{{ $item->jumlah}}</td>
                                 </tr>
-                            @empty
+                                @endforeach
+                            @else
                                 <tr class="text-center">
-                                    <td colspan="7">tidak ada data</td>
+                                    <td colspan="7">belum ada data</td>
                                 </tr>
-                            @endforelse
+                            @endif
+                        </tbody>
                     </table>
                 </div>
               </div>
@@ -191,6 +217,41 @@
           </div>
         </div>
     </div>
+
+    <div class="modal fade" id="tambah">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <form action="{{ url('/retur')}}" method="post">
+                @csrf
+                <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
+                <input type="hidden" name="distribusi_id" value="{{ $distribusi->id }}">
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Data Retur</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <section class="p-3">
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Kode Retur</label>
+                        <input type="text" name="kode_retur" id="kode_retur" value="{{ DbCikara::kodeRetur($akses->user_id) }}" class="form-control col-md-8" readonly>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Tanggal Retur</label>
+                        <input type="date" name="tgl_retur" id="tgl_retur" value="{{ old('tgl_retur') }}" class="form-control col-md-8">
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> BUAT RETUR</button>
+            </div>
+        </form>
+        </div>
+        </div>
+    </div>
+    <!-- /.modal -->
 
     {{-- modal edit --}}
     <div class="modal fade" id="ubah">
@@ -245,21 +306,21 @@
                 <input type="hidden" name="id" value="{{ $distribusi->id }}">
                 <input type="hidden" name="status_stok" value="selesai">
             <div class="modal-header">
-                <h4 class="modal-title">Distribusi Barang</h4>
+                <h4 class="modal-title">PEMBERITAHUAN DISTRIBUSI</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body p-3">
                 <section class="p-3">
-                   <div class="callout callout-info">
-                    barang yang sudah didistibusikan tidak dapat diedit kembali
+                   <div class="callout callout-info text-justify">
+                    Barang yang sudah didistibusikan tidak dapat dirubah kembali. Cek kembali kesesuaian dengan faktur/nota pembelian !
                    </div>
                 </section>
             </div>
             <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> DISTRIBUSIKAN SEKARANG</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-truck"></i> DISTRIBUSIKAN SEKARANG</button>
             </div>
         </form>
         </div>

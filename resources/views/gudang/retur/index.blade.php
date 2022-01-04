@@ -25,11 +25,25 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-6">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-list"></i></span>
+                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-undo"></i></span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Total Satuan</span>
+                  <span class="info-box-text">Total Retur</span>
                   <span class="info-box-number">
-                        {{-- {{ count($kategori)}} --}}
+                        {{ $statistik['total']}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-6">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-sync"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Retur dalam proses</span>
+                  <span class="info-box-number">
+                        {{ $statistik['totalproses']}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -47,25 +61,19 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data Retur Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
+                    <a href="{{ url('retur') }}" class="btn btn-outline-dark btn-flat btn-sm"><i class="fas fa-sync"></i> Bersihkan Filter</a>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-                  {{-- <section class="mb-3">
-                      <form action="{{ url('listdata') }}" method="get">
+                  <section class="mb-3">
+                      <form action="{{ url('retur') }}" method="get">
                         <div class="row">
                             <div class="form-group col-md-2">
-                                <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
-                                    <option value="semua">Semua</option>
-                                    @foreach (list_kategori() as $item)
-                                        <option value="{{ $item}}" @if ($kategori == $item)
-                                            selected
-                                        @endif>{{ strtoupper($item)}}</option>
-                                    @endforeach
-                                </select>
+                               <input type="date" name="tanggal" value="{{ $filter['tanggal'] }}" class="form-control" onchange="this.form.submit()">
                             </div>
                         </div>
                     </form>
-                  </section> --}}
+                  </section>
                   <div class="table-responsive">
                     <table id="example1" class="table table-bordered table-striped">
                         <thead class="text-center">
