@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Cikara\DbCikara;
 use App\Models\Barang;
 use App\Models\Cabang;
+use App\Models\Distribusi;
+use App\Models\Retur;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -29,8 +31,8 @@ class HomeController extends Controller
             case 'gudang':
                 $cabang         = Userakses::where('user_id',$user->id)->first();
                 $totalbarang    = Barang::where('cabang_id',$cabang->id)->count();
-                $totaldistribusi= 0;
-                $totalsupplier  = 0;
+                $totaldistribusi= Distribusi::where('cabang_id',$cabang->id)->count();
+                $totalsupplier  = Retur::where('cabang_id',$cabang->id)->count();
                 $totalbarangstokkosong    = Barang::where('cabang_id',$cabang->id)->where('stok','<=',0)->count();
                 $statistik = [
                     'totalbarang' => $totalbarang,
