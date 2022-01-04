@@ -9,7 +9,7 @@
 		<section class="text-center">
             <h4>
                 Data Transaksi <br>
-                {{ date_indo($tanggal) }} <br>
+                {{ $data['info'] }} <br>
                 Kasir : {{ $data['nama_kasir'] }}
             </h4>
             <hr>

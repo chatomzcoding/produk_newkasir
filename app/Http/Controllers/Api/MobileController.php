@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Cabang;
 use App\Models\Client;
 use App\Models\Session;
+use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade as PDF;
+
 
 class MobileController extends Controller
 {
@@ -120,5 +123,48 @@ class MobileController extends Controller
             ];
         }
         return $success;
+    }
+
+    public function cetaktransaksi()
+    {
+        
+        $user       = User::find($_GET['user_id']);
+        switch ($user->level) {
+            case 'kasir':
+                switch ($_GET['sesi']) {
+                    case 'tanggal':
+                        $tanggal    = $_GET['tanggal'];
+                        $transaksi      = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->get();
+                        $data           = [
+                            'nama_kasir' => $user->name,
+                            'info' => 'Tanggal '.date_indo($tanggal),
+                        ];
+                        $namafile   = 'Transaksi per Tanggal '.$tanggal;
+
+                        break;
+                    case 'bulan':
+                        $bulan    = $_GET['bulan'];
+                        $tahun    = $_GET['tahun'];
+                        $transaksi      = Transaksi::where('user_id',$user->id)->wheremonth('created_at',$bulan)->whereyear('created_at',$tahun)->get();
+                        $data           = [
+                            'nama_kasir' => $user->name,
+                            'info' => 'Bulan '.bulan_indo($bulan).' '.$tahun,
+                        ];
+                        $namafile   = 'Transaksi per Bulan '.$bulan.' '.$tahun;
+
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+                $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data'));
+                break;
+            
+            default:
+                return 'sesi tidak ada';
+                break;
+        }
+        return $pdf->download($namafile.'.pdf');
     }
 }
