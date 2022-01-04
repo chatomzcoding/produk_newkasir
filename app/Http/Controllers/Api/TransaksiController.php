@@ -83,6 +83,7 @@ class TransaksiController extends Controller
                             // total transaksi
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereDate('created_at',$_GET['tanggal'])
+                                                ->orderBy('id','DESC')
                                                 ->get();
                             $data           = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->where('keranjang','<>',NULL)
@@ -112,6 +113,7 @@ class TransaksiController extends Controller
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereMonth('created_at',$_GET['bulan'])
                                                 ->whereYear('created_at',$_GET['tahun'])
+                                                ->orderBy('id','DESC')
                                                 ->get();
                             $data           = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->where('keranjang','<>',NULL)
@@ -136,6 +138,7 @@ class TransaksiController extends Controller
                             $tahun  = $_GET['tahun'] -1;
                             $datatransaksi  = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->whereYear('created_at',$_GET['tahun'])
+                                                ->orderBy('id','DESC')
                                                 ->get();
                             $data           = Transaksi::where('user_id',$_GET['user_id'])
                                                 ->where('keranjang','<>',NULL)
