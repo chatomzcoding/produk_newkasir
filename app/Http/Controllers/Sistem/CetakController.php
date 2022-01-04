@@ -36,7 +36,8 @@ class CetakController extends Controller
                     case 'kasir':
                         $transaksi      = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->get();
                         $data           = [
-                            'nama_kasir' => $user->name
+                            'nama_kasir' => $user->name,
+                            'info' => 'Tanggal '.date_indo($tanggal),
                         ];
                         break;
                     
@@ -44,7 +45,7 @@ class CetakController extends Controller
                         # code...
                         break;
                 }
-                $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','tanggal','data'));
+                $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data'));
                 $namafile   = 'Transaksi';
                 break;
             
