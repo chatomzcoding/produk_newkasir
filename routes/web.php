@@ -55,8 +55,9 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     // TRANSAKSI
     Route::get('kasir/transaksi/loadbarang','App\Http\Controllers\Sistem\TransaksiController@loadbarang')->name('loadBarang');
 
-    // CETAK
-    Route::get('cetakdata','App\Http\Controllers\Sistem\CetakController@cetak');
+    // PAGE
+    Route::get('migrasi','App\Http\Controllers\Sistem\MigrasidatabaseController@index');
+    Route::get('page/{sesi}','App\Http\Controllers\Sistem\MigrasidatabaseController@page');
 
     
 });

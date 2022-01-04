@@ -146,7 +146,7 @@
     </ul>
 
     <!-- SEARCH FORM -->
-    @if ($user->level == 'kasir')
+    @if ($user->level == 'kasir' || $user->level == 'gudang')
       <form action="#" method="get" class="form-inline ml-3">
         <input type="hidden" name="data" value="cari">
         <div class="input-group input-group-sm">
@@ -343,7 +343,7 @@
     <strong>Copyright &copy; <a href="https://adminlte.io">AdminLTE.io</a>. Pengembang <a href="https://cikarastudio.com/">Cikara Studio</a></strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 2021.10
+      <b>Version</b> 2022.01 (beta tester)
     </div>
   </footer>
 

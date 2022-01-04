@@ -24,11 +24,18 @@ class BarangController extends Controller
         $user       = Auth::user();
         $akses      = Userakses::where('user_id',$user->id)->first();
         $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
-        if ($fkategori == 'semua') {
-            $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
+        $cari       = (isset($_GET['cari'])) ? TRUE : FALSE ;
+        if ($cari) {
+            $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
+            $fkategori  = 'cari';
         } else {
-            $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+            if ($fkategori == 'semua') {
+                $barang     = Barang::where('cabang_id',$akses->cabang_id)->paginate(20);
+            } else {
+                $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+            }
         }
+        
         
         $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
         $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();

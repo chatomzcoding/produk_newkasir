@@ -78,6 +78,7 @@
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                   @if ($user->level == 'gudang')
                     <a href="{{ url('barang/create') }}" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
+                    <a href="{{ url('barang') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> Bersihkan Filter</a>
                   @endif
                     <div class="float-right">
                       @if ($user->level == 'gudang')
@@ -119,7 +120,11 @@
                   </form>
                 </section>
                   <div class="table-responsive">
+                    @if ($filter['kategori'] == 'semua')
+                    <table class="table table-bordered table-striped">
+                    @else
                     <table id="example1" class="table table-bordered table-striped">
+                      @endif
                         <thead class="text-center">
                             <tr>
                                 <th width="5%">No</th>
@@ -166,6 +171,35 @@
                                 </tr>
                             @endforeach
                     </table>
+                    @if ($filter['kategori'] == 'semua')
+                      @if ($barang->hasPages())
+                        <nav>
+                            <ul class="pagination">
+                                {{-- Previous Page Link --}}
+                                @if ($barang->onFirstPage())
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link">@lang('pagination.previous')</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $barang->previousPageUrl() }}" rel="prev">@lang('pagination.previous')</a>
+                                    </li>
+                                @endif
+
+                                {{-- Next Page Link --}}
+                                @if ($barang->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $barang->nextPageUrl() }}" rel="next">@lang('pagination.next')</a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled" aria-disabled="true">
+                                        <span class="page-link">@lang('pagination.next')</span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    @endif
+                    @endif
                 </div>
               </div>
             </div>
