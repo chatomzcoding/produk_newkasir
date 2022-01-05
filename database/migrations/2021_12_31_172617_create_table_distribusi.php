@@ -15,7 +15,7 @@ class CreateTableDistribusi extends Migration
     {
         Schema::create('distribusi', function (Blueprint $table) {
             $table->id();
-            $table->string('kode',50);
+            $table->string('kode_distribusi',50);
             $table->string('no_faktur')->nullable();
             $table->date('tgl_faktur');
             $table->date('tgl_tempo')->nullable();

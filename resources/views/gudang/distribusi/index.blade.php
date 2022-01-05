@@ -77,22 +77,47 @@
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="#" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Data Distribusi Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
                     <a href="{{ url('distribusi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> Bersihkan Filter</a>
-                    <a href="{{ url('cetakdata?s=distribusi&tanggal='.$filter['tanggal']) }}" class="btn btn-outline-info btn-sm float-right pop-info" target="_blank" title="Cetak daftar Distribusi"><i class="fas fa-print"></i> CETAK</a>
+                    <div class="float-right">
+                        @if (!$filter['page'])
+                        <span class="badge badge-info p-2">Total Data pencarian : {{ count($datatabel) }}</span>
+                    @endif
+                    <a href="{{ url('cetakdata?s=distribusi&tanggal='.$filter['data']['tanggal']) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar Distribusi"><i class="fas fa-print"></i> CETAK</a>
+                    </div>
 
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
                   <section class="mb-3">
                       <form action="{{ url('distribusi') }}" method="get">
-                        <div class="row">
-                            <div class="form-group col-md-2">
-                                <input type="date" name="tanggal" value="{{ $filter['tanggal'] }}" class="form-control" onchange="this.form.submit()">
+                            <div class="row">
+                                <div class="form-group col-md-2">
+                                    <select name="waktu" id="" class="form-control" onchange="this.form.submit()">
+                                        <option value="semua" @if ($filter['waktu'] == 'semua')
+                                        selected
+                                    @endif>SEMUA</option>
+                                        <option value="harian" @if ($filter['waktu'] == 'harian')
+                                            selected
+                                        @endif>HARIAN</option>
+                                        <option value="bulanan" @if ($filter['waktu'] == 'bulanan')
+                                        selected
+                                    @endif>BULANAN</option>
+                                    </select>
+                                </div>
+                                @switch($filter['waktu'])
+                                    @case('harian')
+                                        @include('sistem.filter.harian')
+                                        @break
+                                    @case('bulanan')
+                                        @include('sistem.filter.bulanan')
+                                        @break
+                                    @default
+                                        
+                                @endswitch
                             </div>
-                        </div>
-                    </form>
+                        </form>
                   </section>
                   <div class="table-responsive">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="{{ cekdatatable($filter['page']) }}" class="table table-bordered table-striped">
                         <thead class="text-center">
                             <tr>
                                 <th width="5%">No</th>
@@ -100,11 +125,13 @@
                                 <th>Kode</th>
                                 <th>No Faktur</th>
                                 <th>Tanggal Faktur</th>
+                                <th>Potongan</th>
+                                <th>Pembayaran</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody class="text-capitalize">
-                            @forelse ($distribusi as $item)
+                            @forelse ($datatabel as $item)
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
@@ -119,7 +146,7 @@
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
                                                     <a href="{{ url('distribusi/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">DETAIL <i class="fas fa-file text-primary float-right"></i></a>
-                                                    <button type="button" data-toggle="modal" data-kode="{{ $item->kode }}" data-no_faktur="{{ $item->no_faktur }}"  data-tgl_faktur="{{ $item->tgl_faktur }}" data-tgl_tempo="{{ $item->tgl_tempo }}" data-pembayaran="{{ $item->pembayaran }}" data-potongan="{{ $item->potongan }}" data-kategori_id="{{ $item->kategori_id }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
+                                                    <button type="button" data-toggle="modal" data-kode_distribusi="{{ $item->kode_distribusi }}" data-no_faktur="{{ $item->no_faktur }}"  data-tgl_faktur="{{ $item->tgl_faktur }}" data-tgl_tempo="{{ $item->tgl_tempo }}" data-pembayaran="{{ $item->pembayaran }}" data-potongan="{{ $item->potongan }}" data-supplier_id="{{ $item->supplier_id }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
                                                      EDIT <i class="fa fa-edit float-right text-success"></i>
                                                     </button>
                                                   <div class="dropdown-divider"></div>
@@ -127,17 +154,21 @@
                                                 </div>
                                             </div>
                                     </td>
-                                    <td>{{ $item->kode}}</td>
+                                    <td>{{ $item->kode_distribusi}}</td>
                                     <td>{{ $item->no_faktur}}</td>
                                     <td>{{ date_indo($item->tgl_faktur)}}</td>
+                                    <td class="text-right">{{ norupiah($item->potongan)}}</td>
+                                    <td class="text-center text-uppercase">{{ $item->pembayaran}}</td>
                                     <td class="text-center">{!! showstatus($item->status_stok)!!}</td>
                                 </tr>
                             @empty
                                 <tr class="text-center">
-                                    <td colspan="6">tidak ada data</td>
+                                    <td colspan="8">tidak ada data</td>
                                 </tr>
                             @endforelse
                     </table>
+                    @includeWhen($filter['page'], 'sistem.pagination')
+
                 </div>
               </div>
             </div>
@@ -163,7 +194,7 @@
                 <section class="p-3">
                     <div class="form-group row">
                         <label for="" class="col-md-4">Kode Distribusi</label>
-                        <input type="text" name="kode" id="kode" value="{{ DbCikara::kodeDistribusi($akses->user_id) }}" class="form-control col-md-8" readonly>
+                        <input type="text" name="kode_distribusi" id="kode_distribusi" value="{{ DbCikara::kodeDistribusi($akses->user_id) }}" class="form-control col-md-8" readonly>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-4">No Faktur/Bukti Pembayaran</label>
@@ -229,7 +260,7 @@
                 <section class="p-3">
                     <div class="form-group row">
                         <label for="" class="col-md-4">Kode Distribusi</label>
-                        <input type="text" name="kode" id="kode" class="form-control col-md-8" readonly>
+                        <input type="text" name="kode_distribusi" id="kode_distribusi" class="form-control col-md-8" readonly>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-4">No Faktur/Bukti Pembayaran</label>
@@ -246,9 +277,9 @@
                     <div class="form-group row">
                         <label for="" class="col-md-4">Nama Supplier</label>
                         <div class="col-md-8 p-0">
-                            <select name="kategori_id" id="kategori_id" class="form-control listdata" data-width="100%" required>
+                            <select name="supplier_id" id="supplier_id" class="form-control listdata" data-width="100%" required>
                                 @foreach ($supplier as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -281,24 +312,24 @@
         <script>
             $('#ubah').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget)
-                var kode = button.data('kode')
+                var kode_distribusi = button.data('kode_distribusi')
                 var tgl_faktur = button.data('tgl_faktur')
                 var no_faktur = button.data('no_faktur')
                 var tgl_tempo = button.data('tgl_tempo')
                 var pembayaran = button.data('pembayaran')
                 var potongan = button.data('potongan')
-                var kategori_id = button.data('kategori_id')
+                var supplier_id = button.data('supplier_id')
                 var id = button.data('id')
         
                 var modal = $(this)
         
-                modal.find('.modal-body #kode').val(kode);
+                modal.find('.modal-body #kode_distribusi').val(kode_distribusi);
                 modal.find('.modal-body #tgl_faktur').val(tgl_faktur);
                 modal.find('.modal-body #no_faktur').val(no_faktur);
                 modal.find('.modal-body #tgl_tempo').val(tgl_tempo);
                 modal.find('.modal-body #pembayaran').val(pembayaran);
                 modal.find('.modal-body #potongan').val(potongan);
-                modal.find('.modal-body #kategori_id').val(kategori_id);
+                modal.find('.modal-body #supplier_id').val(supplier_id);
                 modal.find('.modal-body #id').val(id);
             })
         </script>

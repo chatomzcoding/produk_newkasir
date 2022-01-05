@@ -8,6 +8,7 @@ use App\Models\Cabang;
 use App\Models\Distribusi;
 use App\Models\Kategori;
 use App\Models\Retur;
+use App\Models\Supplier;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -25,22 +26,45 @@ class DistribusiController extends Controller
     {
         $menu       = 'distribusi';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : 'semua' ;
-        if ($tanggal == 'semua') {
-            $distribusi = Distribusi::where('cabang_id',$akses->cabang_id)->get();
+        $waktu      = (isset($_GET['waktu'])) ? $_GET['waktu'] : 'semua' ;
+        $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
+        $bulan      = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
+        $tahun      = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
+        if ($waktu == 'semua') {
+            $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->orderBy('tgl_faktur','DESC')->paginate(20);
+            $page       = TRUE;
         } else {
-            $distribusi = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('created_at',$tanggal)->get();
+            switch ($waktu) {
+                case 'harian':
+                    $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->get();
+                    break;
+                case 'bulanan':
+                    $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            $page       = FALSE;
         }
-        $supplier   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','supplier')->get();
+        $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
         $statistik  = [
             'total' => Distribusi::where('cabang_id',$akses->cabang_id)->count(),
-            'totalbulanini' => Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('created_at',ambil_bulan())->whereYear('created_at',ambil_tahun())->count(),
+            'totalbulanini' => Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',ambil_bulan())->whereYear('tgl_faktur',ambil_tahun())->count(),
             'totalproses' => Distribusi::where('cabang_id',$akses->cabang_id)->where('status_stok','proses')->count(),
         ];
         $filter     = [
-            'tanggal' => $tanggal
+            'data' => [
+                'tanggal' => $tanggal,
+                'bulan' => $bulan,
+                'tahun' => $tahun,
+                
+            ],
+            'waktu' => $waktu,
+            'page' => $page
         ];
-        return view('gudang.distribusi.index', compact('menu','distribusi','akses','supplier','statistik','filter'));
+        return view('gudang.distribusi.index', compact('menu','datatabel','akses','supplier','statistik','filter'));
     }
 
     /**
@@ -64,7 +88,7 @@ class DistribusiController extends Controller
         switch ($request->s) {
             case 'tambahdistribusi':
                 Distribusi::create([                                                                                            
-                    'kode' => $request->kode,
+                    'kode_distribusi' => $request->kode_distribusi,
                     'no_faktur' => $request->no_faktur,
                     'tgl_faktur' => $request->tgl_faktur,
                     'tgl_tempo' => $request->tgl_tempo,
@@ -72,7 +96,7 @@ class DistribusiController extends Controller
                     'potongan' => $request->potongan,
                     'status_stok' => $request->status_stok,
                     'cabang_id' => $request->cabang_id,
-                    'kategori_id' => $request->kategori_id,
+                    'supplier_id' => $request->supplier_id,
                 ]);
         
                 $distribusi     = Distribusi::where('kode',$request->kode)->first();
@@ -157,8 +181,8 @@ class DistribusiController extends Controller
                     'tgl_faktur' => $request->tgl_faktur,
                     'tgl_tempo' => $request->tgl_tempo,
                     'pembayaran' => $request->pembayaran,
-                    'potongan' => $request->potongan,
-                    'kategori_id' => $request->kategori_id,
+                    'potongan' => cikararesetrupiah($request->potongan),
+                    'supplier_id' => $request->supplier_id,
                 ]);
         
                 return redirect('distribusi/'.Crypt::encryptString($request->id));

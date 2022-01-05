@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
 @section('title')
-    Data Migrasi Database
+    Data Migrasi Database {{ $sesi }}
 @endsection
 
 @section('header')
     <div class="row mb-2">
         <div class="col-sm-6">
-        <h1 class="m-0">Data Migrasi Database</h1>
+        <h1 class="m-0">Data Migrasi Database {{ $sesi }}</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Beranda</a></li>
-            <li class="breadcrumb-item active">Daftar Migrasi Database</li>
+            <li class="breadcrumb-item active">Daftar Migrasi Database {{ $sesi }}</li>
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -31,52 +31,20 @@
                 </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-                  {{-- <section class="mb-3">
-                      <form action="{{ url('listdata') }}" method="get">
-                        <div class="row">
-                            <div class="form-group col-md-2">
-                                <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
-                                    <option value="semua">Semua</option>
-                                    @foreach (list_kategori() as $item)
-                                        <option value="{{ $item}}" @if ($kategori == $item)
-                                            selected
-                                        @endif>{{ strtoupper($item)}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                  </section> --}}
                   <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="text-center">
-                            <tr>
-                                <th width="5%">No</th>
-                                <th>Kode Barcode</th>
-                                <th>Nama Barang</th>
-                                <th>Stok</th>
-                                <th>Harga Beli</th>
-                                <th>Harga Jual</th>
-                                <th>Kategori</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-capitalize">
-                           @foreach ($data as $item)
-                               <tr>
-                                   <td>{{ $loop->iteration }}</td>
-                                   <td>{{ $item->kode_barcode }}</td>
-                                   <td>{{ $item->nama_barang }}</td>
-                                   <td>{{ $item->stok.' '.$item->satuan_barang }}</td>
-                                   <td>{{ $item->harga_beli }}</td>
-                                   <td>{{ $item->harga_jual }}</td>
-                                   <td>{{ $item->kategori }}</td>
-                                   <td>{{ $item->status_barang }}</td>
-                               </tr>
-                           @endforeach
-                        </tbody>
-                       
-                    </table>
+                      @switch($sesi)
+                            @case('barang')
+                                @include('sistem.migrasi.tabel.barang')
+                                @break
+                            @case('supplier')
+                                @include('sistem.migrasi.tabel.supplier')
+                                @break
+                            @case('distribusi')
+                                @include('sistem.migrasi.tabel.distribusi')
+                                @break
+                          @default
+                      @endswitch
+                   
                     @if ($data->hasPages())
                     <nav>
                         <ul class="pagination">

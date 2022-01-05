@@ -38,7 +38,7 @@
       </a>
       <ul class="nav nav-treeview">
         <li class="nav-item">
-          <a href="{{ url('/laporan/transaksi?s=harian')}}" class="nav-link small {{ menuaktif($menu,'laporantransaksi') }}">
+          <a href="{{ url('/datalaporan/transaksi?s=harian')}}" class="nav-link small {{ menuaktif($menu,'laporantransaksi') }}">
             &nbsp;&nbsp;<i class="fas fa-shopping-cart nav-icon"></i>
             <p>Transaksi</p>
           </a>

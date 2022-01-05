@@ -158,16 +158,13 @@ class DbCikara {
     }
     public static function kodeDistribusi($user_id)
     {
-        $tgl    = ambil_tgl();
-        $bln    = ambil_bulan();
-        $thn    = substr(ambil_tahun(),2,2);
-        $kode   = 'DB'.$user_id.'.'.$tgl.$bln.$thn.'.';
-        // cek distribusi terakhir
         $akses          = Userakses::where('user_id',$user_id)->first();
+        $kode   = 'DB'.$akses->cabang_id.'.';
+        // cek distribusi terakhir
         $distribusi     = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
         if ($distribusi) {
-            $kodetrx     = explode('.',$distribusi->kode);
-            $nomor          = $kodetrx[2];
+            $kodetrx     = explode('.',$distribusi->kode_distribusi);
+            $nomor          = $kodetrx[1];
             $urutbaru       = $nomor + 1;
             $kodedistribusi = $kode.$urutbaru;
         } else {
@@ -178,16 +175,13 @@ class DbCikara {
     }
     public static function kodeRetur($user_id)
     {
-        $tgl    = ambil_tgl();
-        $bln    = ambil_bulan();
-        $thn    = substr(ambil_tahun(),2,2);
-        $kode   = 'RB'.$user_id.'.'.$tgl.$bln.$thn.'.';
-        // cek distribusi terakhir
         $akses          = Userakses::where('user_id',$user_id)->first();
+        $kode   = 'RB'.$akses->cabang_id.'.';
+        // cek distribusi terakhir
         $retur     = Retur::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
         if ($retur) {
             $kodetrx     = explode('.',$retur->kode_retur);
-            $nomor          = $kodetrx[2];
+            $nomor          = $kodetrx[1];
             $urutbaru       = $nomor + 1;
             $koderetur = $kode.$urutbaru;
         } else {

@@ -140,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($barang as $item)
+                            @foreach ($datatabel as $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     @if ($user->level == 'gudang')
@@ -171,35 +171,7 @@
                                 </tr>
                             @endforeach
                     </table>
-                    @if ($filter['kategori'] == 'semua')
-                      @if ($barang->hasPages())
-                        <nav>
-                            <ul class="pagination">
-                                {{-- Previous Page Link --}}
-                                @if ($barang->onFirstPage())
-                                    <li class="page-item disabled" aria-disabled="true">
-                                        <span class="page-link">@lang('pagination.previous')</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $barang->previousPageUrl() }}" rel="prev">@lang('pagination.previous')</a>
-                                    </li>
-                                @endif
-
-                                {{-- Next Page Link --}}
-                                @if ($barang->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $barang->nextPageUrl() }}" rel="next">@lang('pagination.next')</a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled" aria-disabled="true">
-                                        <span class="page-link">@lang('pagination.next')</span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    @endif
-                    @endif
+                     @includeWhen($filter['page'], 'sistem.pagination', ['data' => 'barang'])
                 </div>
               </div>
             </div>

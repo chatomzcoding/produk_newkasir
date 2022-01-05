@@ -10,7 +10,7 @@
             <h4>
                 Data Transaksi <br>
                 {{ $data['info'] }} <br>
-                Kasir : {{ $data['nama_kasir'] }}
+                {{ $data['sesi'] }}
             </h4>
             <hr>
         </section>

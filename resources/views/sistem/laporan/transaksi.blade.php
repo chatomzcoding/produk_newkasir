@@ -90,14 +90,23 @@
             <!-- general form elements -->
             <div class="card">
               <div class="card-header">
-                  <a href="{{ url('transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
-                  {{-- <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a> --}}
+                  <a href="{{ url('datalaporan/transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
+                  @switch($filter['s'])
+                      @case('bulanan')
+                          
+                          @break
+                      @case('tahunan')
+                          
+                          @break
+                      @default
+                      <a href="{{ url('cetakdata?s=transaksi&filter=harian&tanggal='.$filter['data']['tanggal']) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                  @endswitch
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
   
                   <section class="mb-1 mt-1">
-                      <form action="{{ url('laporan/transaksi') }}" method="get">
+                      <form action="{{ url('datalaporan/transaksi') }}" method="get">
                         <div class="row">
                             <div class="col-md-2">
                                 <select name="s" id="" class="form-control" onchange="this.form.submit()">

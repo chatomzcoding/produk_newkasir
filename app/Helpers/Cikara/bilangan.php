@@ -15,7 +15,7 @@ if (! function_exists('filternominal')) {
 if (! function_exists('rupiah')) {
     function rupiah($angka)
     {
-        if (filternominal($angka)) {
+        if (filternominal($angka) AND !empty($angka)) {
             $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
             return $hasil_rupiah;
         } else {
@@ -27,9 +27,13 @@ if (! function_exists('rupiah')) {
 if (! function_exists('norupiah')) {
     function norupiah($angka)
     {
-        $hasil_rupiah = number_format($angka,2,',','.');
-        $hasil_rupiah = str_replace(',00','',$hasil_rupiah);
-        return $hasil_rupiah;
+        if (filternominal($angka) AND !empty($angka)) {
+            $hasil_rupiah = number_format($angka,2,',','.');
+            $hasil_rupiah = str_replace(',00','',$hasil_rupiah);
+            return $hasil_rupiah;
+        } else {
+            return $angka;
+        }
     }
 }
 

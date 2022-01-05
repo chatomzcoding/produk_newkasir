@@ -30,19 +30,23 @@ class BarangController extends Controller
             $fkategori  = 'cari';
         } else {
             if ($fkategori == 'semua') {
-                $barang     = Barang::where('cabang_id',$akses->cabang_id)->paginate(20);
+                $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->paginate(20);
+                $page       = TRUE;
             } else {
-                $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+                $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+                $page       = FALSE;
+
             }
         }
         
         
-        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
+        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
         $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();
-        $totalitem    = Barang::where('cabang_id',$akses->cabang_id)->sum('stok');
+        $totalitem      = Barang::where('cabang_id',$akses->cabang_id)->sum('stok');
         $totalbarangstokkosong    = Barang::where('cabang_id',$akses->cabang_id)->where('stok','<=',0)->count();
         $filter         = [
-            'kategori' => $fkategori
+            'kategori' => $fkategori,
+            'page' => $page,
         ];
         $statistik      = [
             'totalbarang' => $totalbarang,
@@ -50,7 +54,7 @@ class BarangController extends Controller
             'totalbarangstokkosong' => $totalbarangstokkosong
         ];
 
-        return view('sistem.barang.index', compact('menu','user','barang','kategori','filter','statistik'));
+        return view('sistem.barang.index', compact('menu','user','datatabel','kategori','filter','statistik'));
     }
 
     /**

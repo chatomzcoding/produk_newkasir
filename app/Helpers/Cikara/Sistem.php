@@ -11,6 +11,17 @@ if (! function_exists('deletefile')) {
         }
     }
 }
+// get nama lengkap
+if (! function_exists('cekdatatable')) {
+    function cekdatatable($page)
+    {
+        $id     = 'example1';
+        if ($page) {
+            $id = '';
+        }
+        return $id;
+    }
+}
 // menu highlight
 if (! function_exists('menuaktif')) {
     function menuaktif($menu,$sesi)
