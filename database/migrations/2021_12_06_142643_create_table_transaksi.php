@@ -17,6 +17,8 @@ class CreateTableTransaksi extends Migration
             $table->id();
             $table->string('kode_transaksi');
             $table->string('status_transaksi');
+            $table->string('status_pembeli',['umum','member']);
+            $table->string('kode_pelanggan')->nullable();
             $table->string('tipe_pembayaran')->nullable();
             $table->string('tipe_orderan')->nullable();
             $table->integer('diskon')->nullable();

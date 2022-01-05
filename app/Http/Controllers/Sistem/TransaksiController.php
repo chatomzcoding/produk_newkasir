@@ -177,28 +177,24 @@ class TransaksiController extends Controller
         $transaksi  = Transaksi::find(Crypt::decryptString($transaksi));
         $user       = Auth::user();
         switch ($user->level) {
-            case 'kasir':
-                $akses      = Userakses::where('user_id',$user->id)->first();
-                $cabang     = Cabang::find($akses->cabang_id);
-                # code...
-                break;
             case 'cabang':
                 $cabang     = Cabang::where('user_id',$user->id)->first();
                 # code...
                 break;
             
             default:
-                # code...
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $cabang     = Cabang::find($akses->cabang_id);
+                $client     = Client::find($cabang->client_id);
                 break;
         }
-        $client     = Client::find($cabang->client_id);
         switch ($transaksi->status_transaksi) {
             case 'proses':
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
                 $data = [
                     'totalpembayaran' => totalpembayaran($transaksi->keranjang)
                 ];
-                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','client'));
+                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','cabang','client'));
                 break;
             case 'retur':
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
@@ -210,12 +206,12 @@ class TransaksiController extends Controller
                     'totalpembayaran' => $totalpembayaran,
                     'sisapembayaran' => $sisapembayaran,
                 ];
-                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','client'));
+                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','cabang','client'));
                 break;
             case 'selesai':
                 $invoice = datainvoice($transaksi->keranjang,$transaksi->uang_pembeli);
                 $userakses  = Userakses::where('user_id',$user->id)->first();
-                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','client','invoice','userakses'));
+                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','cabang','invoice','userakses','client'));
                 break;
             default:
                 # code...

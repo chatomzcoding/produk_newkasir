@@ -26,8 +26,10 @@ class BarangController extends Controller
         $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
         $cari       = (isset($_GET['cari'])) ? TRUE : FALSE ;
         if ($cari) {
-            $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
+            $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
             $fkategori  = 'cari';
+            $page       = FALSE;
+
         } else {
             if ($fkategori == 'semua') {
                 $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->paginate(20);

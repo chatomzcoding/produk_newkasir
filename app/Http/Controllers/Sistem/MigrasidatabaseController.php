@@ -8,6 +8,8 @@ use App\Models\Barang;
 use App\Models\Distribusi;
 use App\Models\Kategori;
 use App\Models\Supplier;
+use App\Models\Transaksi;
+use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +20,7 @@ class MigrasidatabaseController extends Controller
     public function index()
     {
         $menu       = 'migrasi';
-        $migrasi    = ['barang','supplier','distribusi'];
+        $migrasi    = ['user','barang','supplier','distribusi','transaksi'];
         return view('sistem.migrasi.index', compact('menu','migrasi'));
     }
 
@@ -143,7 +145,7 @@ class MigrasidatabaseController extends Controller
                                     // kode barang
                                     $no    = substr($k->kode_barang,4,4);
                                     $kodebarang     = 'CK'.$cabang->cabang_id.'.'.$no;
-                                    $barang[$k->kode_barang] = [
+                                    $barang[$kodebarang] = [
                                         'kode_barang' => $kodebarang,
                                         'nama_barang' => $k->nama_barang,
                                         'jumlah' => $k->jumlah,
@@ -168,6 +170,78 @@ class MigrasidatabaseController extends Controller
                     }
                 }
                 $data   = DB::table('kasir_distribusi')->paginate(20);
+                break;
+            case 'transaksi':
+                $transaksi  = DB::table('transaksi')
+                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                ->where('user_akses.cabang_id',$cabang->cabang_id)
+                                ->count();
+                if (isset($_GET['s']) AND $transaksi == 0) {
+                    $data   = DB::table('kasir_transaksi')->where('status_transaksi','selesai')->get();
+                    foreach ($data as $key) {
+                        $kode               = explode('-',$key->kode_transaksi);
+                        $userlama           = DB::table('kasir_user')->select('email')->where('id',$key->user_id)->first();
+                        $userbaru           = User::select('id')->where('email',$userlama->email)->first();
+                        $kode_transaksi   = 'TRX'.$userbaru->id.'.'.substr($kode[2],2,6).'.'.$kode[3];
+
+                        // data keranjang
+                        $dkeranjang         = DB::table('kasir_keranjang')->where('kasirtransaksi_id',$key->id)->get();
+                        $keranjang  = [];
+                        foreach ($dkeranjang as $k) {
+                            $no    = substr($k->kode_barang,4,4);
+                            $kodebarang     = 'CK'.$cabang->cabang_id.'.'.$no;
+                            if ($k->hargabeli_barang == '') {
+                                $dbarang    = Barang::select('harga_beli')->where('kode_barang',$kodebarang)->first();
+                                if ($dbarang) {
+                                    $harga_beli     = $dbarang->harga_beli;
+                                } else {
+                                    $harga_beli     = NULL;
+                                }
+                            } else {
+                                $harga_beli     = $k->hargabeli_barang;
+                            }
+                            if (!is_null($harga_beli)) {
+                                $keranjang[$kodebarang] = [
+                                    'kode_barang' => $kodebarang,
+                                    'nama_barang' => $k->nama_barang,
+                                    'jumlah' => $k->jumlah,
+                                    'harga_beli' => $harga_beli,
+                                    'harga_jual' => $k->harga_barang,
+                                ];
+                            }
+                        }
+                        Transaksi::create([
+                            'user_id' => $userbaru->id,
+                            'kode_transaksi' => $kode_transaksi,
+                            'status_transaksi' => $key->status_transaksi,
+                            'uang_pembeli' => $key->uang_pembeli,
+                            'keranjang' => json_encode($keranjang),
+                            'created_at' => $k->created_at,
+                            'updated_at' => $k->updated_at
+                        ]);
+                    }
+                }
+                $data   = DB::table('kasir_transaksi')->paginate(10);
+                break;
+            case 'user':
+                $data   = DB::table('kasir_user')->where('level','kasir')->get();
+                if (isset($_GET['s'])) {
+                    foreach ($data as $key) {
+                        User::create([
+                            'name' => $key->name,
+                            'email' => $key->email,
+                            'level' => $key->level,
+                            'password' => $key->password,
+                        ]);
+
+                        // add to user akses
+                        $user   = User::where('name',$key->name)->where('email',$key->email)->first();
+                        Userakses::create([
+                            'cabang_id' => $cabang->cabang_id,
+                            'user_id' => $user->id,
+                        ]);
+                    }
+                }
                 break;
             default:
                 $data       = NULL;

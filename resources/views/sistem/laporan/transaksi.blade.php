@@ -30,7 +30,7 @@
                 <div class="info-box-content">
                   <span class="info-box-text">Total Transaksi</span>
                   <span class="info-box-number">
-                        {{ $statistik['data']['total']}}
+                        {{ norupiah($statistik['data']['total'])}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -43,7 +43,7 @@
                 <div class="info-box-content">
                   <span class="info-box-text">Item Terjual</span>
                   <span class="info-box-number">
-                    {{ $statistik['data']['itemterjual']}}
+                    {{ norupiah($statistik['data']['itemterjual'])}}
 
                   </span>
                 </div>
@@ -123,13 +123,13 @@
                             </div>
                             @switch($filter['s'])
                                 @case('harian')
-                                    @include('sistem.laporan.filter.harian')
+                                    @include('sistem.filter.harian')
                                     @break
                                 @case('bulanan')
-                                    @include('sistem.laporan.filter.bulanan')
+                                    @include('sistem.filter.bulanan')
                                     @break
                                 @case('tahunan')
-                                    @include('sistem.laporan.filter.tahunan')
+                                    @include('sistem.filter.tahunan')
                                     @break
                                 @default
                                     
@@ -138,7 +138,7 @@
                     </form>
                   </section>
                   <div class="table-responsive">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
                         <thead class="text-center">
                             <tr>
                                 <th width="5%">No</th>
@@ -152,7 +152,7 @@
                             </tr>
                         </thead>
                         <tbody class="text-capitalize">
-                            @forelse ($transaksi as $item)
+                            @forelse ($datatabel as $item)
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
@@ -198,6 +198,7 @@
                                 </tr>
                             @endforelse
                     </table>
+                    @includeWhen($filter['data']['page'], 'sistem.pagination',['link' => $filter['data']['link']])
                 </div>
               </div>
             </div>

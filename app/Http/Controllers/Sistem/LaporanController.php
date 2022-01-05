@@ -19,42 +19,64 @@ class LaporanController extends Controller
                 $menu   = 'laporantransaksi';
                 $akses  = Userakses::where('user_id',$user->id)->first();
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'harian' ;
-                switch ($_GET['s']) {
+                switch ($s) {
                     case 'harian':
                         $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
-                        $transaksi  = DB::table('transaksi')
+                        $dstatistik  = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
                                         ->select('transaksi.*')
                                         ->where('user_akses.cabang_id',$akses->cabang_id)
                                         ->whereDate('transaksi.created_at',$tanggal)
                                         ->get();
                         $dfilter    = [
-                            'tanggal' => $tanggal
+                            'tanggal' => $tanggal,
+                            'page' => FALSE,
+                            'link' => '&s='.$s.'&tangggal='.$tanggal
                         ];
+                        $datatabel  = $dstatistik;
                         break;
                     case 'bulanan':
                         $bulan = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan();
                         $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
-                        $transaksi  = DB::table('transaksi')
+                        $datatabel  = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->select('transaksi.*')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->whereMonth('transaksi.created_at',$bulan)
+                                        ->whereYear('transaksi.created_at',$tahun)
+                                        ->paginate(10);
+                        $dstatistik  = DB::table('transaksi')
+                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->select('transaksi.*')
                                         ->where('user_akses.cabang_id',$akses->cabang_id)
                                         ->whereMonth('transaksi.created_at',$bulan)
                                         ->whereYear('transaksi.created_at',$tahun)
                                         ->get();
                         $dfilter    = [
                             'bulan' => $bulan,
-                            'tahun' => $tahun
+                            'tahun' => $tahun,
+                            'page' => TRUE,
+                            'link' => '&s='.$s.'&bulan='.$bulan.'&tahun='.$tahun
                         ];
                         break;
                     case 'tahunan':
                         $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
-                        $transaksi  = DB::table('transaksi')
+                        $datatabel  = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->select('transaksi.*')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->whereYear('transaksi.created_at',$tahun)
+                                        ->paginate(10);
+                        $dstatistik  = DB::table('transaksi')
+                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                        ->select('transaksi.*')
                                         ->where('user_akses.cabang_id',$akses->cabang_id)
                                         ->whereYear('transaksi.created_at',$tahun)
                                         ->get();
                         $dfilter    = [
-                            'tahun' => $tahun
+                            'tahun' => $tahun,
+                            'page' => TRUE,
+                            'link' => '&s='.$s.'&tahun='.$tahun
                         ];
                         break;
                     
@@ -63,13 +85,13 @@ class LaporanController extends Controller
                         break;
                 }
                 $statistik  = [
-                    'data' => self::statistik($transaksi)
+                    'data' => self::statistik($dstatistik)
                 ];
                 $filter     = [
                     's' => $s,
                     'data' => $dfilter
                 ];
-                return view('sistem.laporan.transaksi', compact('menu','transaksi','filter','statistik'));
+                return view('sistem.laporan.transaksi', compact('menu','datatabel','filter','statistik'));
                 break;
             
             default:

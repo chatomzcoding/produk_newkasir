@@ -8,14 +8,14 @@
             </li>
         @else
             <li class="page-item">
-                <a class="page-link" href="{{ $datatabel->previousPageUrl() }}" rel="prev">@lang('pagination.previous')</a>
+                <a class="page-link" href="{{ $datatabel->previousPageUrl().$link }}" rel="prev">@lang('pagination.previous')</a>
             </li>
         @endif
 
         {{-- Next Page Link --}}
         @if ($datatabel->hasMorePages())
             <li class="page-item">
-                <a class="page-link" href="{{ $datatabel->nextPageUrl() }}" rel="next">@lang('pagination.next')</a>
+                <a class="page-link" href="{{ $datatabel->nextPageUrl().$link }}" rel="next">@lang('pagination.next')</a>
             </li>
         @else
             <li class="page-item disabled" aria-disabled="true">
