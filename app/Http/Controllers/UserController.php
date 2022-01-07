@@ -43,7 +43,20 @@ class UserController extends Controller
                             ->select('users.*')
                             ->where('user_akses.cabang_id',$cabang->id)
                             ->get();
-                return view('cabang.user.index', compact('user','menu'));
+                $statistik  = [
+                    'totalkaryawan' => Userakses::where('cabang_id',$cabang->id)->count(),
+                    'totalgudang' => DB::table('users')
+                                        ->join('user_akses','users.id','=','user_akses.user_id')
+                                        ->where('users.level','gudang')
+                                        ->where('user_akses.cabang_id',$cabang->id)
+                                        ->count(),
+                    'totalkasir' => DB::table('users')
+                                        ->join('user_akses','users.id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$cabang->id)
+                                        ->where('users.level','kasir')
+                                        ->count(),
+                ];
+                return view('cabang.user.index', compact('user','menu','statistik'));
                 break;
             
             default:

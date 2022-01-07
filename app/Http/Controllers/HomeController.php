@@ -8,6 +8,7 @@ use App\Models\Cabang;
 use App\Models\Client;
 use App\Models\Distribusi;
 use App\Models\Retur;
+use App\Models\Supplier;
 use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Userakses;
@@ -33,7 +34,6 @@ class HomeController extends Controller
                 break;
             case 'client':
                 $client     = Client::where('user_id',$user->id)->first();
-
                 $statistik = [
                     'totalcabang' => Cabang::where('client_id',$client->id)->count(),
                     'totalkaryawan' => DB::table('user_akses')
@@ -44,7 +44,13 @@ class HomeController extends Controller
                 return view('client.dashboard', compact('menu','statistik'));
                 break;
             case 'cabang':
-                return view('cabang.dashboard', compact('menu'));
+                $cabang     = Cabang::where('user_id',$user->id)->first();
+                $statistik  = [
+                    'totalkaryawan' => Userakses::where('cabang_id',$cabang->id)->count(),
+                    'totalsupplier' => Supplier::where('cabang_id',$cabang->id)->count(),
+                    'totalbarang' => Barang::where('cabang_id',$cabang->id)->count()
+                ];
+                return view('cabang.dashboard', compact('menu','statistik'));
                 break;
             case 'gudang':
                 $cabang         = Userakses::where('user_id',$user->id)->first();

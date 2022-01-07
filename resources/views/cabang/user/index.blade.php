@@ -29,12 +29,12 @@
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Karyawan</span>
                       <span class="info-box-number">
-                        {{ count($user) }}
+                        {{ $statistik['totalkaryawan'] }}
                         {{-- <small>%</small> --}}
                       </span>
                     </div>
@@ -48,12 +48,13 @@
       
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box mb-3">
-                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-times"></i></span>
+                    <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-user-friends"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Karyawan Gudang</span>
                       <span class="info-box-number">
-                        1
+                        {{ $statistik['totalgudang'] }}
+                        
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -62,12 +63,13 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box mb-3">
-                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-times"></i></span>
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-friends"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Karyawan Kasir</span>
                       <span class="info-box-number">
-                        1
+                        {{ $statistik['totalkasir'] }}
+                        
                       </span>
                     </div>
                     <!-- /.info-box-content -->
