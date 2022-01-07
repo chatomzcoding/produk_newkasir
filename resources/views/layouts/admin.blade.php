@@ -147,17 +147,36 @@
 
     <!-- SEARCH FORM -->
     @if ($user->level == 'kasir' || $user->level == 'gudang')
-      <form action="{{ url('barang') }}" method="get" class="form-inline ml-3">
-        <input type="hidden" name="data" value="cari">
-        <div class="input-group input-group-sm">
-          <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari Barang" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-navbar" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
-      </form>
+    @switch($menu)
+        @case('distribusi')
+          <form action="{{ url('distribusi') }}" method="get" class="form-inline ml-3">
+            <input type="hidden" name="data" value="cari">
+            <div class="input-group input-group-sm">
+              <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari Faktur" aria-label="Search">
+              <div class="input-group-append">
+                <button class="btn btn-navbar" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+            @break
+        @case(2)
+            
+            @break
+        @default
+          <form action="{{ url('barang') }}" method="get" class="form-inline ml-3">
+            <input type="hidden" name="data" value="cari">
+            <div class="input-group input-group-sm">
+              <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari Barang" aria-label="Search">
+              <div class="input-group-append">
+                <button class="btn btn-navbar" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+    @endswitch
     @endif
 
     <!-- Right navbar links -->

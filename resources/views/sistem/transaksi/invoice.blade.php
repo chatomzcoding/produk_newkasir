@@ -185,6 +185,10 @@
           </div>
         </div>
     </div>
+
+    @php
+        $alamat = explode('-',$cabang->alamat);
+    @endphp
     @section('script')
 
     <script src="{{ asset('js/recta.js')}}"></script>
@@ -199,7 +203,10 @@
                 .text('')
                 .text('{{ strtoupper($client->nama_toko)}}')
                 .bold(false)
-                .text('selaawi')
+                .align('center')
+                @foreach ($alamat as $item)
+                .text('{{ $item}}')
+                @endforeach
                 .text('--------------------------------')
                 .align('left')
                 .text('{{ date_indo(db_datetime($transaksi->created_at,'tgl')).' | '.db_datetime($transaksi->created_at,'jam')}}')

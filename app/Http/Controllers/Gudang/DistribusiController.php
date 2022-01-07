@@ -25,29 +25,44 @@ class DistribusiController extends Controller
     public function index()
     {
         $menu       = 'distribusi';
+        $page       = FALSE;
+        $link       = '';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
         $waktu      = (isset($_GET['waktu'])) ? $_GET['waktu'] : 'semua' ;
         $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
         $bulan      = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
         $tahun      = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
-        if ($waktu == 'semua') {
-            $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->orderBy('tgl_faktur','DESC')->paginate(20);
-            $page       = TRUE;
+        $cari      = (isset($_GET['cari'])) ? TRUE : FALSE ;
+        // cek jika ada pencarian no faktur
+        // $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->where('kode_distribusi','DB1.2106')->get();
+        // dd($datatabel);
+        if ($cari) {
+            $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->where('no_faktur',$_GET['cari'])->get();
         } else {
-            switch ($waktu) {
-                case 'harian':
-                    $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->get();
-                    break;
-                case 'bulanan':
-                    $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
-                    break;
-                
-                default:
-                    # code...
-                    break;
+            if ($waktu == 'semua') {
+                $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->orderBy('tgl_faktur','DESC')->paginate(20);
+                $page       = TRUE;
+            } else {
+                switch ($waktu) {
+                    case 'harian':
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->get();
+                        break;
+                    case 'bulanan':
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
+                        break;
+                    case 'tahunan':
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->paginate(20);
+                        $page       = TRUE;
+                        $link       = '&waktu=tahunan&tahun='.$tahun;
+                        break;
+                    
+                    default:
+                        $datatabel = [];
+                        break;
+                }
             }
-            $page       = FALSE;
         }
+        
         $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
         $statistik  = [
             'total' => Distribusi::where('cabang_id',$akses->cabang_id)->count(),
@@ -62,7 +77,8 @@ class DistribusiController extends Controller
                 
             ],
             'waktu' => $waktu,
-            'page' => $page
+            'page' => $page,
+            'link' => $link
         ];
         return view('gudang.distribusi.index', compact('menu','datatabel','akses','supplier','statistik','filter'));
     }
@@ -99,7 +115,7 @@ class DistribusiController extends Controller
                     'supplier_id' => $request->supplier_id,
                 ]);
         
-                $distribusi     = Distribusi::where('kode',$request->kode)->first();
+                $distribusi     = Distribusi::where('kode_distribusi',$request->kode_distribusi)->where('tgl_faktur',$request->tgl_faktur)->first();
                 return redirect('distribusi/'.Crypt::encryptString($distribusi->id));
                 break;
             case 'tambahbarang':

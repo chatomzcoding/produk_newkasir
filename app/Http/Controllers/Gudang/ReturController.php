@@ -28,19 +28,19 @@ class ReturController extends Controller
         if ($tanggal == 'semua') {
             $retur  = DB::table('retur')
                         ->join('distribusi','retur.distribusi_id','=','distribusi.id')
-                        ->select('retur.*','distribusi.kode','distribusi.no_faktur')
+                        ->select('retur.*','distribusi.kode_distribusi','distribusi.no_faktur')
                         ->where('distribusi.cabang_id',$akses->cabang_id)
                         ->get();
         } else {
             $retur  = DB::table('retur')
                         ->join('distribusi','retur.distribusi_id','=','distribusi.id')
-                        ->select('retur.*','distribusi.kode','distribusi.no_faktur')
+                        ->select('retur.*','distribusi.kode_distribusi','distribusi.no_faktur')
                         ->where('distribusi.cabang_id',$akses->cabang_id)
                         ->whereDate('retur.created_at',$tanggal)
                         ->get();
         }
         
-        $distribusi     = Distribusi::select('id','kode','no_faktur')->where('cabang_id',$akses->cabang_id)->get();
+        $distribusi     = Distribusi::select('id','kode_distribusi','no_faktur')->where('cabang_id',$akses->cabang_id)->get();
         $statistik  = [
             'total' => Retur::where('cabang_id',$akses->cabang_id)->count(),
             'totalproses' => Retur::where('cabang_id',$akses->cabang_id)->where('status_retur','proses')->count(),

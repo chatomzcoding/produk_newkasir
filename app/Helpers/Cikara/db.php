@@ -161,7 +161,7 @@ class DbCikara {
         $akses          = Userakses::where('user_id',$user_id)->first();
         $kode   = 'DB'.$akses->cabang_id.'.';
         // cek distribusi terakhir
-        $distribusi     = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
+        $distribusi     = Distribusi::where('cabang_id',$akses->cabang_id)->latest()->first();
         if ($distribusi) {
             $kodetrx     = explode('.',$distribusi->kode_distribusi);
             $nomor          = $kodetrx[1];
@@ -178,7 +178,7 @@ class DbCikara {
         $akses          = Userakses::where('user_id',$user_id)->first();
         $kode   = 'RB'.$akses->cabang_id.'.';
         // cek distribusi terakhir
-        $retur     = Retur::where('cabang_id',$akses->cabang_id)->whereDate('created_at',tgl_sekarang())->latest()->first();
+        $retur     = Retur::where('cabang_id',$akses->cabang_id)->latest()->first();
         if ($retur) {
             $kodetrx     = explode('.',$retur->kode_retur);
             $nomor          = $kodetrx[1];

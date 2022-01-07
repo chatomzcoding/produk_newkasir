@@ -101,6 +101,9 @@
                                         <option value="bulanan" @if ($filter['waktu'] == 'bulanan')
                                         selected
                                     @endif>BULANAN</option>
+                                        <option value="tahunan" @if ($filter['waktu'] == 'tahunan')
+                                        selected
+                                    @endif>TAHUNAN</option>
                                     </select>
                                 </div>
                                 @switch($filter['waktu'])
@@ -109,6 +112,9 @@
                                         @break
                                     @case('bulanan')
                                         @include('sistem.filter.bulanan')
+                                        @break
+                                    @case('tahunan')
+                                        @include('sistem.filter.tahunan')
                                         @break
                                     @default
                                         
@@ -167,7 +173,7 @@
                                 </tr>
                             @endforelse
                     </table>
-                    @includeWhen($filter['page'], 'sistem.pagination')
+                    @includeWhen($filter['page'], 'sistem.pagination',['link' => $filter['link']])
 
                 </div>
               </div>
@@ -211,9 +217,9 @@
                     <div class="form-group row">
                         <label for="" class="col-md-4">Nama Supplier</label>
                         <div class="col-md-8 p-0">
-                            <select name="kategori_id" id="kategori_id" class="form-control listdata" data-width="100%" required>
+                            <select name="supplier_id" id="supplier_id" class="form-control listdata" data-width="100%" required>
                                 @foreach ($supplier as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -223,6 +229,7 @@
                         <select name="pembayaran" id="pembayaran" class="form-control col-md-8" required>
                             <option value="tunai">TUNAI</option>
                             <option value="kredit">KREDIT</option>
+                            <option value="konsinyasi">KONSINYASI</option>
                         </select>
                     </div>
                     <div class="form-group row">
@@ -259,7 +266,7 @@
                 <input type="hidden" name="s" value="editdistribusi">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Kode Distribusi</label>
+                        <label for="" class="col-md-4">Kode Distribusi <strong class="text-danger">*</strong></label>
                         <input type="text" name="kode_distribusi" id="kode_distribusi" class="form-control col-md-8" readonly>
                     </div>
                     <div class="form-group row">
@@ -267,15 +274,15 @@
                         <input type="text" name="no_faktur" id="no_faktur" value="{{ old('no_faktur') }}" class="form-control col-md-8">
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Tanggal Faktur/Pembelian</label>
-                        <input type="date" name="tgl_faktur" id="tgl_faktur" value="{{ old('tgl_faktur') }}" class="form-control col-md-8">
+                        <label for="" class="col-md-4">Tanggal Faktur/Pembelian <strong class="text-danger">*</strong></label>
+                        <input type="date" name="tgl_faktur" id="tgl_faktur" value="{{ old('tgl_faktur') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-4">Tanggal Jatuh Tempo</label>
                         <input type="date" name="tgl_tempo" id="tgl_tempo" value="{{ old('tgl_tempo') }}" class="form-control col-md-8">
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Supplier</label>
+                        <label for="" class="col-md-4">Nama Supplier <strong class="text-danger">*</strong></label>
                         <div class="col-md-8 p-0">
                             <select name="supplier_id" id="supplier_id" class="form-control listdata" data-width="100%" required>
                                 @foreach ($supplier as $item)
@@ -285,10 +292,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Pembayaran</label>
+                        <label for="" class="col-md-4">Pembayaran <strong class="text-danger">*</strong></label>
                         <select name="pembayaran" id="pembayaran" class="form-control col-md-8" required>
                             <option value="tunai">TUNAI</option>
                             <option value="kredit">KREDIT</option>
+                            <option value="konsinyasi">KONSINYASI</option>
+
                         </select>
                     </div>
                     <div class="form-group row">

@@ -47,7 +47,7 @@ class HomeController extends Controller
                 $cabang     = Cabang::where('user_id',$user->id)->first();
                 $statistik  = [
                     'totalkaryawan' => Userakses::where('cabang_id',$cabang->id)->count(),
-                    'totalsupplier' => Supplier::where('cabang_id',$cabang->id)->count(),
+                    'totalsupplier' => Cabang::totalsupplier($cabang->id),
                     'totalbarang' => Barang::where('cabang_id',$cabang->id)->count()
                 ];
                 return view('cabang.dashboard', compact('menu','statistik'));
@@ -56,7 +56,7 @@ class HomeController extends Controller
                 $cabang         = Userakses::where('user_id',$user->id)->first();
                 $totalbarang    = Barang::where('cabang_id',$cabang->id)->count();
                 $totaldistribusi= Distribusi::where('cabang_id',$cabang->id)->count();
-                $totalsupplier  = Retur::where('cabang_id',$cabang->id)->count();
+                $totalsupplier  = Cabang::totalsupplier($cabang->id);
                 $totalbarangstokkosong    = Barang::where('cabang_id',$cabang->id)->where('stok','<=',0)->count();
                 $statistik = [
                     'totalbarang' => $totalbarang,
