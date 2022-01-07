@@ -12,7 +12,7 @@ use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade as PDF;
-
+use Illuminate\Support\Facades\Crypt;
 
 class MobileController extends Controller
 {
@@ -125,10 +125,19 @@ class MobileController extends Controller
         return $success;
     }
 
+    public function encryptid(Request $request)
+    {
+        $id =   Crypt::encryptString($request->id);
+
+        return [
+            'id' => $id,
+        ];
+    }
+
     public function cetaktransaksi()
     {
         
-        $user       = User::find($_GET['user_id']);
+        $user       = User::find(Crypt::decryptString($_GET['user_id']));
         switch ($user->level) {
             case 'kasir':
                 switch ($_GET['sesi']) {

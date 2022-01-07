@@ -31,5 +31,6 @@ Route::resource('listdata', ListdataController::class);
 Route::get('userakses/{user}','App\Http\Controllers\Api\MobileController@userakses');
 Route::get('cetaktransaksi','App\Http\Controllers\Api\MobileController@cetaktransaksi');
 Route::post('ceklogin','App\Http\Controllers\Api\MobileController@ceklogin');
+Route::post('encryptid','App\Http\Controllers\Api\MobileController@encryptid');
 Route::post('sesi/logout','App\Http\Controllers\Api\MobileController@logout');
 Route::post('ubahpassword','App\Http\Controllers\Api\MobileController@ubahpassword');
