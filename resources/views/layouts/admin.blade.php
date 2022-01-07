@@ -147,7 +147,7 @@
 
     <!-- SEARCH FORM -->
     @if ($user->level == 'kasir' || $user->level == 'gudang')
-      <form action="#" method="get" class="form-inline ml-3">
+      <form action="{{ url('barang') }}" method="get" class="form-inline ml-3">
         <input type="hidden" name="data" value="cari">
         <div class="input-group input-group-sm">
           <input class="form-control form-control-navbar" name="cari" type="search" placeholder="Cari Barang" aria-label="Search">

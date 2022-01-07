@@ -88,11 +88,14 @@
                             <span class="sr-only">Toggle Dropdown</span>
                           </button>
                             <div class="dropdown-menu" role="menu">
-                              <div class="dropdown-divider"></div>
+                              @if (isset($_GET['kategori']))
+                                <a href="{{ url('cetakdata?s=barang&kategori='.$filter['kategori'].'&harga=TRUE') }}" class="dropdown-item pop-info" target="_blank" title="Cetak daftar harga barang"> CETAK HARGA <i class="fas fa-print float-right text-info pt-1"></i></a>
+                                <div class="dropdown-divider"></div>
+                              @endif
                               <form action="{{url('/barang/semua')}}" method="post">
                                 @csrf
                                 @method('delete')
-                                  <button class="dropdown-item text-danger" type="submit"><i class="fas fa-trash-alt"></i> Hapus Semua</button>
+                                  <button class="dropdown-item" type="submit">Hapus Semua <i class="fas fa-trash-alt float-right text-danger pt-1"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -115,6 +118,16 @@
                                       @endif>{{ strtoupper($item->nama)}}</option>
                                   @endforeach
                               </select>
+                          </div>
+                          <div class="col-md-10">
+                            <section class="font-italic text-right">
+                              @if (isset($_GET['cari']))
+                              Pencarian dengan keyword : <strong>{{ $_GET['cari'] }}</strong> [ditemukan - <strong>{{ count($barang) }} barang</strong>]
+                              @endif
+                              @if (isset($_GET['kategori']))
+                              Kategori : <strong>{{ DbCikara::namaKategori($_GET['kategori']) }}</strong> [ditemukan - <strong>{{ count($barang) }} barang</strong>]
+                              @endif
+                            </section>
                           </div>
                       </div>
                   </form>
@@ -140,7 +153,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($datatabel as $item)
+                            @foreach ($barang as $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     @if ($user->level == 'gudang')
@@ -171,7 +184,7 @@
                                 </tr>
                             @endforeach
                     </table>
-                     @includeWhen($filter['page'], 'sistem.pagination', ['data' => 'barang'])
+                     @includeWhen($filter['page'], 'sistem.pagination', ['link' => NULL,'datatabel'=>$barang])
                 </div>
               </div>
             </div>

@@ -39,23 +39,23 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Kode Barang</label>
+                                    <label for="" class="col-md-4 p-2">Kode Barang <strong class="text-danger">*</strong></label>
                                     <input type="text" name="kode_barang" value="{{ DbCikara::kodeBarang($akses->cabang_id) }}" class="form-control col-md-8" readonly>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Nama Barang</label>
+                                    <label for="" class="col-md-4 p-2">Nama Barang <strong class="text-danger">*</strong></label>
                                     <input type="text" name="nama_barang" value="{{ old('nama_barang') }}" class="form-control col-md-8" required>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Harga Beli</label>
+                                    <label for="" class="col-md-4 p-2">Harga Beli <strong class="text-danger">*</strong></label>
                                     <input type="number" name="harga_beli" value="{{ old('harga_beli') }}" step="any" class="form-control col-md-8" required>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Harga Jual</label>
+                                    <label for="" class="col-md-4 p-2">Harga Jual <strong class="text-danger">*</strong></label>
                                     <input type="number" name="harga_jual" value="{{ old('harga_jual') }}" step="any" class="form-control col-md-8" required>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Stok Barang</label>
+                                    <label for="" class="col-md-4 p-2">Stok Barang <strong class="text-danger">*</strong></label>
                                     <input type="number" name="stok" value="{{ old('stok') }}" min="1" class="form-control col-md-8" required>
                                 </div>
                                 <div class="form-group row">
@@ -65,7 +65,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Status Barang</label>
+                                    <label for="" class="col-md-4 p-2">Status Barang <strong class="text-danger">*</strong></label>
                                     <select name="status_barang" id="" class="form-control col-md-8">
                                         <option value="toko">Milik Toko</option>
                                         <option value="simpanan">Barang Simpanan</option>
@@ -81,22 +81,26 @@
                                     </select>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Kategori Barang</label>
-                                    <select name="kategori_id" id="" class="form-control col-md-8">
-                                        <option value="">-- pilih satuan --</option>
-                                        @foreach ($kategori as $item)
-                                            <option value="{{ $item->id }}">{{ strtoupper($item->nama) }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="" class="col-md-4 p-2">Kategori Barang <strong class="text-danger">*</strong></label>
+                                    <div class="col-md-8 p-0">
+                                        <select name="kategori_id" id="" class="form-control listdata" width="100%" required>
+                                            <option value="">-- pilih satuan --</option>
+                                            @foreach ($kategori as $item)
+                                                <option value="{{ $item->id }}">{{ strtoupper($item->nama) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-md-4 p-2">Satuan Barang</label>
-                                    <select name="satuan_id" id="" class="form-control col-md-8">
-                                        <option value="">-- pilih satuan --</option>
-                                        @foreach ($satuan as $item)
-                                            <option value="{{ $item->id }}">{{ strtoupper($item->nama) }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="" class="col-md-4 p-2">Satuan Barang <strong class="text-danger">*</strong></label>
+                                    <div class="col-md-8 p-0">
+                                        <select name="satuan_id" id="" class="form-control listdata" width="100%" required>
+                                            <option value="">-- pilih satuan --</option>
+                                            @foreach ($satuan as $item)
+                                                <option value="{{ $item->id }}">{{ strtoupper($item->nama) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="" class="col-md-4 p-2">Gambar Barang</label>

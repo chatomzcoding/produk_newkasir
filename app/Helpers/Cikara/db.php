@@ -228,7 +228,7 @@ class DbCikara {
                 $result    = [];
                 for ($i=1; $i <= 31; $i++) {
                     $nilai = 0; 
-                    $transaksi  = Transaksi::select('keranjang')->where('user_id',$data['user_id'])->where('keranjang','<>',NULL)->whereMonth('created_at',ambil_bulan())->whereDay('created_at',$i)->get();
+                    $transaksi  = Transaksi::select('keranjang')->where('user_id',$data['user_id'])->where('keranjang','<>',NULL)->whereMonth('created_at',ambil_bulan())->whereDay('created_at',$i)->whereYear('created_at',ambil_tahun())->get();
                     if (count($transaksi) > 0) {
                         foreach ($transaksi as $item) {
                             foreach (json_decode($item->keranjang) as $key) {

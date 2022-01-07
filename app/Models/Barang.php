@@ -12,4 +12,9 @@ class Barang extends Model
     protected $table = 'barang';
 
     protected $guarded = [];
+
+    public static function cabangPerKategori($cabang_id,$kategori)
+    {
+        return Barang::where('cabang_id',$cabang_id)->where('kategori_id',$kategori)->orderBy('nama_barang','ASC')->get();
+    }
 }

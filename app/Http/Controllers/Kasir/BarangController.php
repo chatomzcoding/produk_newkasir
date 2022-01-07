@@ -24,23 +24,24 @@ class BarangController extends Controller
         $user       = Auth::user();
         $akses      = Userakses::where('user_id',$user->id)->first();
         $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
-        $cari       = (isset($_GET['cari'])) ? TRUE : FALSE ;
-        if ($cari) {
-            $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
+        $cari       = (isset($_GET['cari'])) ? $_GET['cari'] : NULL ;
+        if (!is_null($cari)) {
+            // cek jika dicari dengan kode barang
+            $barang     = Barang::where('kode_barang',$cari)->get();
+            if (count($barang) == 0) {
+                $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
+            }
             $fkategori  = 'cari';
             $page       = FALSE;
-
         } else {
             if ($fkategori == 'semua') {
-                $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->paginate(20);
-                $page       = TRUE;
+                $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
+                $page           = TRUE;
             } else {
-                $datatabel     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$fkategori)->get();
+                $barang     = Barang::cabangPerKategori($akses->cabang_id,$fkategori);
                 $page       = FALSE;
-
             }
         }
-        
         
         $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
         $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();
@@ -56,7 +57,7 @@ class BarangController extends Controller
             'totalbarangstokkosong' => $totalbarangstokkosong
         ];
 
-        return view('sistem.barang.index', compact('menu','user','datatabel','kategori','filter','statistik'));
+        return view('sistem.barang.index', compact('menu','user','barang','kategori','filter','statistik'));
     }
 
     /**
@@ -68,9 +69,9 @@ class BarangController extends Controller
     {
         $menu           = 'barang';
         $akses          = Userakses::where('user_id',Auth::user()->id)->first();
-        $satuan         = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->get();
-        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
-        $produsen       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','produsen')->get();
+        $satuan         = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->orderBy('nama','ASC')->get();
+        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
+        $produsen       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','produsen')->orderBy('nama','ASC')->get();
         return view('sistem.barang.create', compact('satuan','kategori','produsen','menu','akses'));
     }
 

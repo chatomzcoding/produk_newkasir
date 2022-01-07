@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sistem;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Cabang;
+use App\Models\Client;
 use App\Models\Distribusi;
 use App\Models\Transaksi;
 use App\Models\Userakses;
@@ -87,9 +88,15 @@ class CetakController extends Controller
                 if ($kategori == 'semua') {
                     $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
                 } else {
-                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kategori_id',$kategori)->get();
+                    $barang     =  Barang::cabangPerKategori($akses->cabang_id,$kategori);
                 }
-                $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','kategori'));
+                if (isset($_GET['harga'])) {
+                    $cabang     = Cabang::find($akses->cabang_id);
+                    $client     = Client::find($cabang->client_id);
+                    $pdf        = PDF::loadview('sistem.cetak.hargabarang', compact('barang','kategori','client'));
+                } else {
+                    $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','kategori'));
+                }
                 break;
             case 'distribusi':
                 $namafile   = 'Distribusi';
