@@ -26,12 +26,12 @@
             <div class="row">
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-map-marked"></i></span>
+                  <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user-tie"></i></span>
     
                   <div class="info-box-content">
                     <span class="info-box-text">Client</span>
                     <span class="info-box-number">
-                        10
+                        {{ $statistik['totalclient'] }}
                       {{-- <small>%</small> --}}
                     </span>
                   </div>
@@ -42,11 +42,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user"></i></span>
+                  <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-store-alt"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Barang</span>
-                    <span class="info-box-number">3</span>
+                    <span class="info-box-text">Cabang</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalcabang'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -62,8 +65,11 @@
                   <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Kategori</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">User</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totaluser'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>
@@ -72,11 +78,14 @@
               <!-- /.col -->
               <div class="col-12 col-sm-6 col-md-3">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-people-carry"></i></span>
+                  <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-cube"></i></span>
     
                   <div class="info-box-content">
-                    <span class="info-box-text">Transaksi</span>
-                    <span class="info-box-number"></span>
+                    <span class="info-box-text">Barang</span>
+                    <span class="info-box-number">
+                      {{ $statistik['totalbarang'] }}
+
+                    </span>
                   </div>
                   <!-- /.info-box-content -->
                 </div>

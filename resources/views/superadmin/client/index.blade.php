@@ -25,7 +25,7 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-6">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-list"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user-tie"></i></span>
   
                 <div class="info-box-content">
                   <span class="info-box-text">Total Client</span>
@@ -44,7 +44,7 @@
   
             <div class="col-12 col-sm-6 col-md-6">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-cube"></i></span>
+                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-store"></i></span>
   
                 <div class="info-box-content">
                   <span class="info-box-text">Jenis Toko</span>
@@ -106,7 +106,7 @@
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
-                                        <form id="data-{{ $item->id }}" action="{{url('listdata/'.$item->id)}}" method="post">
+                                        <form id="data-{{ $item->id }}" action="{{url('client/'.$item->id)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             </form>
@@ -117,11 +117,11 @@
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
                                                   {{-- <a class="dropdown-item text-primary" href="{{ url('/penduduk/'.Crypt::encryptString($item->penduduk_id))}}"><i class="fas fa-list"></i> Detail Penduduk</a> --}}
-                                                    <button type="button" data-toggle="modal" data-nama_pemilik="{{ $item->nama_pemilik }}" data-nama_toko="{{ $item->nama_toko }}" data-no_telp="{{ $item->no_telp }}" data-alamat="{{ $item->alamat }}" data-tgl_bergabung="{{ $item->tgl_bergabung }}" data-jenis_retail="{{ $item->jenis_retail }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
-                                                    <i class="fa fa-edit"></i> EDIT
+                                                    <button type="button" data-toggle="modal" data-nama_pemilik="{{ $item->nama_pemilik }}" data-nama_toko="{{ $item->nama_toko }}" data-no_telp="{{ $item->no_telp }}" data-alamat="{{ $item->alamat }}" data-tgl_bergabung="{{ $item->tgl_bergabung }}" data-jenis_retail="{{ $item->jenis_retail }}" data-detail="{{ $item->detail }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
+                                                     EDIT <i class="fa fa-edit float-right pt-1 text-success"></i>
                                                     </button>
                                                   <div class="dropdown-divider"></div>
-                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item text-danger"><i class="fas fa-trash-alt"></i> HAPUS</button>
+                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item"> HAPUS <i class="fas fa-trash-alt float-right pt-1 text-danger"></i></button>
                                                 </div>
                                             </div>
                                     </td>
@@ -219,11 +219,11 @@
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ route('listdata.update','test')}}" method="post">
+            <form action="{{ route('client.update','test')}}" method="post">
                 @csrf
                 @method('patch')
             <div class="modal-header">
-            <h4 class="modal-title">Edit Data List</h4>
+            <h4 class="modal-title">Edit Data Client</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -232,20 +232,48 @@
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-control col-md-8" required>
-                            @foreach (list_kategori() as $item)
-                                <option value="{{ $item }}">{{ strtoupper($item) }}</option>
+                        <label for="" class="col-md-4">Nama Pemilik</label>
+                        <input type="text" name="nama_pemilik" id="nama_pemilik" value="{{ old('nama_pemilik') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Nama Toko</label>
+                        <input type="text" name="nama_toko" id="nama_toko" value="{{ old('nama_toko') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">No Telp</label>
+                        <input type="text" name="no_telp" id="no_telp" value="{{ old('no_telp') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Alamat</label>
+                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <input type="date" name="tgl_bergabung" id="tgl_bergabung" value="{{ old('tgl_bergabung') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Logo</label>
+                        <input type="file" name="logo" id="logo" class="form-control col-md-8">
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Jenis Toko</label>
+                        <select name="jenis_retail" id="jenis_retail" class="form-control col-md-8" required>
+                            @foreach (DbCikara::showtable('list_data',['kategori','jenis toko']) as $item)
+                                <option value="{{ $item->nama }}">{{ strtoupper($item->nama) }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama List Data</label>
-                        <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
+                        <label for="" class="col-md-4">Nama User</label>
+                        <select name="user_id" id="user_id" class="form-control col-md-8" required>
+                            @foreach ($user as $item)
+                                <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Keterangan (opsional)</label>
-                        <textarea name="keterangan" id="keterangan" cols="30" rows="4" class="form-control col-md-8"></textarea>
+                        <label for="" class="col-md-4">Detail (opsional)</label>
+                        <textarea name="detail" id="detail" cols="30" rows="4" class="form-control col-md-8"></textarea>
                     </div>
                 </section>
             </div>
@@ -264,16 +292,24 @@
         <script>
             $('#ubah').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget)
-                var nama = button.data('nama')
-                var kategori = button.data('kategori')
-                var keterangan = button.data('keterangan')
+                var nama_pemilik = button.data('nama_pemilik')
+                var nama_toko = button.data('nama_toko')
+                var jenis_retail = button.data('jenis_retail')
+                var no_telp = button.data('no_telp')
+                var alamat = button.data('alamat')
+                var tgl_bergabung = button.data('tgl_bergabung')
+                var detail = button.data('detail')
                 var id = button.data('id')
         
                 var modal = $(this)
         
-                modal.find('.modal-body #nama').val(nama);
-                modal.find('.modal-body #kategori').val(kategori);
-                modal.find('.modal-body #keterangan').val(keterangan);
+                modal.find('.modal-body #nama_pemilik').val(nama_pemilik);
+                modal.find('.modal-body #nama_toko').val(nama_toko);
+                modal.find('.modal-body #jenis_retail').val(jenis_retail);
+                modal.find('.modal-body #no_telp').val(no_telp);
+                modal.find('.modal-body #alamat').val(alamat);
+                modal.find('.modal-body #detail').val(detail);
+                modal.find('.modal-body #tgl_bergabung').val(tgl_bergabung);
                 modal.find('.modal-body #id').val(id);
             })
         </script>

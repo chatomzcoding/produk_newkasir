@@ -29,7 +29,12 @@ class UserController extends Controller
         switch ($user->level) {
             case 'superadmin':
                 $user   = User::where('level','client')->get();
-                return view('superadmin.user.index', compact('user','menu'));
+                $statistik  = [
+                    'totaluser' => User::count(),
+                    'totalclient' => count($user),
+                    'totalcabang' => Cabang::count(),
+                ];
+                return view('superadmin.user.index', compact('user','menu','statistik'));
                 break;
             case 'cabang':
                 $cabang     = Cabang::where('user_id',$user->id)->first();

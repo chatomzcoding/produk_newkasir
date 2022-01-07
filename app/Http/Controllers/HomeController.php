@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\Cikara\DbCikara;
 use App\Models\Barang;
 use App\Models\Cabang;
+use App\Models\Client;
 use App\Models\Distribusi;
 use App\Models\Retur;
 use App\Models\Transaksi;
+use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +22,13 @@ class HomeController extends Controller
         $user   = Auth::user();
         switch ($user->level) {
             case 'superadmin':
-                return view('superadmin.dashboard', compact('menu'));
+                $statistik  = [
+                    'totalclient' => Client::count(),
+                    'totalcabang' => Cabang::count(),
+                    'totaluser' => User::count(),
+                    'totalbarang' => Barang::count()
+                ];
+                return view('superadmin.dashboard', compact('menu','statistik'));
                 break;
             case 'client':
                 return view('client.dashboard', compact('menu'));

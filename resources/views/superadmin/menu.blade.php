@@ -1,11 +1,11 @@
 <li class="nav-item">
   <a href="{{ url('/client')}}" class="nav-link small {{ menuaktif($menu,'client') }}">
-    <i class="nav-icon fas fa-user"></i>
+    <i class="nav-icon fas fa-user-tie"></i>
     <p class="text">Data Client</p>
   </a>
 </li>
 
-<li class="nav-item @if ($menu == 'listdata')
+<li class="nav-item @if ($menu == 'listdata' || $menu == 'user')
 menu-is-opening menu-open
 @endif">
     <a href="#" class="nav-link small">

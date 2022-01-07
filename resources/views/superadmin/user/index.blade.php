@@ -34,7 +34,7 @@
                     <div class="info-box-content">
                       <span class="info-box-text">Total User</span>
                       <span class="info-box-number">
-                        10
+                        {{ $statistik['totaluser'] }}
                         {{-- <small>%</small> --}}
                       </span>
                     </div>
@@ -45,12 +45,13 @@
                 <!-- /.col -->
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box mb-3">
-                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-tie"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Client</span>
                       <span class="info-box-number">
-                        3
+                        {{ $statistik['totalclient'] }}
+                      
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -64,12 +65,13 @@
       
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box mb-3">
-                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-times"></i></span>
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-store-alt"></i></span>
       
                     <div class="info-box-content">
                       <span class="info-box-text">Total Cabang</span>
                       <span class="info-box-number">
-                        12
+                        {{ $statistik['totalcabang'] }}
+                        
                       </span>
                     </div>
                     <!-- /.info-box-content -->

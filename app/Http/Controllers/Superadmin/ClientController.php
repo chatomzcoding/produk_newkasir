@@ -95,9 +95,38 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request)
     {
-        //
+        $client     = Client::find($request->id);
+        if (isset($request->logo)) {
+            $request->validate([
+                'logo' => 'required|file|image|mimes:jpeg,png,jpg|max:5000',
+            ]);
+            // menyimpan data file yang diupload ke variabel $file
+            $file = $request->file('logo');
+            
+            $logo = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'public/img/client';
+            // isi dengan nama folder tempat kemana file diupload
+            $file->move($tujuan_upload,$logo);
+            deletefile($tujuan_upload.'/'.$client->logo);
+        } else {
+            $logo   = $client->logo;
+        }
+        
+
+        Client::where('id',$client->id)->update([
+            'nama_pemilik' => $request->nama_pemilik,
+            'nama_toko' => $request->nama_toko,
+            'jenis_retail' => $request->jenis_retail,
+            'no_telp' => $request->no_telp,
+            'alamat' => $request->alamat,
+            'detail' => $request->detail,
+            'tgl_bergabung' => $request->tgl_bergabung,
+            'logo' => $logo,
+        ]);
+
+        return back()->with('du','Client');
     }
 
     /**
@@ -106,8 +135,11 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy($client)
     {
-        //
+        $client     = Client::find($client);
+        deletefile('public/img/client/'.$client->logo);
+        $client->delete();
+        return back()->with('dd','Client');
     }
 }
