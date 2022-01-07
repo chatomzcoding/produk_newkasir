@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -31,7 +32,16 @@ class HomeController extends Controller
                 return view('superadmin.dashboard', compact('menu','statistik'));
                 break;
             case 'client':
-                return view('client.dashboard', compact('menu'));
+                $client     = Client::where('user_id',$user->id)->first();
+
+                $statistik = [
+                    'totalcabang' => Cabang::where('client_id',$client->id)->count(),
+                    'totalkaryawan' => DB::table('user_akses')
+                                        ->join('cabang','user_akses.cabang_id','=','cabang.id')
+                                        ->where('cabang.client_id',$client->id)
+                                        ->count(),
+                ];
+                return view('client.dashboard', compact('menu','statistik'));
                 break;
             case 'cabang':
                 return view('cabang.dashboard', compact('menu'));

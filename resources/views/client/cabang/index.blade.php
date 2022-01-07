@@ -23,33 +23,14 @@
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-6">
+            <div class="col-12 col-sm-6 col-md-12">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-list"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-store-alt"></i></span>
   
                 <div class="info-box-content">
                   <span class="info-box-text">Total Cabang</span>
                   <span class="info-box-number">
                         {{ count($cabang)}}
-                  </span>
-                </div>
-                <!-- /.info-box-content -->
-              </div>
-              <!-- /.info-box -->
-            </div>
-            <!-- /.col -->
-  
-            <!-- fix for small devices only -->
-            <div class="clearfix hidden-md-up"></div>
-  
-            <div class="col-12 col-sm-6 col-md-6">
-              <div class="info-box mb-3">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-cube"></i></span>
-  
-                <div class="info-box-content">
-                  <span class="info-box-text">Jenis Toko</span>
-                  <span class="info-box-number">
-                      3
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -104,7 +85,7 @@
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
-                                        <form id="data-{{ $item->id }}" action="{{url('listdata/'.$item->id)}}" method="post">
+                                        <form id="data-{{ $item->id }}" action="{{url('cabang/'.$item->id)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             </form>
@@ -114,11 +95,11 @@
                                                   <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
-                                                    <button type="button" data-toggle="modal" data-nama_cabang="{{ $item->nama_cabang }}" data-alamat="{{ $item->alamat }}" data-telp="{{ $item->telp }}" data-pimpinan="{{ $item->pimpinan }}" data-tgl_gabung="{{ $item->tgl_gabung }}" data-email="{{ $item->email }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
-                                                    <i class="fa fa-edit"></i> EDIT
+                                                    <button type="button" data-toggle="modal" data-nama_cabang="{{ $item->nama_cabang }}" data-alamat="{{ $item->alamat }}" data-telp="{{ $item->telp }}" data-user_id="{{ $item->user_id }}" data-pimpinan="{{ $item->pimpinan }}" data-tgl_gabung="{{ $item->tgl_gabung }}" data-email="{{ $item->email }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
+                                                     EDIT <i class="fa fa-edit float-right pt-1 text-success"></i>
                                                     </button>
                                                   <div class="dropdown-divider"></div>
-                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item text-danger"><i class="fas fa-trash-alt"></i> HAPUS</button>
+                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS<i class="fas fa-trash-alt float-right pt-1 text-danger"></i></button>
                                                 </div>
                                             </div>
                                     </td>
@@ -126,7 +107,7 @@
                                     <td>{{ $item->alamat}}</td>
                                     <td>{{ $item->pimpinan}}</td>
                                     <td>{{ $item->telp}}</td>
-                                    <td>{{ $item->tgl_gabung}}</td>
+                                    <td>{{ date_indo($item->tgl_gabung)}}</td>
                                 </tr>
                             @empty
                                 <tr class="text-center">
@@ -201,11 +182,11 @@
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ route('listdata.update','test')}}" method="post">
+            <form action="{{ route('cabang.update','test')}}" method="post">
                 @csrf
                 @method('patch')
             <div class="modal-header">
-            <h4 class="modal-title">Edit Data List</h4>
+            <h4 class="modal-title">Edit Data Cabang</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -214,20 +195,24 @@
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-control col-md-8" required>
-                            @foreach (list_kategori() as $item)
-                                <option value="{{ $item }}">{{ strtoupper($item) }}</option>
-                            @endforeach
-                        </select>
+                        <label for="" class="col-md-4">Nama Cabang</label>
+                        <input type="text" name="nama_cabang" id="nama_cabang" value="{{ old('nama_cabang') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama List Data</label>
-                        <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
+                        <label for="" class="col-md-4">No Telp</label>
+                        <input type="text" name="telp" id="telp" value="{{ old('telp') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Keterangan (opsional)</label>
-                        <textarea name="keterangan" id="keterangan" cols="30" rows="4" class="form-control col-md-8"></textarea>
+                        <label for="" class="col-md-4">Pimpinan Cabang</label>
+                        <input type="text" name="pimpinan" id="pimpinan" value="{{ old('pimpinan') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <input type="date" name="tgl_gabung" id="tgl_gabung" value="{{ old('tgl_gabung') }}" class="form-control col-md-8" required>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-md-4">Alamat</label>
+                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
                     </div>
                 </section>
             </div>
@@ -246,16 +231,20 @@
         <script>
             $('#ubah').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget)
-                var nama = button.data('nama')
-                var kategori = button.data('kategori')
-                var keterangan = button.data('keterangan')
+                var nama_cabang = button.data('nama_cabang')
+                var alamat = button.data('alamat')
+                var telp = button.data('telp')
+                var tgl_gabung = button.data('tgl_gabung')
+                var pimpinan = button.data('pimpinan')
                 var id = button.data('id')
         
                 var modal = $(this)
         
-                modal.find('.modal-body #nama').val(nama);
-                modal.find('.modal-body #kategori').val(kategori);
-                modal.find('.modal-body #keterangan').val(keterangan);
+                modal.find('.modal-body #nama_cabang').val(nama_cabang);
+                modal.find('.modal-body #alamat').val(alamat);
+                modal.find('.modal-body #telp').val(telp);
+                modal.find('.modal-body #tgl_gabung').val(tgl_gabung);
+                modal.find('.modal-body #pimpinan').val(pimpinan);
                 modal.find('.modal-body #id').val(id);
             })
         </script>

@@ -95,9 +95,17 @@ class CabangController extends Controller
      * @param  \App\Models\Cabang  $cabang
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cabang $cabang)
+    public function update(Request $request)
     {
-        //
+        Cabang::where('id',$request->id)->update([
+            'nama_cabang' => $request->nama_cabang,
+            'alamat' => $request->alamat,
+            'pimpinan' => $request->pimpinan,
+            'telp' => $request->telp,
+            'tgl_gabung' => $request->tgl_gabung,
+        ]);
+
+        return back()->with('du','Cabang');
     }
 
     /**
@@ -108,6 +116,9 @@ class CabangController extends Controller
      */
     public function destroy(Cabang $cabang)
     {
-        //
+        User::find($cabang->user_id)->delete();
+        $cabang->delete();
+
+        return back()->with('dd','Cabang');
     }
 }
