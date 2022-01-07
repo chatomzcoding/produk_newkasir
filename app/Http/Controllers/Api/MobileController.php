@@ -136,7 +136,6 @@ class MobileController extends Controller
 
     public function cetaktransaksi()
     {
-        
         $user       = User::find(Crypt::decryptString($_GET['user_id']));
         switch ($user->level) {
             case 'kasir':
@@ -145,7 +144,7 @@ class MobileController extends Controller
                         $tanggal    = $_GET['tanggal'];
                         $transaksi      = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->get();
                         $data           = [
-                            'nama_kasir' => $user->name,
+                            'sesi' => 'Kasir : '.$user->name,
                             'info' => 'Tanggal '.date_indo($tanggal),
                         ];
                         $namafile   = 'Transaksi per Tanggal '.$tanggal;
@@ -156,7 +155,7 @@ class MobileController extends Controller
                         $tahun    = $_GET['tahun'];
                         $transaksi      = Transaksi::where('user_id',$user->id)->wheremonth('created_at',$bulan)->whereyear('created_at',$tahun)->get();
                         $data           = [
-                            'nama_kasir' => $user->name,
+                            'sesi' => 'Kasir : '.$user->name,
                             'info' => 'Bulan '.bulan_indo($bulan).' '.$tahun,
                         ];
                         $namafile   = 'Transaksi per Bulan '.$bulan.' '.$tahun;
