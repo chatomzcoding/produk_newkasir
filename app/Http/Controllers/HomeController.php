@@ -54,10 +54,10 @@ class HomeController extends Controller
                 break;
             case 'gudang':
                 $cabang         = Userakses::where('user_id',$user->id)->first();
-                $totalbarang    = Barang::where('cabang_id',$cabang->id)->count();
-                $totaldistribusi= Distribusi::where('cabang_id',$cabang->id)->count();
-                $totalsupplier  = Cabang::totalsupplier($cabang->id);
-                $totalbarangstokkosong    = Barang::where('cabang_id',$cabang->id)->where('stok','<=',0)->count();
+                $totalbarang    = Barang::where('cabang_id',$cabang->cabang_id)->count();
+                $totaldistribusi= Distribusi::where('cabang_id',$cabang->cabanag_id)->count();
+                $totalsupplier  = Cabang::totalsupplier($cabang->cabang_id);
+                $totalbarangstokkosong    = Barang::where('cabang_id',$cabang->cabang_id)->where('stok','<=',0)->count();
                 $statistik = [
                     'totalbarang' => $totalbarang,
                     'totaldistribusi' => $totaldistribusi,
