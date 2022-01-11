@@ -329,6 +329,25 @@ if (! function_exists('detailtransaksikategori')) {
     }
 }
 
+// DISTRIBUSI
+if (! function_exists('totalpembayarandistribusi')) {
+    function totalpembayarandistribusi($data)
+    {
+        $total  = 0;
+        foreach ($data as $item) {
+            $barang     = json_decode($item->barang);
+            $subtotal   = 0;
+            foreach ($barang as $key) {
+                $subtotal = $subtotal + ($key->harga_beli * $key->jumlah);
+            }
+            // dikurang potongan
+            $potongan   = (integer) $item->potongan;
+            $total = $total + ($subtotal - $potongan);
+        }
+        return $total;
+    }
+}
+
 
 
 

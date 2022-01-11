@@ -28,46 +28,65 @@ class DistribusiController extends Controller
         $page       = FALSE;
         $link       = '';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $waktu      = (isset($_GET['waktu'])) ? $_GET['waktu'] : 'semua' ;
+        $waktu      = (isset($_GET['waktu'])) ? $_GET['waktu'] : 'harian' ;
+        $pembayaran      = (isset($_GET['pembayaran'])) ? $_GET['pembayaran'] : 'semua' ;
         $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
         $bulan      = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
         $tahun      = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
         $cari      = (isset($_GET['cari'])) ? TRUE : FALSE ;
         // cek jika ada pencarian no faktur
-        // $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->where('kode_distribusi','DB1.2106')->get();
-        // dd($datatabel);
         if ($cari) {
             $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->where('no_faktur',$_GET['cari'])->get();
+            $data       = $datatabel;
+            $info       = 'cari '.$_GET['cari'];
         } else {
-            if ($waktu == 'semua') {
-                $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->orderBy('tgl_faktur','DESC')->paginate(20);
-                $page       = TRUE;
-            } else {
-                switch ($waktu) {
-                    case 'harian':
+            switch ($waktu) {
+                case 'harian':
+                    if ($pembayaran == 'semua') {
                         $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->get();
-                        break;
-                    case 'bulanan':
-                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
-                        break;
-                    case 'tahunan':
-                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->paginate(20);
-                        $page       = TRUE;
-                        $link       = '&waktu=tahunan&tahun='.$tahun;
-                        break;
+                    } else {
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->where('pembayaran',$pembayaran)->get();
+                    }
                     
-                    default:
-                        $datatabel = [];
-                        break;
-                }
+                    $data       = $datatabel;
+                    $info       = 'Tanggal '.date_indo($tanggal);
+                    break;
+                case 'bulanan':
+                    if ($pembayaran == 'semua') {
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
+                    } else {
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',$bulan)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->where('pembayaran',$pembayaran)->get();
+                    }
+                    
+                    $data       = $datatabel;
+                    $info       = 'Bulan '.bulan_indo($bulan).' '.$tahun;
+                    break;
+                case 'tahunan':
+                    if ($pembayaran == 'semua') {
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->paginate(20);
+                        $data = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->orderBy('kode_distribusi','ASC')->get();
+                    } else {
+                        $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->where('pembayaran',$pembayaran)->orderBy('kode_distribusi','ASC')->paginate(20);
+                        $data = Distribusi::where('cabang_id',$akses->cabang_id)->whereYear('tgl_faktur',$tahun)->where('pembayaran',$pembayaran)->orderBy('kode_distribusi','ASC')->get();
+                    }
+                    
+                    $page       = TRUE;
+                    $info       = 'Tahun '.$tahun;
+                    $link       = '&waktu=tahunan&tahun='.$tahun;
+                    break;
+                
+                default:
+                    $datatabel = [];
+                    break;
             }
         }
         
         $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
         $statistik  = [
             'total' => Distribusi::where('cabang_id',$akses->cabang_id)->count(),
-            'totalbulanini' => Distribusi::where('cabang_id',$akses->cabang_id)->whereMonth('tgl_faktur',ambil_bulan())->whereYear('tgl_faktur',ambil_tahun())->count(),
             'totalproses' => Distribusi::where('cabang_id',$akses->cabang_id)->where('status_stok','proses')->count(),
+            'totalhasil' => count($data),
+            'totalpembayaran' => totalpembayarandistribusi($data)
         ];
         $filter     = [
             'data' => [
@@ -77,8 +96,10 @@ class DistribusiController extends Controller
                 
             ],
             'waktu' => $waktu,
+            'pembayaran' => $pembayaran,
             'page' => $page,
-            'link' => $link
+            'link' => $link,
+            'info' => $info
         ];
         return view('gudang.distribusi.index', compact('menu','datatabel','akses','supplier','statistik','filter'));
     }
@@ -103,12 +124,19 @@ class DistribusiController extends Controller
     {
         switch ($request->s) {
             case 'tambahdistribusi':
+                if ($request->pembayaran == 'tunai') {
+                    $pelunasan = 'lunas';
+                } else {
+                    $pelunasan = 'belum lunas';
+                }
+                
                 Distribusi::create([                                                                                            
                     'kode_distribusi' => $request->kode_distribusi,
                     'no_faktur' => $request->no_faktur,
                     'tgl_faktur' => $request->tgl_faktur,
                     'tgl_tempo' => $request->tgl_tempo,
                     'pembayaran' => $request->pembayaran,
+                    'pelunasan' => $pelunasan,
                     'potongan' => $request->potongan,
                     'status_stok' => $request->status_stok,
                     'cabang_id' => $request->cabang_id,
@@ -164,7 +192,14 @@ class DistribusiController extends Controller
             default:
                 // kode untuk cek apakah distribusi sudah ada retur atau tidak
                 $retur  = Retur::where('distribusi_id',$distribusi->id)->first();
-                return view('gudang.distribusi.show', compact('menu','distribusi','akses','retur'));
+                $totalhargabarang   = totalhargadistribusi($distribusi->barang);
+                $totalpembayaran    = $totalhargabarang - (integer) $distribusi->potongan;
+                $data   = [
+                    'totalhargabarang' => $totalhargabarang,
+                    'totalpembayaran' => $totalpembayaran,
+                ];
+                $supplier   = Supplier::find($distribusi->supplier_id);
+                return view('gudang.distribusi.show', compact('menu','distribusi','akses','retur','data','supplier'));
                 break;
         }
     }
@@ -264,9 +299,17 @@ class DistribusiController extends Controller
                 ]);
                 return redirect('distribusi/'.Crypt::encryptString($distribusi->id))->with('success','Barang telah di distribusikan');
                 break;
+
+            case 'pembayaran':
+                Distribusi::where('id',$distribusi->id)->update([
+                    'pelunasan' => $request->pelunasan,
+                    'tgl_pelunasan' => $request->tgl_pelunasan,
+                ]);
+                return redirect('distribusi/'.Crypt::encryptString($distribusi->id))->with('success','Distribusi pembayaran telah lunas');
+                break;
             
             default:
-                # code...
+                return 'sesi tidak ada';
                 break;
         }
        

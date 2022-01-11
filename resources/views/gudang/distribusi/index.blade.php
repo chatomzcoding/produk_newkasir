@@ -23,7 +23,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-truck"></i></span>
   
@@ -37,21 +37,7 @@
               </div>
               <!-- /.info-box -->
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
-              <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-truck"></i></span>
-  
-                <div class="info-box-content">
-                  <span class="info-box-text">Distribusi Bulan ini</span>
-                  <span class="info-box-number">
-                        {{ $statistik['totalbulanini']}}
-                  </span>
-                </div>
-                <!-- /.info-box-content -->
-              </div>
-              <!-- /.info-box -->
-            </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-sync"></i></span>
   
@@ -59,6 +45,35 @@
                   <span class="info-box-text">Distribusi Dalam Proses</span>
                   <span class="info-box-number">
                         {{ $statistik['totalproses']}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-truck"></i></span>
+  
+                <div class="info-box-content">
+                  <span class="info-box-text">{{ $filter['info'] }}</span>
+                  <span class="info-box-number">
+                        {{ $statistik['totalhasil']}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-money-bill"></i></span>
+  
+                <div class="info-box-content">
+                  <span class="info-box-text">Total Pembayaran</span>
+                  <span class="info-box-number">
+                        {{ rupiah($statistik['totalpembayaran'])}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -78,9 +93,6 @@
                     <a href="#" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Data Distribusi Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
                     <a href="{{ url('distribusi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> Bersihkan Filter</a>
                     <div class="float-right">
-                        @if (!$filter['page'])
-                        <span class="badge badge-info p-2">Total Data pencarian : {{ count($datatabel) }}</span>
-                    @endif
                     <a href="{{ url('cetakdata?s=distribusi&tanggal='.$filter['data']['tanggal']) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar Distribusi"><i class="fas fa-print"></i> CETAK</a>
                     </div>
 
@@ -104,6 +116,22 @@
                                         <option value="tahunan" @if ($filter['waktu'] == 'tahunan')
                                         selected
                                     @endif>TAHUNAN</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <select name="pembayaran" id="" class="form-control" onchange="this.form.submit()">
+                                        <option value="semua" @if ($filter['pembayaran'] == 'semua')
+                                        selected
+                                    @endif>SEMUA PEMBAYARAN</option>
+                                        <option value="tunai" @if ($filter['pembayaran'] == 'tunai')
+                                            selected
+                                        @endif>TUNAI</option>
+                                        <option value="kredit" @if ($filter['pembayaran'] == 'kredit')
+                                        selected
+                                    @endif>KREDIT</option>
+                                        <option value="konsinyasi" @if ($filter['pembayaran'] == 'konsinyasi')
+                                        selected
+                                    @endif>KONSINYASI</option>
                                     </select>
                                 </div>
                                 @switch($filter['waktu'])
@@ -131,8 +159,10 @@
                                 <th>Kode</th>
                                 <th>No Faktur</th>
                                 <th>Tanggal Faktur</th>
+                                <th>Jatuh Tempo</th>
                                 <th>Potongan</th>
                                 <th>Pembayaran</th>
+                                <th>Pelunasan</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -162,14 +192,16 @@
                                     </td>
                                     <td>{{ $item->kode_distribusi}}</td>
                                     <td>{{ $item->no_faktur}}</td>
-                                    <td>{{ date_indo($item->tgl_faktur)}}</td>
+                                    <td>{{ $item->tgl_faktur}}</td>
+                                    <td>{{ $item->tgl_tempo}}</td>
                                     <td class="text-right">{{ norupiah($item->potongan)}}</td>
                                     <td class="text-center text-uppercase">{{ $item->pembayaran}}</td>
+                                    <td class="text-center text-uppercase">{{ $item->pelunasan}}</td>
                                     <td class="text-center">{!! showstatus($item->status_stok)!!}</td>
                                 </tr>
                             @empty
                                 <tr class="text-center">
-                                    <td colspan="8">tidak ada data</td>
+                                    <td colspan="9">tidak ada data</td>
                                 </tr>
                             @endforelse
                     </table>
@@ -207,15 +239,15 @@
                         <input type="text" name="no_faktur" id="no_faktur" value="{{ old('no_faktur') }}" class="form-control col-md-8">
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Tanggal Faktur/Pembelian</label>
-                        <input type="date" name="tgl_faktur" id="tgl_faktur" value="{{ old('tgl_faktur') }}" class="form-control col-md-8">
+                        <label for="" class="col-md-4">Tanggal Faktur/Pembelian {!! ireq() !!}</label>
+                        <input type="date" name="tgl_faktur" id="tgl_faktur" value="{{ old('tgl_faktur') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-4">Tanggal Jatuh Tempo</label>
                         <input type="date" name="tgl_tempo" id="tgl_tempo" value="{{ old('tgl_tempo') }}" class="form-control col-md-8">
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Supplier</label>
+                        <label for="" class="col-md-4">Nama Supplier {!! ireq() !!}</label>
                         <div class="col-md-8 p-0">
                             <select name="supplier_id" id="supplier_id" class="form-control listdata" data-width="100%" required>
                                 @foreach ($supplier as $item)
@@ -225,7 +257,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Pembayaran</label>
+                        <label for="" class="col-md-4">Pembayaran {!! ireq() !!}</label>
                         <select name="pembayaran" id="pembayaran" class="form-control col-md-8" required>
                             <option value="tunai">TUNAI</option>
                             <option value="kredit">KREDIT</option>
@@ -234,7 +266,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-md-4">Potongan Harga</label>
-                        <input type="text" name="potongan" id="potongan" value="{{ old('potongan') }}" class="form-control col-md-8">
+                        <input type="number" name="potongan" id="potongan" step="any" value="{{ old('potongan') }}" class="form-control col-md-8">
                     </div>
                 </section>
             </div>

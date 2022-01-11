@@ -71,6 +71,10 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="{{ url('distribusi') }}" class="btn btn-outline-secondary btn-sm pop-info" title="Kembali Ke Daftar Distribusi"><i class="fas fa-angle-left"></i> Kembali</a>
+                    @if ($distribusi->pelunasan == 'belum lunas' AND $distribusi->status_stok == 'selesai')
+                        <a href="#" data-toggle="modal" data-target="#bayar" class="btn btn-info btn-sm"><i class="fas fa-money-bill-wave-alt"></i> Lakukan Pembayaran</a>
+                    @endif
+
                     <div class="float-right">
                         {!! showstatus($distribusi->status_stok) !!}
                     </div>
@@ -95,18 +99,35 @@
                                             <td>{{ date_indo($distribusi->tgl_tempo) }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Pembayaran</th>
-                                            <td class="text-uppercase">{{ $distribusi->pembayaran }}</td>
+                                            <th>Supplier</th>
+                                            <td>{{ $supplier->nama_supplier }}</td>
                                         </tr>
                                         <tr>
                                             <th>Potongan</th>
                                             <td>{{ rupiah($distribusi->potongan) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Pembayaran</th>
+                                            <td>{{ rupiah($data['totalpembayaran']) }}</td>
                                         </tr>
                                     </table>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="card bg-info">
+                                <div class="card-body p-2">
+                                    PEMBAYARAN
+                                    <div class="float-right text-uppercase">
+                                        {{ $distribusi->pembayaran }} 
+                                        @if ($distribusi->pelunasan == 'lunas')
+                                            [LUNAS]
+                                        @else
+                                            [BELUM LUNAS]
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card">
                                 <div class="card-body">
                                     @if ($distribusi->status_stok == 'proses')
@@ -152,7 +173,7 @@
                     </div>                
                     <hr>
                   <div class="table-responsive">
-                    <h4>Daftar List Barang Distribusi <span class="float-right badge badge-info">Total harga : {{ norupiah(totalhargadistribusi($distribusi->barang)) }}</span></h4>
+                    <h4>Daftar List Barang Distribusi <span class="float-right badge badge-info">Total harga Barang : {{ norupiah($data['totalhargabarang']) }}</span></h4>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead class="text-center">
                             <tr>
@@ -321,6 +342,37 @@
             <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
             <button type="submit" class="btn btn-primary"><i class="fas fa-truck"></i> DISTRIBUSIKAN SEKARANG</button>
+            </div>
+        </form>
+        </div>
+        </div>
+    </div>
+    <div class="modal fade" id="bayar">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form action="{{ route('distribusi.update','test')}}" method="post">
+                @csrf
+                @method('patch')
+                <input type="hidden" name="s" value="pembayaran">
+                <input type="hidden" name="pelunasan" value="lunas">
+                <input type="hidden" name="id" value="{{ $distribusi->id }}">
+            <div class="modal-header">
+                <h4 class="modal-title">Pembayaran Distribusi</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3">
+                <section class="p-3">
+                    <div class="form-group row">
+                        <label for="" class="col-md-6">Tanggal Pelunasan {!! ireq() !!}</label>
+                        <input type="date" name="tgl_pelunasan" id="tgl_pelunasan" class="form-control col-md-6" required>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-money-bill-wave-alt"></i> LUNASI SEKARANG</button>
             </div>
         </form>
         </div>
