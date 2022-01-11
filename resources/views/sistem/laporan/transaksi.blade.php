@@ -155,6 +155,7 @@
                     </form>
                   </section>
                   <div class="table-responsive">
+                    <hr>
                     @if ($filter['kategori'] == 'semua')
                       <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
                           <thead class="text-center">
@@ -219,15 +220,12 @@
                       @includeWhen($filter['data']['page'], 'sistem.pagination',['link' => $filter['data']['link']])
                     @else
                       <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
-                        <thead class="text-center">
+                        <thead class="text-center text-uppercase">
                           <tr>
-                            <th rowspan="2">No</th>
-                            <th rowspan="2">Kode</th>
-                            <th rowspan="2">Nama Barang</th>
-                            <th rowspan="2">Harga</th>
-                            <th colspan="4">Detail</th>
-                          </tr>
-                          <tr>
+                            <th>No</th>
+                            <th>Kode</th>
+                            <th>Nama Barang</th>
+                            <th>Harga</th>
                             <th>Terjual</th>
                             <th>Penjualan</th>
                             <th>HPP</th>

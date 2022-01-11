@@ -5,25 +5,24 @@
     <link rel="stylesheet" href="{{ asset('css/cetak.css') }}">
 </head>
 <body>
+  @include('sistem.cetak.header')
 	<div class="container-fluid">
 		<section class="text-center">
             <h4>
-                Data Transaksi <br>
-                {{ $data['info'] }} <br>
-                {{ $data['sesi'] }}
+                LAPORAN TRANSAKSI
             </h4>
-            <hr>
+            <h5>
+              {{ $data['info'] }} -
+              {{ $data['sesi'] }}
+            </h5>
         </section>
         <table class="table table-bordered table-striped">
             <thead class="text-center">
               <tr>
-                <th rowspan="2">NO</th>
-                <th rowspan="2">KODE</th>
-                <th rowspan="2">NAMA</th>
-                <th rowspan="2">HARGA</th>
-                <th colspan="4">DETAIL</th>
-              </tr>
-              <tr>
+                <th>NO</th>
+                <th>KODE</th>
+                <th>NAMA</th>
+                <th>HARGA</th>
                 <th>TERJUAL</th>
                 <th>PENJUALAN</th>
                 <th>HPP</th>

@@ -125,12 +125,12 @@
                                                 </div>
                                             </div>
                                     </td>
+                                    <td> <img src="{{ asset('img/client/'.$item->logo) }}" alt="logo" width="90px"></td>
                                     <td>{{ $item->nama_pemilik}}</td>
                                     <td>{{ $item->nama_toko}}</td>
                                     <td>{{ $item->jenis_retail}}</td>
                                     <td>{{ $item->no_telp}}</td>
                                     <td>{{ $item->alamat}}</td>
-                                    <td>{{ $item->logo}}</td>
                                     <td>{{ $item->tgl_bergabung}}</td>
                                 </tr>
                             @empty
@@ -219,7 +219,7 @@
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ route('client.update','test')}}" method="post">
+            <form action="{{ route('client.update','test')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('patch')
             <div class="modal-header">

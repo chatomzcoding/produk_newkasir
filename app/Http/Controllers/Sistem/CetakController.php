@@ -20,6 +20,28 @@ class CetakController extends Controller
     public function cetak()
     {
         $user   = Auth::user();
+        switch ($user->level) {
+            case 'client':
+                $client     = Client::where('user_id',$user->id)->first();
+                $alamat     = $client->alamat;
+                $telp     = $client->no_telp;
+                break;
+            case 'cabang':
+                $cabang     = Cabang::where('user_id',$user->id)->first();
+                $client     = Client::find($cabang->client_id);
+                $alamat     = $cabang->alamat;
+                $telp     = $cabang->telp;
+                break;
+            
+            default:
+                $userakses  = Userakses::where('user_id',$user->id)->first();
+                $cabang     = Cabang::find($userakses->cabang_id);
+                $client     = Client::find($cabang->client_id);
+                $alamat     = $cabang->alamat;
+                $telp     = $cabang->telp;
+
+                break;
+        }
         switch ($_GET['s']) {
             case 'transaksi':
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
@@ -45,6 +67,8 @@ class CetakController extends Controller
                                 $data           = [
                                     'sesi' => 'Kasir : '.$user->name,
                                     'info' => 'Tanggal '.date_indo($tanggal),
+                                    'alamat' => $alamat,
+                                    'telp' => $telp,
                                 ];
                                 break;
                             
@@ -55,6 +79,7 @@ class CetakController extends Controller
                         break;
                     case 'gudang':
                         $akses  = Userakses::where('user_id',$user->id)->first();
+                        $sesi   = 'Cabang : '.ucwords($cabang->nama_cabang);
                         switch ($_GET['filter']) {
                             case 'harian':
                                 $transaksi      = DB::table('transaksi')
@@ -64,8 +89,10 @@ class CetakController extends Controller
                                                     ->where('user_akses.cabang_id',$akses->cabang_id)
                                                     ->get();
                                 $data           = [
-                                    'sesi' => 'Gudang : '.$user->name,
+                                    'sesi' => $sesi,
                                     'info' => 'Tanggal '.date_indo($tanggal),
+                                    'alamat' => $alamat,
+                                    'telp' => $telp,
                                 ];
                                 break;
                             case 'bulanan':
@@ -77,8 +104,10 @@ class CetakController extends Controller
                                                 ->whereYear('transaksi.created_at',$tahun)
                                                 ->get();
                                 $data           = [
-                                    'sesi' => 'Gudang : '.$user->name,
+                                    'sesi' => $sesi,
                                     'info' => 'Bulan '.bulan_indo($bulan).' '.$tahun,
+                                    'alamat' => $alamat,
+                                    'telp' => $telp,
                                 ];
                                 break;
                             case 'tahunan':
@@ -89,8 +118,10 @@ class CetakController extends Controller
                                                 ->whereYear('transaksi.created_at',$tahun)
                                                 ->get();
                                 $data           = [
-                                    'sesi' => 'Gudang : '.$user->name,
+                                    'sesi' => $sesi,
                                     'info' => 'Tahun '.$tahun,
+                                    'alamat' => $alamat,
+                                    'telp' => $telp,
                                 ];
                                 break;
                             
@@ -128,16 +159,17 @@ class CetakController extends Controller
                             }
                         }
                     }
-                    $namafile   = 'Transaksi Kategori';
+                    $namafile   = 'Transaksi Kategori '.ucwords($kategori->nama).' - '.$data['info'];
                     $data           = [
-                        'sesi' => 'Kategori '.$kategori->nama,
+                        'sesi' => 'Kategori '.ucwords($kategori->nama),
                         'info' => $data['info'],
-                        'keranjang' => TRUE
+                        'alamat' => $alamat,
+                        'telp' => $telp,
                     ];
-                    $pdf        = PDF::loadview('sistem.cetak.transaksikategori', compact('dtransaksi','data'));
+                    $pdf        = PDF::loadview('sistem.cetak.transaksikategori', compact('dtransaksi','data','client'));
                 } else {
                     $namafile   = 'Transaksi';
-                    $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data'));
+                    $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data','client'));
                 }
                 break;
             
