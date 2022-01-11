@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\Client\CabangController;
 use App\Http\Controllers\Gudang\DistribusiController;
+use App\Http\Controllers\Gudang\ProdusenController;
 use App\Http\Controllers\Gudang\ReturController;
 use App\Http\Controllers\Gudang\SupplierController;
 use App\Http\Controllers\Kasir\BarangController;
 use App\Http\Controllers\Kasir\LaporanController;
 use App\Http\Controllers\Kasir\UseraksesController;
 use App\Http\Controllers\Sistem\KategoriController;
-use App\Http\Controllers\Sistem\ProdusenController;
 use App\Http\Controllers\Sistem\SatuanController;
 use App\Http\Controllers\Sistem\TransaksiController;
 use App\Http\Controllers\Superadmin\ClientController;

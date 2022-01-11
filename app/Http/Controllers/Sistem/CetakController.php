@@ -7,6 +7,8 @@ use App\Models\Barang;
 use App\Models\Cabang;
 use App\Models\Client;
 use App\Models\Distribusi;
+use App\Models\Kategori;
+use App\Models\Supplier;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -115,7 +117,36 @@ class CetakController extends Controller
                 $pdf        = PDF::loadview('sistem.cetak.distribusi', compact('datatabel','data'));
                 
                 break;
-            default:
+            case 'kategoribarang':
+                $namafile   = 'Data Kategori Barang';
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $kategori   = Kategori::kategori($akses->cabang_id);
+                $pdf        = PDF::loadview('sistem.cetak.kategoribarang', compact('kategori'));
+
+                break;
+            case 'satuanbarang':
+                $namafile   = 'Data Satuan Barang';
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $satuan   = Kategori::satuan($akses->cabang_id);
+                $pdf        = PDF::loadview('sistem.cetak.satuanbarang', compact('satuan'));
+
+                break;
+            case 'supplier':
+                $namafile   = 'Data Supplier';
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
+                $pdf        = PDF::loadview('sistem.cetak.supplier', compact('supplier'));
+
+                break;
+            case 'produsen':
+                $namafile   = 'Data Produsen';
+                $akses      = Userakses::where('user_id',$user->id)->first();
+                $produsen   = Kategori::produsen($akses->cabang_id);
+
+                $pdf        = PDF::loadview('sistem.cetak.produsen', compact('produsen'));
+
+                break;
+                default:
                 return 'sesi tidak ada';
                 break;
         }

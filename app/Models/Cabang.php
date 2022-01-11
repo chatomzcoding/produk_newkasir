@@ -18,4 +18,9 @@ class Cabang extends Model
     {
         return Supplier::where('cabang_id',$cabang_id)->count();
     }
+
+    public function supplier()
+    {
+        return $this->hasMany(Supplier::class);
+    }
 }

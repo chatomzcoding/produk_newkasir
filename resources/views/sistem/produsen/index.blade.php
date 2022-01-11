@@ -30,7 +30,7 @@
                 <div class="info-box-content">
                   <span class="info-box-text">Total Produsen</span>
                   <span class="info-box-number">
-                        {{ count($kategori)}}
+                        {{ count($produsen)}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -48,6 +48,8 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data List Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
+                    <a href="{{ url('cetakdata?s=produsen') }}" target="_blank" class="btn btn-outline-info btn-sm float-right pop-info" title="Cetak Data Produsen"><i class="fas fa-print"></i> CETAK</a>
+
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -78,11 +80,11 @@
                             </tr>
                         </thead>
                         <tbody class="text-capitalize">
-                            @forelse ($kategori as $item)
+                            @forelse ($produsen as $item)
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
-                                        <form id="data-{{ $item->id }}" action="{{url('kategori/'.$item->id)}}" method="post">
+                                        <form id="data-{{ $item->id }}" action="{{url('produsen/'.$item->id)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             </form>
@@ -92,11 +94,11 @@
                                                   <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
-                                                    <button type="button" data-toggle="modal" data-nama="{{ $item->nama }}"  data-keterangan="{{ $item->keterangan }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
-                                                    <i class="fa fa-edit"></i> EDIT
+                                                    <button type="button" data-toggle="modal" data-nama="{{ $item->nama }}"  data-keterangan="{{ $item->keterangan }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item " data-original-title="Edit Task">
+                                                    EDIT <i class="fa fa-edit float-right pt-1 text-success"></i>
                                                     </button>
                                                   <div class="dropdown-divider"></div>
-                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item text-danger"><i class="fas fa-trash-alt"></i> HAPUS</button>
+                                                  <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS <i class="fas fa-trash-alt float-right pt-1 text-danger"></i></button>
                                                 </div>
                                             </div>
                                     </td>
@@ -121,10 +123,10 @@
           <div class="modal-content">
             <form action="{{ url('/kategori')}}" method="post">
                 @csrf
-                <input type="hidden" name="label" value="satuan">
+                <input type="hidden" name="label" value="produsen">
                 <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
             <div class="modal-header">
-                <h4 class="modal-title">Tambah Data Satuan Barang</h4>
+                <h4 class="modal-title">Tambah Data Produsen Barang</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -132,7 +134,7 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Kategori</label>
+                        <label for="" class="col-md-4">Nama Produsen {!! ireq() !!}</label>
                         <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
@@ -155,11 +157,11 @@
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ route('listdata.update','test')}}" method="post">
+            <form action="{{ route('produsen.update','test')}}" method="post">
                 @csrf
                 @method('patch')
             <div class="modal-header">
-            <h4 class="modal-title">Edit Data List</h4>
+            <h4 class="modal-title">Edit Data Produsen</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -168,15 +170,7 @@
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-control col-md-8" required>
-                            @foreach (list_kategori() as $item)
-                                <option value="{{ $item }}">{{ strtoupper($item) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-md-4">Nama List Data</label>
+                        <label for="" class="col-md-4">Nama Produsen {!! ireq() !!}</label>
                         <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
@@ -201,14 +195,12 @@
             $('#ubah').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget)
                 var nama = button.data('nama')
-                var kategori = button.data('kategori')
                 var keterangan = button.data('keterangan')
                 var id = button.data('id')
         
                 var modal = $(this)
         
                 modal.find('.modal-body #nama').val(nama);
-                modal.find('.modal-body #kategori').val(kategori);
                 modal.find('.modal-body #keterangan').val(keterangan);
                 modal.find('.modal-body #id').val(id);
             })

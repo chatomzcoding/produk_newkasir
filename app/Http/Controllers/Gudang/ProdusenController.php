@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Sistem;
+namespace App\Http\Controllers\Gudang;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
@@ -19,8 +19,8 @@ class ProdusenController extends Controller
     {
         $menu       = 'produsen';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $kategori   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','produsen')->get();
-        return view('sistem.produsen.index', compact('menu','kategori','akses'));
+        $produsen   = Kategori::produsen($akses->cabang_id);
+        return view('sistem.produsen.index', compact('menu','produsen','akses'));
     }
 
     /**
@@ -41,7 +41,9 @@ class ProdusenController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Kategori::create($request->all());
+
+        return back()->with('ds','Produsen');
     }
 
     /**
@@ -73,9 +75,14 @@ class ProdusenController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request)
     {
-        //
+        Kategori::where('id',$request->id)->update([
+            'nama' => $request->nama,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return back()->with('du','Produsen');
     }
 
     /**
@@ -84,8 +91,10 @@ class ProdusenController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kategori $kategori)
+    public function destroy($kategori)
     {
-        //
+        Kategori::find($kategori)->delete();
+
+        return back()->with('dd','Produsen');
     }
 }

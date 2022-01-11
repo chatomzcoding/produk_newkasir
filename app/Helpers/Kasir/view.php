@@ -21,3 +21,11 @@ if (! function_exists('showstatus')) {
        return $html;
     }
 }
+
+if (! function_exists('ireq')) {
+    function ireq()
+    {
+       $html = "<strong class='text-danger'>*</strong>";
+       return $html;
+    }
+}

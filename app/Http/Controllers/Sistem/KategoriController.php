@@ -19,7 +19,7 @@ class KategoriController extends Controller
     {
         $menu       = 'kategori';
         $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $kategori   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->get();
+        $kategori   = Kategori::kategori($akses->cabang_id);
 
         return view('sistem.kategori.index', compact('menu','kategori','akses'));
     }
@@ -76,9 +76,13 @@ class KategoriController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request)
     {
-        //
+        Kategori::where('id',$request->id)->update([
+            'nama' => $request->nama,
+            'keterangan' => $request->keterangan,
+        ]);
+        return back()->with('du','Kategori Barang');
     }
 
     /**
