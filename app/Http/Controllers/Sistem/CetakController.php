@@ -11,7 +11,6 @@ use App\Models\Kategori;
 use App\Models\Supplier;
 use App\Models\Transaksi;
 use App\Models\Userakses;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +25,7 @@ class CetakController extends Controller
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
                 $bulan = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan();
                 $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
+                $kategori = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua';
                 switch ($user->level) {
                     case 'cabang':
                         $cabang     = Cabang::where('user_id',$user->id)->first();
@@ -68,6 +68,31 @@ class CetakController extends Controller
                                     'info' => 'Tanggal '.date_indo($tanggal),
                                 ];
                                 break;
+                            case 'bulanan':
+                                $transaksi  = DB::table('transaksi')
+                                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                                ->select('transaksi.*')
+                                                ->where('user_akses.cabang_id',$akses->cabang_id)
+                                                ->whereMonth('transaksi.created_at',$bulan)
+                                                ->whereYear('transaksi.created_at',$tahun)
+                                                ->get();
+                                $data           = [
+                                    'sesi' => 'Gudang : '.$user->name,
+                                    'info' => 'Bulan '.bulan_indo($bulan).' '.$tahun,
+                                ];
+                                break;
+                            case 'tahunan':
+                                $transaksi  = DB::table('transaksi')
+                                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                                ->select('transaksi.*')
+                                                ->where('user_akses.cabang_id',$akses->cabang_id)
+                                                ->whereYear('transaksi.created_at',$tahun)
+                                                ->get();
+                                $data           = [
+                                    'sesi' => 'Gudang : '.$user->name,
+                                    'info' => 'Tahun '.$tahun,
+                                ];
+                                break;
                             
                             default:
                                 # code...
@@ -79,8 +104,41 @@ class CetakController extends Controller
                         # code...
                         break;
                 }
-                $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data'));
-                $namafile   = 'Transaksi';
+                if ($kategori <> 'semua') {
+                    $barang     = Barang::select('kode_barang')->where('cabang_id',$akses->cabang_id)->where('kategori_id',$kategori)->pluck('kode_barang')->toArray();
+                    $kategori   = Kategori::find($kategori);
+                    $dtransaksi = [];
+                    foreach ($transaksi as $item) {
+                        if (!is_null($item->keranjang)) {
+                            $keranjang  = json_decode($item->keranjang,TRUE);
+                            foreach ($keranjang as $key) {
+                                // cek barang kategori
+                                if (in_array($key['kode_barang'],$barang)) {
+                                    if (isset($dtransaksi[$key['kode_barang']])) {
+                                        $dbaru[]      = $key;
+                                        $lkeranjang     = $dtransaksi[$key['kode_barang']];
+                                        $dtransaksi[$key['kode_barang']] = array_merge($lkeranjang,$dbaru);
+                                        $dbaru          = NULL;
+                                    } else {
+                                        $dtransaksi[$key['kode_barang']] = [
+                                            $key
+                                        ];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $namafile   = 'Transaksi Kategori';
+                    $data           = [
+                        'sesi' => 'Kategori '.$kategori->nama,
+                        'info' => $data['info'],
+                        'keranjang' => TRUE
+                    ];
+                    $pdf        = PDF::loadview('sistem.cetak.transaksikategori', compact('dtransaksi','data'));
+                } else {
+                    $namafile   = 'Transaksi';
+                    $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data'));
+                }
                 break;
             
             case 'barang':

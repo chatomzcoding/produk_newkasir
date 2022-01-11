@@ -222,6 +222,34 @@ if (! function_exists('sisauangeod')) {
         return $sisa;
     }
 }
+if (! function_exists('statistiklaporantransaksikategori')) {
+    function statistiklaporantransaksikategori($transaksi)
+    {
+        $terjual  = 0;
+        $penjualan  = 0;
+        $hpp  = 0;
+        $laba  = 0;
+        foreach ($transaksi as $item) {
+            foreach ($item as $key) {
+                  // total omzet
+                  $penjualan  = $penjualan + ($key['harga_jual'] * $key['jumlah']);
+                  // total omzet
+                  $hpp  = $hpp + ($key['harga_beli'] * $key['jumlah']);
+                  // total item terjual
+                  $terjual = $terjual + $key['jumlah'];
+                  // total laba
+                  $laba   = $laba + (($key['harga_jual'] - $key['harga_beli']) * $key['jumlah']);
+            }
+        }
+    $statistik = [
+        'terjual' => $terjual,
+        'penjualan' => $penjualan,
+        'hpp' => $hpp,
+        'laba' => $laba,
+    ];
+    return $statistik;
+    }
+}
 
 if (! function_exists('space')) {
     function space($sesi,$jumlah,$harga=null)
@@ -270,5 +298,37 @@ if (! function_exists('space')) {
         return $space;
     }
 }
+
+if (! function_exists('detailtransaksikategori')) {
+    function detailtransaksikategori($item)
+    {
+        $terjual    = 0;
+        $harga      = [];
+        $penjualan  = 0;
+        $hpp        = 0;
+        $laba       = 0;
+        foreach ($item as $k) {
+            if (!in_array($k['harga_jual'],$harga)) {
+                $harga[] = $k['harga_jual'];
+            }
+            $terjual        = $terjual + $k['jumlah'];
+            $npenjualan     = ($k['jumlah'] * $k['harga_jual']);
+            $penjualan      = $penjualan + $npenjualan;
+            $nhpp           = $k['jumlah'] * $k['harga_beli'];
+            $hpp            = $hpp + $nhpp;
+            $laba           = $laba + ($npenjualan - $nhpp);
+        }
+        $detail     = [
+            'terjual' => $terjual,
+            'harga' => $harga,
+            'penjualan' => $penjualan,
+            'hpp' => $hpp,
+            'laba' => $laba
+        ];
+        return $detail;
+    }
+}
+
+
 
 

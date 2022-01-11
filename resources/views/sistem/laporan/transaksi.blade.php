@@ -39,7 +39,7 @@
             </div>
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-cubes"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Item Terjual</span>
                   <span class="info-box-number">
@@ -54,7 +54,7 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-money-bill"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Total Omzet</span>
                   <span class="info-box-number">
@@ -69,7 +69,7 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-coins"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Laba</span>
                   <span class="info-box-number">
@@ -91,16 +91,21 @@
             <div class="card">
               <div class="card-header">
                   <a href="{{ url('datalaporan/transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
-                  @switch($filter['s'])
-                      @case('bulanan')
+                  @if ($filter['kategori'] <> 'semua' || $filter['s'] == 'harian')
+                    @switch($filter['s'])
+                        @case('bulanan')
                           
-                          @break
-                      @case('tahunan')
-                          
-                          @break
-                      @default
-                      <a href="{{ url('cetakdata?s=transaksi&filter=harian&tanggal='.$filter['data']['tanggal']) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
-                  @endswitch
+                          <a href="{{ url('cetakdata?s=transaksi&filter=bulanan&bulan='.$filter['data']['bulan'].'&tahun='.$filter['data']['tahun'].'&kategori='.$filter['kategori']) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                            
+                            @break
+                        @case('tahunan')
+                          <a href="{{ url('cetakdata?s=transaksi&filter=tahunan&tahun='.$filter['data']['tahun'].'&kategori='.$filter['kategori']) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                            
+                            @break
+                        @default
+                        <a href="{{ url('cetakdata?s=transaksi&filter=harian&tanggal='.$filter['data']['tanggal'].'&kategori='.$filter['kategori']) }}" target="_blank" class="float-right btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                    @endswitch
+                  @endif
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -134,71 +139,124 @@
                                 @default
                                     
                             @endswitch
+                            <div class="col-md-2">
+                              <select name="kategori" id="" class="form-control listdata" data-width="100%" onchange="this.form.submit()">
+                                <option value="semua" @if ($filter['kategori'] == 'semua')
+                                    selected
+                                @endif>--SEMUA--</option>
+                                @foreach ($kategori as $item)
+                                <option value="{{ $item->id }}" @if ($filter['kategori'] == $item->id)
+                                  selected
+                              @endif>{{ strtoupper($item->nama) }}</option>
+                                @endforeach
+                              </select>
+                            </div>
                         </div>
                     </form>
                   </section>
                   <div class="table-responsive">
-                    <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
+                    @if ($filter['kategori'] == 'semua')
+                      <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
+                          <thead class="text-center">
+                              <tr>
+                                  <th width="5%">No</th>
+                                  <th width="10%">Aksi</th>
+                                  <th>Kode Transaksi</th>
+                                  <th>Tipe Pembayaran</th>
+                                  <th>Tipe Orderan</th>
+                                  <th>Uang Pembeli</th>
+                                  <th>Keranjang</th>
+                                  <th>Status</th>
+                              </tr>
+                          </thead>
+                          <tbody class="text-capitalize">
+                              @forelse ($datatabel as $item)
+                              <tr>
+                                      <td class="text-center">{{ $loop->iteration}}</td>
+                                      <td class="text-center">
+                                          <form id="data-{{ $item->id }}" action="{{url('transaksi/'.$item->id)}}" method="post">
+                                              @csrf
+                                              @method('delete')
+                                              </form>
+                                              <div class="btn-group">
+                                                  <button type="button" class="btn btn-info btn-sm btn-flat">Aksi</button>
+                                                  <button type="button" class="btn btn-info btn-sm btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                  </button>
+                                                  <div class="dropdown-menu" role="menu">
+                                                      @if ($item->status_transaksi == 'selesai')
+                                                        <a href="{{ url('transaksi/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">  INVOICE <span class="float-right"><i class="fas fa-receipt text-primary"></i></span></a>
+                                                      @endif
+                                                      <div class="dropdown-divider"></div>
+                                                      <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS<span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
+                                                  </div>
+                                              </div>
+                                      </td>
+                                      <td>{{ $item->kode_transaksi}}</td>
+                                      <td>{{ $item->tipe_pembayaran}}</td>
+                                      <td>{{ $item->tipe_orderan}}</td>
+                                      <td>{{ rupiah($item->uang_pembeli)}}</td>
+                                      <td>
+                                          @if (!is_null($item->keranjang))
+                                              <ul class="list-group">
+                                                  @foreach (json_decode($item->keranjang) as $key)
+                                                      <li class="list-group-item d-flex justify-content-between align-items-center p-1">
+                                                          {{ $key->nama_barang }}
+                                                          <span class="badge badge-secondary badge-pill">{{ $key->jumlah }}</span>
+                                                      </li>
+                                                  @endforeach
+                                              </ul>
+                                          @endif
+                                      </td>
+                                      <td class="text-center">{!! statustransaksi($item->status_transaksi)!!}</td>
+                                  </tr>
+                              @empty
+                                  <tr class="text-center">
+                                      <td colspan="8">tidak ada data</td>
+                                  </tr>
+                              @endforelse
+                      </table>
+                      @includeWhen($filter['data']['page'], 'sistem.pagination',['link' => $filter['data']['link']])
+                    @else
+                      <table id="{{ cekdatatable($filter['data']['page']) }}" class="table table-bordered table-striped">
                         <thead class="text-center">
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="10%">Aksi</th>
-                                <th>Kode Transaksi</th>
-                                <th>Tipe Pembayaran</th>
-                                <th>Tipe Orderan</th>
-                                <th>Uang Pembeli</th>
-                                <th>Keranjang</th>
-                                <th>Status</th>
-                            </tr>
+                          <tr>
+                            <th rowspan="2">No</th>
+                            <th rowspan="2">Kode</th>
+                            <th rowspan="2">Nama Barang</th>
+                            <th rowspan="2">Harga</th>
+                            <th colspan="4">Detail</th>
+                          </tr>
+                          <tr>
+                            <th>Terjual</th>
+                            <th>Penjualan</th>
+                            <th>HPP</th>
+                            <th>Laba</th>
+                          </tr>
                         </thead>
-                        <tbody class="text-capitalize">
-                            @forelse ($datatabel as $item)
-                            <tr>
-                                    <td class="text-center">{{ $loop->iteration}}</td>
-                                    <td class="text-center">
-                                        <form id="data-{{ $item->id }}" action="{{url('transaksi/'.$item->id)}}" method="post">
-                                            @csrf
-                                            @method('delete')
-                                            </form>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-info btn-sm btn-flat">Aksi</button>
-                                                <button type="button" class="btn btn-info btn-sm btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                                  <span class="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <div class="dropdown-menu" role="menu">
-                                                    @if ($item->status_transaksi == 'selesai')
-                                                      <a href="{{ url('transaksi/'.Crypt::encryptString($item->id)) }}" class="dropdown-item">  INVOICE <span class="float-right"><i class="fas fa-receipt text-primary"></i></span></a>
-                                                    @endif
-                                                    <div class="dropdown-divider"></div>
-                                                    <button onclick="deleteRow( {{ $item->id }} )" class="dropdown-item">HAPUS<span class="float-right"><i class="fas fa-trash-alt text-danger"></i></span></button>
-                                                </div>
-                                            </div>
-                                    </td>
-                                    <td>{{ $item->kode_transaksi}}</td>
-                                    <td>{{ $item->tipe_pembayaran}}</td>
-                                    <td>{{ $item->tipe_orderan}}</td>
-                                    <td>{{ rupiah($item->uang_pembeli)}}</td>
-                                    <td>
-                                        @if (!is_null($item->keranjang))
-                                            <ul class="list-group">
-                                                @foreach (json_decode($item->keranjang) as $key)
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center p-1">
-                                                        {{ $key->nama_barang }}
-                                                        <span class="badge badge-secondary badge-pill">{{ $key->jumlah }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">{!! statustransaksi($item->status_transaksi)!!}</td>
-                                </tr>
-                            @empty
-                                <tr class="text-center">
-                                    <td colspan="8">tidak ada data</td>
-                                </tr>
-                            @endforelse
-                    </table>
-                    @includeWhen($filter['data']['page'], 'sistem.pagination',['link' => $filter['data']['link']])
+                        <tbody>
+                          @foreach ($datatabel as $item)
+                              <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $item[0]['kode_barang'] }}</td>
+                                <td>{{ $item[0]['nama_barang'] }}</td>
+                                @php
+                                    $detail = detailtransaksikategori($item)
+                                @endphp
+                                  <td class="text-right">
+                                    @for ($i = 0; $i < count($detail['harga']); $i++)
+                                        {{ norupiah($detail['harga'][$i]) }} <br>
+                                    @endfor
+                                  </td>
+                                  <td class="text-center">{{ $detail['terjual'] }}</td>
+                                  <td  class="text-right">{{ norupiah($detail['penjualan']) }}</td>
+                                  <td class="text-right">{{ norupiah($detail['hpp']) }}</td>
+                                  <td class="text-right">{{ norupiah($detail['laba']) }}</td>
+                              </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    @endif
                 </div>
               </div>
             </div>

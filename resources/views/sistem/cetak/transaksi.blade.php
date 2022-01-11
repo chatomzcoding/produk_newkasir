@@ -22,32 +22,30 @@
                     <th>Tipe Pembayaran</th>
                     <th>Tipe Orderan</th>
                     <th>Uang Pembeli</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody class="text-capitalize">
                 @forelse ($transaksi as $item)
                 <tr>
-                        <td class="text-center">{{ $loop->iteration}}</td>
-                        <td> <small>{{ $item->kode_transaksi}}</small></td>
+                        <th class="text-center">{{ $loop->iteration}}</th>
+                        <th class="text-leftW"> <small>{{ $item->kode_transaksi}}</small></th>
                         <td>{{ $item->tipe_pembayaran}}</td>
                         <td>{{ $item->tipe_orderan}}</td>
-                        <td>{{ rupiah($item->uang_pembeli)}}</td>
-                        <td class="text-center">{{ $item->status_transaksi}}</td>
+                        <td class="text-right">{{ norupiah($item->uang_pembeli)}}</td>
                     </tr>
-                    <tr>
-                        <th colspan="2">Daftar Keranjang</th>
-                        <td colspan="4">
-                            @if (!is_null($item->keranjang))
-                                @foreach (json_decode($item->keranjang) as $key)
-                                    - {{ ucwords($key->nama_barang) }} ({{ $key->jumlah }}) <br>
-                                @endforeach
-                            @endif
-                        </td>
-                    </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="4">
+                                @if (!is_null($item->keranjang))
+                                    @foreach (json_decode($item->keranjang) as $key)
+                                        - {{ strtolower($key->nama_barang) }} ({{ $key->jumlah }}) <br>
+                                    @endforeach
+                                @endif
+                            </td>
+                        </tr>
                 @empty
                     <tr class="text-center">
-                        <td colspan="6">tidak ada data</td>
+                        <td colspan="5">tidak ada data</td>
                     </tr>
                 @endforelse
         </table>
