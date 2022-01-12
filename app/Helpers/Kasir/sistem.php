@@ -130,6 +130,13 @@ if (! function_exists('subtotal')) {
         return $subtotal;
     }
 }
+if (! function_exists('subtotal')) {
+    function subtotal($hargajual,$jumlah)
+    {
+        $subtotal = $hargajual * $jumlah;
+        return $subtotal;
+    }
+}
 if (! function_exists('jumlahretur')) {
     function jumlahretur($barang,$kodebarang)
     {

@@ -138,9 +138,14 @@ class BarangController extends Controller
      * @param  \App\Models\Barang  $barang
      * @return \Illuminate\Http\Response
      */
-    public function edit(Barang $barang)
+    public function edit($barang)
     {
-        //
+        $menu   = 'barang';
+        $barang     = Barang::find(Crypt::decryptString($barang));
+        $satuan         = Kategori::where('cabang_id',$barang->cabang_id)->where('label','satuan')->orderBy('nama','ASC')->get();
+        $kategori       = Kategori::where('cabang_id',$barang->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
+        $produsen       = Kategori::where('cabang_id',$barang->cabang_id)->where('label','produsen')->orderBy('nama','ASC')->get();
+        return view('sistem.barang.edit', compact('menu','barang','satuan','kategori','produsen'));
     }
 
     /**
@@ -152,7 +157,36 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        //
+        if (isset($request->gambar)) {
+            $request->validate([
+                'gambar' => 'required|file|image|mimes:jpeg,png,jpg|max:5000',
+            ]);
+            // menyimpan data file yang diupload ke variabel $file
+            $file = $request->file('gambar');
+            
+            $gambar = time()."_".$file->getClientOriginalName();
+            $tujuan_upload = 'public/img/barang';
+            // isi dengan nama folder tempat kemana file diupload
+            $file->move($tujuan_upload,$gambar);
+            deletefile($tujuan_upload.'/'.$barang->gambar);
+        } else {
+            $gambar  = $barang->gambar;
+        }
+        Barang::where('id',$barang->id)->update([
+            'kode_barang' => $request->kode_barang,
+            'nama_barang' => $request->nama_barang,
+            'kategori_id' => $request->kategori_id,
+            'satuan_id' => $request->satuan_id,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
+            'stok' => $request->stok,
+            'kode_barcode' => $request->kode_barcode,
+            'merk' => $request->merk,
+            'status_barang' => $request->status_barang,
+            'gambar' => $gambar,
+        ]);
+
+        return redirect('barang/'.Crypt::encryptString($barang->id))->with('du','Barang');
     }
 
     /**

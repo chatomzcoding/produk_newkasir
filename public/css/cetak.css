@@ -8,6 +8,9 @@ body{
 .text-right {
     text-align: right;
 }
+.text-left {
+    text-align: left;
+}
 .table {
     width: 100%;
   
@@ -16,6 +19,7 @@ body{
 .table, th, td {
     border: 1px solid #999;
     padding: 4px 10px;
+    text-align: left;
 }
 .noborder {
     border: 0px solid #fff;

@@ -7,13 +7,13 @@
 @section('header')
     <div class="row mb-2">
         <div class="col-sm-6">
-        <h1 class="m-0">Data Barang</h1>
+        <h1 class="m-0">Detail Barang {{ ucwords($barang->nama_barang) }}</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Beranda</a></li>
             <li class="breadcrumb-item"><a href="{{ url('barang')}}">Daftar Barang</a></li>
-            <li class="breadcrumb-item active">Detail Barang</li>
+            <li class="breadcrumb-item active">Detail</li>
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -60,12 +60,12 @@
                 </div>
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box">
-                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill"></i></span>
       
                     <div class="info-box-content">
-                      <span class="info-box-text">Total Barang Stok Kosong</span>
+                      <span class="info-box-text">Total Omzet Dalam Barang</span>
                       <span class="info-box-number">
-                        {{-- {{ $statistik['totalbarangstokkosong'] }} --}}
+                        {{ rupiah(subtotal($barang->harga_jual,$barang->stok)) }}
                         {{-- <small>%</small> --}}
                       </span>
                     </div>
@@ -78,8 +78,9 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                 <a href="{{ url('barang') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-angle-left"></i> Kembali</a>
+                <a href="{{ url('barang/'.Crypt::encryptString($barang->id).'/edit') }}" class="btn btn-outline-success btn-sm"><i class="fas fa-pen"></i> Edit</a>
                     <div class="float-right">
-                    <a href="{{ url('cetakdata?s=detailbarang') }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak barang"><i class="fas fa-print"></i> CETAK</a>
+                    <a href="{{ url('cetakdata?s=detailbarang&id='.Crypt::encryptString($barang->id)) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak barang"><i class="fas fa-print"></i> CETAK</a>
                     </div>
               </div>
               <div class="card-body">
@@ -105,8 +106,8 @@
                                         <td>: {{ $barang->kode_barang }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Nama Barang</th>
-                                        <td class="text-capitalize">: {{ $barang->nama_barang }}</td>
+                                        <th>Kode Barcode</th>
+                                        <td>: {{ $barang->kode_barcode }}</td>
                                     </tr>
                                     <tr>
                                         <th>Kategori Barang</th>

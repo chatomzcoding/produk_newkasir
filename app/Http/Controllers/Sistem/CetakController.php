@@ -13,6 +13,7 @@ use App\Models\Transaksi;
 use App\Models\Userakses;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class CetakController extends Controller
@@ -42,6 +43,12 @@ class CetakController extends Controller
 
                 break;
         }
+        $main       = [
+            'telp' => $telp,
+            'alamat' => $alamat,
+            'client' => $client,
+            'cabang' => $cabang,
+        ];
         switch ($_GET['s']) {
             case 'transaksi':
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
@@ -188,16 +195,12 @@ class CetakController extends Controller
                     $barang     =  Barang::cabangPerKategori($akses->cabang_id,$kategori);
                 }
                 if (isset($_GET['harga'])) {
-                    $cabang     = Cabang::find($akses->cabang_id);
-                    $client     = Client::find($cabang->client_id);
-                    $pdf        = PDF::loadview('sistem.cetak.hargabarang', compact('barang','kategori','client'));
+                    $pdf        = PDF::loadview('sistem.cetak.hargabarang', compact('barang','kategori','main'));
                 } else {
                     $data       = [
-                        'telp' => $telp,
-                        'alamat' => $alamat,
                         'kategori' => $kategori
                     ];
-                    $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','dkategori','data','client'));
+                    $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','dkategori','data','main'));
                 }
                 break;
             case 'distribusi':
@@ -244,6 +247,12 @@ class CetakController extends Controller
                 $produsen   = Kategori::produsen($akses->cabang_id);
 
                 $pdf        = PDF::loadview('sistem.cetak.produsen', compact('produsen'));
+
+                break;
+            case 'detailbarang':
+                $barang     = Barang::find(Crypt::decryptString($_GET['id']));
+                $namafile   = 'Detail Barang '.$barang->nama_barang;
+                $pdf        = PDF::loadview('sistem.cetak.detailbarang', compact('main','barang'));
 
                 break;
                 default:
