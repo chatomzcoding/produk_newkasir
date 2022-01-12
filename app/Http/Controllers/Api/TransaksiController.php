@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Userakses;
@@ -291,6 +292,15 @@ class TransaksiController extends Controller
                     $keranjang  = [];
                     $barang     = json_decode($request->barang);
                     foreach ($barang as $key) {
+                        // kurangi jumlah barang
+                        $barang     = Barang::where('kode_barang',$key->kode_barang)->first();
+                        if ($barang) {
+                            $stok   = $barang->stok - $key->jumlah;
+                            Barang::where('id',$barang->id)->update([
+                                'stok' => $stok
+                            ]);
+                        }
+
                         $keranjang[$key->kode_barang] = [
                             'kode_barang' => $key->kode_barang,
                             'nama_barang' => $key->nama_barang,
