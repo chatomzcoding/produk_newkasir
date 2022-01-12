@@ -5,24 +5,31 @@
     <link rel="stylesheet" href="{{ asset('css/cetak.css') }}">
 </head>
 <body>
+  @include('sistem.cetak.header')
+
 	<div class="container-fluid">
 		<section class="text-center">
             <h4>
-                Data Barang <br>
-                kategori : {{ DbCikara::namaKategori($kategori) }}
+                Data Barang
             </h4>
-            <hr>
+            @if ($data['kategori'] <> 'semua')
+                <h5>
+                    kategori : {{ ucwords($dkategori->nama) }}
+                </h5>
+            @endif
         </section>
         <table class="table">
             <thead class="text-center" style="font-size: 11px">
                 <tr>
                     <th width="5%">No</th>
-                    <th>Kode</th>
+                    <th width="10%">Kode</th>
                     <th>Nama Barang</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
+                    <th width="15%">Harga Beli</th>
+                    <th width="15%">Harga Jual</th>
+                    @if ($data['kategori'] == 'semua')
                     <th>Kategori</th>
-                    <th>Stok</th>
+                    @endif
+                    <th width="10%">Stok</th>
                 </tr>
             </thead>
             <tbody  style="font-size: 11px">
@@ -33,7 +40,9 @@
                         <td>{{ ucwords($item->nama_barang) }}</td>
                         <td class="text-right">{{ norupiah($item->harga_beli) }} </td>
                         <td class="text-right">{{ norupiah($item->harga_jual) }} </td>
+                        @if ($data['kategori'] == 'semua')
                         <td class="text-center">{{ DbCikara::namaKategori($item->kategori_id) }}</td>
+                        @endif
                         <td class="text-center">{{ $item->stok }} </td>
                     </tr>
                 @endforeach

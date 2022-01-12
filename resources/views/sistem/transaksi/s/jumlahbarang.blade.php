@@ -16,7 +16,7 @@
                     <div class="col-md-2">
                         <input type="number" name="jumlah" class="form-control" value="{{ $_GET['jumlah'] }}" min="1" max="{{ $barang->stok }}"  @if ($s == 'jumlahbarang')
                         autofocus
-                        @endif>
+                        @endif required>
                         <small class="font-weight-bold">stok digudang {{ $barang->stok }}</small>
                     </div>
                 </div>

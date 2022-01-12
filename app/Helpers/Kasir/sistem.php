@@ -347,6 +347,19 @@ if (! function_exists('totalpembayarandistribusi')) {
         return $total;
     }
 }
+// KERANJANG
+if (! function_exists('listdaftarkeranjang')) {
+    function listdaftarkeranjang($keranjang)
+    {
+        $keranjang  = json_decode($keranjang);
+        $dkeranjang = [];
+        foreach ($keranjang as $key) {
+            $dkeranjang[] = $key;
+        };
+        krsort($dkeranjang);
+        return $dkeranjang;
+    }
+}
 
 
 

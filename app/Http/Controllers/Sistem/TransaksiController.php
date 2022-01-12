@@ -150,7 +150,7 @@ class TransaksiController extends Controller
                         ]);
                         return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','<strong>'.ucwords($barang->nama_barang).'</strong> berhasil ditambahkan  ke keranjang');
                     } else {
-                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('danger','<strong>'.ucwords($barang->nama_barang).'</strong> stok tidak ada!');
+                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id).'?s=caribarang')->with('danger','<strong>'.ucwords($barang->nama_barang).'</strong> stok tidak ada!');
                     }
                     
                 } else {
@@ -194,6 +194,15 @@ class TransaksiController extends Controller
                 $data = [
                     'totalpembayaran' => totalpembayaran($transaksi->keranjang)
                 ];
+
+                $keranjang  = json_decode($transaksi->keranjang,TRUE);
+                // $dkeranjang = [];
+                // foreach ($keranjang as $key) {
+                //     $dkeranjang[] = $key;
+                // };
+                // krsort($dkeranjang);
+                // dd($dkeranjang);
+
                 return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','cabang','client'));
                 break;
             case 'retur':

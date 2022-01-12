@@ -12,6 +12,24 @@
         </form>
     </section>
 
+
+    {{-- button kembali ke daftar keranjang / halaman proses --}}
+    <section class="mt-1">
+        <form action="{{ url('transaksi') }}" method="post" target="_blank">
+            @csrf
+            <input type="hidden" name="sesi" value="tambah">
+            <input type="hidden" name="user_id" value="{{ $user->id }}">
+            <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
+            <input type="hidden" name="status_transaksi" value="proses">
+            <input type="hidden" name="uang_pembeli" value="0">
+            <button type="submit" class="btn btn-warning btn-block text-left" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru<span class="float-right">[Enter]</span></button>
+        </form>
+        {{-- <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
+            @csrf
+            <input type="hidden" name="s" value="tambahtransaksi">
+            <button type="submit" class="btn btn-warning btn-block text-left" id="tambahtransaksi"><i class="fas fa-shopping-cart"></i> TAMBAH TRANSAKSI <span class="float-right">[ENTER]</span></button>
+        </form> --}}
+    </section>
     {{-- button kembali ke daftar keranjang / halaman proses --}}
     <section class="mt-1">
         <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
@@ -39,13 +57,15 @@
                 <button type="submit" class="btn btn-success btn-block text-left" id="klikbayar"><i class="fas fa-money-bill-wave"></i> BAYAR <span class="float-right">[-]</span></button>
             </form>
         </section>
-        <section class="mt-1">
-            <form id="data-{{ $transaksi->id }}" action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
-                @csrf
-                @method('delete')
-            </form>
-                <button onclick="deleteRow( {{ $transaksi->id }} )" class="btn btn-danger btn-block text-left" id="klikdelete"><i class="fas fa-trash"></i> HAPUS TRANSAKSI <span class="float-right">[Delete]</span></button>
-        </section>
+        @if ($s <> 'jumlahbarang')
+            <section class="mt-1">
+                <form id="data-{{ $transaksi->id }}" action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
+                    @csrf
+                    @method('delete')
+                </form>
+                    <button onclick="deleteRow( {{ $transaksi->id }} )" class="btn btn-danger btn-block text-left" id="klikdelete"><i class="fas fa-trash"></i> HAPUS TRANSAKSI <span class="float-right">[Delete]</span></button>
+            </section>
+        @endif
     @else
         {{-- TOMBOL UNTUK BATAL RETUR --}}
         @if ($transaksi->status_transaksi == 'retur')

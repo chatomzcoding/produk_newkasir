@@ -61,7 +61,8 @@ class CetakController extends Controller
                         ];
                         break;
                     case 'kasir':
-                        switch ($_GET['filter']) {
+                        $filter = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'harian' ;
+                        switch ($filter) {
                             case 'harian':
                                 $transaksi      = Transaksi::where('user_id',$user->id)->whereDate('created_at',$tanggal)->get();
                                 $data           = [
@@ -174,12 +175,16 @@ class CetakController extends Controller
                 break;
             
             case 'barang':
-                $namafile   = 'Barang';
                 $akses          = Userakses::where('user_id',$user->id)->first();
                 $kategori       = $_GET['kategori'];
+                $kategori       = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
                 if ($kategori == 'semua') {
+                    $namafile   = 'Barang';
+                    $dkategori  = NULL;
                     $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
                 } else {
+                    $dkategori  = Kategori::find($kategori);
+                    $namafile   = 'Barang Kategori '.ucwords($dkategori->nama);
                     $barang     =  Barang::cabangPerKategori($akses->cabang_id,$kategori);
                 }
                 if (isset($_GET['harga'])) {
@@ -187,7 +192,12 @@ class CetakController extends Controller
                     $client     = Client::find($cabang->client_id);
                     $pdf        = PDF::loadview('sistem.cetak.hargabarang', compact('barang','kategori','client'));
                 } else {
-                    $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','kategori'));
+                    $data       = [
+                        'telp' => $telp,
+                        'alamat' => $alamat,
+                        'kategori' => $kategori
+                    ];
+                    $pdf        = PDF::loadview('sistem.cetak.barang', compact('barang','dkategori','data','client'));
                 }
                 break;
             case 'distribusi':

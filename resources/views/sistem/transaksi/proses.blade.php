@@ -58,6 +58,9 @@
                                                 @case('bayar')
                                                     @include('sistem.transaksi.s.bayar')
                                                     @break
+                                                @case('tambahtransaksi')
+                                                    @include('sistem.transaksi.s.tambahtransaksi')
+                                                    @break
                                                 @case('jumlahbarang')
                                                     @include('sistem.transaksi.s.jumlahbarang')
                                                     @include('sistem.transaksi.keranjang')
@@ -116,6 +119,11 @@
     </script>
     <script type="text/javascript">
         function myFunction(){
+            /* tombol Page Up */
+            if(event.keyCode == 33) {
+                event.preventDefault()
+                $("#tambahtransaksi").click();
+            }
             /* tombol backspace <- */
             if(event.keyCode == 37) {
                 event.preventDefault()
@@ -127,10 +135,10 @@
                 $("#klikbayar").click();
             }
             /* tombol Delete */
-            if(event.keyCode == 46) {
-                event.preventDefault()
-                $("#klikdelete").click();
-            }
+            // if(event.keyCode == 46) {
+            //     event.preventDefault()
+            //     $("#klikdelete").click();
+            // }
             
             /* tombol insert */
             if(event.keyCode == 45) {
@@ -164,6 +172,17 @@
             }
         }
     </script>
+    @if ($s <> 'jumlahbarang')
+        <script type="text/javascript">
+            function myFunction(){
+                /* tombol Delete */
+                if(event.keyCode == 46) {
+                    event.preventDefault()
+                    $("#klikdelete").click();
+                }
+            }
+        </script>
+    @endif
     <script>
         window.setTimeout("waktu()", 1000);
      

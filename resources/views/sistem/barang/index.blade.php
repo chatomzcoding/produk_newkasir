@@ -100,7 +100,9 @@
                             </div>
                         </div>
                       @endif
-                    <a href="{{ url('cetakdata?s=barang&kategori='.$filter['kategori']) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar barang"><i class="fas fa-print"></i> CETAK</a>
+                      @if (isset($_GET['kategori']))
+                        <a href="{{ url('cetakdata?s=barang&kategori='.$filter['kategori']) }}" class="btn btn-outline-info btn-sm pop-info" target="_blank" title="Cetak daftar barang"><i class="fas fa-print"></i> CETAK</a>
+                      @endif
                     </div>
               </div>
               <div class="card-body">
@@ -110,7 +112,7 @@
                       @csrf
                       <div class="row">
                           <div class="form-group col-md-2">
-                              <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
+                              <select name="kategori" id="" class="form-control listdata" width="100%" onchange="this.form.submit();">
                                   <option value="semua">-- Semua Kategori</option>
                                   @foreach ($kategori as $item)
                                       <option value="{{ $item->id}}" @if ($filter['kategori'] == $item->id)

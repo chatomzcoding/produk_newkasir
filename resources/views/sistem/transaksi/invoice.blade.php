@@ -24,7 +24,21 @@
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-balance-scale"></i></span>
+  
+                <div class="info-box-content">
+                  <span class="info-box-text">Total Item</span>
+                  <span class="info-box-number">
+                        {{ rupiah($invoice['bruto'])}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-balance-scale"></i></span>
   
@@ -38,7 +52,7 @@
               </div>
               <!-- /.info-box -->
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-balance-scale-right"></i></span>
   
@@ -52,7 +66,7 @@
               </div>
               <!-- /.info-box -->
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
   
@@ -83,51 +97,68 @@
                   @include('sistem.notifikasi')
                   <div class="row">
                       <div class="col-md-8">
-                          <h4><i class="fas fa-shopping-basket text-secondary"></i> Daftar Barang Belanjaan</h4>
-                          <div class="table-responsive">
-                              <table class="table table-bordered">
-                                  <thead class="table-dark">
-                                      <tr class="text-center">
-                                          <th>No</th>
-                                          <th>Nama Barang</th>
-                                          <th>Harga Jual</th>
-                                          <th>Jumlah</th>
-                                          <th>Sub Total</th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      @foreach (json_decode($transaksi->keranjang) as $item)
-                                          <tr>
-                                              <td class="text-center">{{ $loop->iteration }}</td>
-                                              <td class="text-capitalize">{{ $item->nama_barang }}</td>
-                                              <td class="text-right">{{ rupiah($item->harga_jual) }}</td>
-                                              <td class="text-center">{{ $item->jumlah }}</td>
-                                              <td>Rp <span class="float-right">{{ norupiah(subtotal($item->harga_jual,$item->jumlah)) }}</span></td>
-                                          </tr>
-                                      @endforeach
-                                      <tr class="table-secondary">
-                                          <th colspan="4" class="h4">Total Pembayaran</th>
-                                          <td class="h4">Rp <span class="float-right">{{ norupiah($invoice['total_pembayaran']) }}</span></td>
-                                      </tr>
-                                      <tr>
-                                          <th colspan="4" class="h4">Uang Pembeli</th>
-                                          <td class="h4">Rp <span class="float-right">{{ norupiah($invoice['uang_pembeli']) }}</span></td>
-                                      </tr>
-                                      <tr class="bg-primary">
-                                          <th colspan="4" class="h4">Kembalian</th>
-                                          <td class="h4 font-weight-bold">Rp <span class="float-right">{{ norupiah($invoice['kembalian']) }}</span></td>
-                                      </tr>
-                                  </tbody>
-                              </table>
+                        <div class="card">
+                          <div class="card-body">
+                            <h4><i class="fas fa-shopping-basket text-secondary"></i> Daftar Barang Belanjaan</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr class="text-center">
+                                            <th>No</th>
+                                            <th>Nama Barang</th>
+                                            <th>Harga Jual</th>
+                                            <th>Jumlah</th>
+                                            <th>Sub Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (listdaftarkeranjang($transaksi->keranjang) as $item)
+                                            <tr>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td class="text-capitalize">{{ $item->nama_barang }}</td>
+                                                <td class="text-right">{{ rupiah($item->harga_jual) }}</td>
+                                                <td class="text-center">{{ $item->jumlah }}</td>
+                                                <td>Rp <span class="float-right">{{ norupiah(subtotal($item->harga_jual,$item->jumlah)) }}</span></td>
+                                            </tr>
+                                        @endforeach
+                                        <tr class="table-secondary">
+                                            <th colspan="4" class="h4">Total Pembayaran</th>
+                                            <td class="h4">Rp <span class="float-right">{{ norupiah($invoice['total_pembayaran']) }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4" class="h4">Uang Pembeli</th>
+                                            <td class="h4">Rp <span class="float-right">{{ norupiah($invoice['uang_pembeli']) }}</span></td>
+                                        </tr>
+                                        <tr class="bg-primary">
+                                            <th colspan="4" class="h4">Kembalian</th>
+                                            <td class="h4 font-weight-bold">Rp <span class="float-right">{{ norupiah($invoice['kembalian']) }}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                           </div>
+                        </div>
                       </div>
                       <div class="col-md-4">
-                        <h4><i class="fas fa-receipt text-secondary"></i> Transaksi {{ $transaksi->kode_transaksi}}</h4>
+                          <div class="card">
+                            <div class="card-body pb-0">
+                                <section>
+                                  KEMBALIAN 
+                                  <span class="display-3 float-right font-weight-bold">
+                                    {{ norupiah($invoice['kembalian']) }}
+                                  </span>
+                                </section>
+                            </div>
+                          </div>
                           <div class="card">
                             <div class="card-body">
                                 <section>
                                     <div class="table-responsive">
                                         <table width="100%">
+                                          <tr>
+                                              <th>Transaksi</th>
+                                              <td>: {{ $transaksi->kode_transaksi }}</td>
+                                          </tr>
                                           <tr>
                                               <th>Tanggal/Jam</th>
                                               <td>: {{ $transaksi->created_at }}</td>
