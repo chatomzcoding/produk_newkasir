@@ -21,26 +21,32 @@ class BarangController extends Controller
     public function index()
     {
         $menu       = 'barang';
+        $page       = FALSE;
         $user       = Auth::user();
         $akses      = Userakses::where('user_id',$user->id)->first();
         $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
-        $cari       = (isset($_GET['cari'])) ? $_GET['cari'] : NULL ;
-        if (!is_null($cari)) {
-            // cek jika dicari dengan kode barang
-            $barang     = Barang::where('kode_barang',$cari)->get();
-            if (count($barang) == 0) {
-                $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$_GET['cari'].'%')->get();
-            }
-            $fkategori  = 'cari';
-            $page       = FALSE;
-        } else {
-            if ($fkategori == 'semua') {
-                $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
-                $page           = TRUE;
-            } else {
-                $barang     = Barang::cabangPerKategori($akses->cabang_id,$fkategori);
-                $page       = FALSE;
-            }
+        $sesi       = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'barang' ;
+        switch ($sesi) {
+            case 'cari':
+                $cari       = $_GET['cari'];
+                $barang     = Barang::where('kode_barang',$cari)->get();
+                if (count($barang) == 0) {
+                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$cari.'%')->get();
+                }
+                break;
+            case 'info':
+                $menu   = 'infobarang';
+                return view('sistem.barang.info', compact('menu'));
+                break;
+            
+            default:
+                if ($fkategori == 'semua') {
+                    $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
+                    $page           = TRUE;
+                } else {
+                    $barang     = Barang::cabangPerKategori($akses->cabang_id,$fkategori);
+                }
+                break;
         }
         
         $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
@@ -50,6 +56,7 @@ class BarangController extends Controller
         $filter         = [
             'kategori' => $fkategori,
             'page' => $page,
+            'sesi' => $sesi,
         ];
         $statistik      = [
             'totalbarang' => $totalbarang,

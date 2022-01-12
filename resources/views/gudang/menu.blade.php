@@ -5,7 +5,7 @@
     </a>
   </li> --}}
   
-  <li class="nav-item @if ($menu == 'barang')
+  <li class="nav-item @if ($menu == 'barang' || $menu == 'infobarang')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -21,6 +21,12 @@
           <a href="{{ url('/barang')}}" class="nav-link small {{ menuaktif($menu,'barang') }}">
             &nbsp;&nbsp;<i class="fas fa-list nav-icon"></i>
             <p>Daftar Barang</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('/barang?sesi=info')}}" class="nav-link small {{ menuaktif($menu,'infobarang') }}">
+            &nbsp;&nbsp;<i class="fas fa-info-circle nav-icon"></i>
+            <p>Info Barang</p>
           </a>
         </li>
       </ul>
