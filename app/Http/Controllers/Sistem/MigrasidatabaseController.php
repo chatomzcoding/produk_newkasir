@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Distribusi;
 use App\Models\Kategori;
+use App\Models\Laporan;
 use App\Models\Supplier;
 use App\Models\Transaksi;
 use App\Models\User;
@@ -20,7 +21,7 @@ class MigrasidatabaseController extends Controller
     public function index()
     {
         $menu       = 'migrasi';
-        $migrasi    = ['user','barang','supplier','distribusi','transaksi'];
+        $migrasi    = ['user','barang','supplier','distribusi','transaksi','laporan'];
         return view('sistem.migrasi.index', compact('menu','migrasi'));
     }
 
@@ -243,8 +244,50 @@ class MigrasidatabaseController extends Controller
                     }
                 }
                 break;
-            default:
-                $data       = NULL;
+            
+            case 'laporan':
+                if (isset($_GET['s'])) {
+                    $data    = DB::table('kasir_laporan')
+                    ->join('kasir_user','kasir_laporan.user_id','=','kasir_user.id')
+                    ->join('users','kasir_user.email','=','users.email')
+                    ->select('kasir_laporan.*','users.id as iduser','users.email')
+                    ->orderBy('kasir_laporan.tgl_laporan','ASC')
+                    ->get();
+                    foreach ($data as $item) {
+                        $ceklaporan = Laporan::where('user_id',$item->iduser)->where('tgl_laporan',$item->tgl_laporan)->first();
+                        if (!$ceklaporan) {
+                            $totalitem  = 0;
+                            $transaksi  = Transaksi::select('keranjang')->where('user_id',$item->iduser)->where('keranjang','<>',NULL)->whereDate('created_at',$item->tgl_laporan)->get();
+                            if (count($transaksi) > 0) {
+                                foreach ($transaksi as $key) {
+                                    $keranjang = json_decode($key->keranjang);
+                                    foreach ($keranjang as $k) {
+                                        $totalitem = $totalitem + $k->jumlah;
+                                    }
+                                }
+                            }
+                            Laporan::create([
+                                'user_id' => $item->iduser,
+                                'tgl_laporan' => $item->tgl_laporan,
+                                'total_transaksi' => $item->total_transaksi,
+                                'total_item' => $totalitem,
+                                'total_penjualan' => $item->total_penjualan,
+                                'modal' => $item->total_modal,
+                                'pengambilan' => $item->total_pengambilan,
+                                'laba' => $item->total_laba
+                            ]);
+                        }
+                    }
+                }
+                $data    = DB::table('kasir_laporan')
+                ->join('kasir_user','kasir_laporan.user_id','=','kasir_user.id')
+                ->join('users','kasir_user.email','=','users.email')
+                ->select('kasir_laporan.*','users.id as iduser','users.email')
+                ->orderBy('kasir_laporan.tgl_laporan','ASC')
+                ->paginate(10);
+                break;
+                default:
+                return 'tidak ada sesi';
                 break;
         }
         return view('sistem.migrasi.list', compact('menu','data','sesi'));

@@ -36,7 +36,7 @@ class LaporanController extends Controller
                 break;
             
             default:
-                # code...
+                return 'sesi tidak ada';
                 break;
         }
     }

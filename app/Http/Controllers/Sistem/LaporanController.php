@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sistem;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Laporan;
 use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
@@ -16,10 +17,10 @@ class LaporanController extends Controller
     public function index($sesi)
     {
         $user   = Auth::user();
+        $akses  = Userakses::where('user_id',$user->id)->first();
         switch ($sesi) {
             case 'transaksi':
                 $menu   = 'laporantransaksi';
-                $akses  = Userakses::where('user_id',$user->id)->first();
                 $kategori = Kategori::kategori($akses->cabang_id);
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'harian' ;
                 $skategori = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
@@ -135,7 +136,31 @@ class LaporanController extends Controller
                 return view('sistem.laporan.transaksi', compact('menu','datatabel','filter','statistik','kategori'));
                 break;
             
-            default:
+            case 'eod':
+                $menu   = 'laporaneod';
+                $user_id  = (isset($_GET['user'])) ? $_GET['user'] : 'semua' ;
+                if ($user_id == 'semu') {
+                    $eod    = DB::table('laporan')
+                                ->join('user_akses','laporan.user_id','=','user_akses.user_id')
+                                ->where('user_akses.cabang_id',$akses->cabang_id)
+                                ->get();
+                } else {
+                    $eod    = Laporan::where('user_id',$user_id)->get();
+                }
+                $user   = DB::table('users')
+                            ->join('user_akses','users.id','=','user_akses.user_id')
+                            ->where('user_akses.cabang_id',$akses->cabang_id)
+                            ->orderBy('users.name','ASC')
+                            ->get();
+                $data   = [
+                    'eod' => $eod,
+                    'user_id' => $user_id,
+                    'user' => $user,
+                ];
+                return view('sistem.laporan.eod', compact('menu','data'));
+                break;
+            
+                default:
                 # code...
                 break;
         }

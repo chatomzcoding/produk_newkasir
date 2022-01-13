@@ -49,6 +49,9 @@
                             @case('user')
                                 @include('sistem.migrasi.tabel.user')
                                 @break
+                            @case('laporan')
+                                @include('sistem.migrasi.tabel.laporan')
+                                @break
                           @default
                       @endswitch
                     

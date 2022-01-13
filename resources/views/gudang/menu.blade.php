@@ -31,7 +31,7 @@
         </li>
       </ul>
   </li>
-  <li class="nav-item @if ($menu == 'laporantransaksi')
+  <li class="nav-item @if ($menu == 'laporantransaksi' || $menu == 'laporaneod')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -47,6 +47,12 @@
           <a href="{{ url('/datalaporan/transaksi?s=harian')}}" class="nav-link small {{ menuaktif($menu,'laporantransaksi') }}">
             &nbsp;&nbsp;<i class="fas fa-shopping-cart nav-icon"></i>
             <p>Transaksi</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('/datalaporan/eod')}}" class="nav-link small {{ menuaktif($menu,'laporaneod') }}">
+            &nbsp;&nbsp;<i class="fas fa-shopping-cart nav-icon"></i>
+            <p>EOD</p>
           </a>
         </li>
       </ul>

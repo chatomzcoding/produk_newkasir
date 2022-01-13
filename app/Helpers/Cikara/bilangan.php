@@ -12,30 +12,32 @@ if (! function_exists('filternominal')) {
     }
 }
 
-if (! function_exists('rupiah')) {
-    function rupiah($angka)
-    {
-        if (filternominal($angka) AND !empty($angka)) {
-            $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-            return $hasil_rupiah;
-        } else {
-            return $angka;
-        }
-        
-    }
-}
-if (! function_exists('norupiah')) {
-    function norupiah($angka)
-    {
-        if (filternominal($angka) AND !empty($angka)) {
-            $hasil_rupiah = number_format($angka,2,',','.');
-            $hasil_rupiah = str_replace(',00','',$hasil_rupiah);
-            return $hasil_rupiah;
-        } else {
-            return $angka;
+// TANGGAL
+    if (! function_exists('rupiah')) {
+        function rupiah($angka)
+        {
+            if (filternominal($angka) AND !empty($angka)) {
+                $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+                return $hasil_rupiah;
+            } else {
+                return $angka;
+            }
+            
         }
     }
-}
+    if (! function_exists('norupiah')) {
+        function norupiah($angka)
+        {
+            if (filternominal($angka) AND !empty($angka)) {
+                $hasil_rupiah = number_format($angka,2,',','.');
+                $hasil_rupiah = str_replace(',00','',$hasil_rupiah);
+                return $hasil_rupiah;
+            } else {
+                return $angka;
+            }
+        }
+    }
+// end of tanggal
 
 if (! function_exists('terbilang')) {
     function terbilang($bilangan)
