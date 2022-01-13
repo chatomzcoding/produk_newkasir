@@ -6,10 +6,12 @@ use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -36,7 +38,54 @@ class BarangController extends Controller
                 break;
             case 'info':
                 $menu   = 'infobarang';
-                return view('sistem.barang.info', compact('menu'));
+                $barangstokbanyak       = Barang::select('id','nama_barang','stok')->where('cabang_id',$akses->cabang_id)->orderBy('stok','DESC')->limit(10)->get();
+                $transaksi              = DB::table('transaksi')
+                                            ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
+                                            ->select('transaksi.keranjang')
+                                            ->where('transaksi.keranjang','<>','NULL')
+                                            ->get();
+                $barang         = [];
+                $totalomzet     = 0;
+                foreach ($transaksi as $item) {
+                    $keranjang  = json_decode($item->keranjang);
+                    foreach ($keranjang as $key) {
+                        if (isset($barang[$key->kode_barang])) {
+                            $jumlah     = $barang[$key->kode_barang];
+                            $jumlah     = $jumlah + $key->jumlah;
+                            $barang[$key->kode_barang] = $jumlah;
+                        } else {
+                            $barang[$key->kode_barang] = $key->jumlah;
+                        }
+                        // total omzet
+                        $totalomzet = $totalomzet + ($key->harga_jual * $key->jumlah);
+                    }
+                }
+                arsort($barang);
+                $barang = array_slice($barang,0,10);
+                $barangterlaris     = [];
+                foreach ($barang as $key => $value) {
+                    $barangterlaris[] = [
+                        'barang' => Barang::select('id','nama_barang')->where('kode_barang',$key)->first(),
+                        'terjual' => $value
+                    ];
+                }
+                $omzetdalambarang       = 0;
+                $labadalambarang       = 0;
+                $barang                 = Barang::select('harga_jual','harga_beli','stok')->where('cabang_id',$akses->cabang_id)->where('stok','<>',0)->get();
+                foreach ($barang as $key) {
+                    $hargajual          = $key->stok * $key->harga_jual;
+                    $hargabeli          = $key->stok * $key->harga_beli;
+                    $omzetdalambarang   = $omzetdalambarang + $hargajual;
+                    $labadalambarang    = $labadalambarang + ($hargajual - $hargabeli);
+                }
+                $data   = [
+                    'barangstokbanyak' => $barangstokbanyak,
+                    'barangterlaris' => $barangterlaris,
+                    'omzetdalambarang' => $omzetdalambarang,
+                    'labadalambarang' => $labadalambarang,
+                    'totalomzet' => $totalomzet,
+                ];
+                return view('sistem.barang.info', compact('menu','data'));
                 break;
             
             default:
