@@ -138,24 +138,88 @@ class LaporanController extends Controller
             
             case 'eod':
                 $menu   = 'laporaneod';
-                $user_id  = (isset($_GET['user'])) ? $_GET['user'] : 'semua' ;
-                if ($user_id == 'semu') {
-                    $eod    = DB::table('laporan')
-                                ->join('user_akses','laporan.user_id','=','user_akses.user_id')
-                                ->where('user_akses.cabang_id',$akses->cabang_id)
-                                ->get();
-                } else {
-                    $eod    = Laporan::where('user_id',$user_id)->get();
+                $user_id  = (isset($_GET['user_id'])) ? $_GET['user_id'] : 'semua' ;
+                $sesi  = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'semua' ;
+                $tanggal  = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
+                $bulan  = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
+                $tahun  = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
+                switch ($sesi) {
+                    case 'harian':
+                        if ($user_id == 'semua') {
+                            $eod    = DB::table('laporan')
+                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->whereDate('laporan.tgl_laporan',$tanggal)
+                                        ->orderBy('laporan.tgl_laporan','DESC')
+                                        ->get();
+                        } else {
+                            $eod    = Laporan::where('user_id',$user_id)->whereDate('tgl_laporan',$tanggal)->orderBy('tgl_laporan','DESC')->get();
+                        }
+                        break;
+                    case 'bulanan':
+                        if ($user_id == 'semua') {
+                            $eod    = DB::table('laporan')
+                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->whereMonth('laporan.tgl_laporan',$bulan)
+                                        ->whereyear('laporan.tgl_laporan',$tahun)
+                                        ->orderBy('laporan.tgl_laporan','DESC')
+                                        ->get();
+                        } else {
+                            $eod    = Laporan::where('user_id',$user_id)->whereMonth('tgl_laporan',$bulan)->whereyear('tgl_laporan',$tahun)->orderBy('tgl_laporan','DESC')->get();
+                        }
+                        break;
+                    case 'tahunan':
+                        if ($user_id == 'semua') {
+                            $eod    = DB::table('laporan')
+                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->whereyear('laporan.tgl_laporan',$tahun)
+                                        ->orderBy('laporan.tgl_laporan','DESC')
+                                        ->get();
+                        } else {
+                            $eod    = Laporan::where('user_id',$user_id)->whereyear('tgl_laporan',$tahun)->orderBy('tgl_laporan','DESC')->get();
+                        }
+                        break;
+                    
+                    default:
+                        if ($user_id == 'semua') {
+                            $eod    = DB::table('laporan')
+                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
+                                        ->where('user_akses.cabang_id',$akses->cabang_id)
+                                        ->orderBy('laporan.tgl_laporan','DESC')
+                                        ->get();
+                        } else {
+                            $eod    = Laporan::where('user_id',$user_id)->orderBy('tgl_laporan','DESC')->get();
+                        }
+                        break;
                 }
                 $user   = DB::table('users')
                             ->join('user_akses','users.id','=','user_akses.user_id')
                             ->where('user_akses.cabang_id',$akses->cabang_id)
+                            ->where('users.level','kasir')
+                            ->select('users.*')
                             ->orderBy('users.name','ASC')
                             ->get();
+                $statistik  = self::statistikeod($eod);
+                $info       = 'belum ada info';
                 $data   = [
                     'eod' => $eod,
                     'user_id' => $user_id,
                     'user' => $user,
+                    'sesi' => $sesi,
+                    'info' => $info,
+                    'statistik' => [
+                        'total' => count($eod),
+                        'totalitem' => $statistik['totalitem'],
+                        'totaltransaksi' => $statistik['totaltransaksi'],
+                        'totalpenjualan' => $statistik['totalpenjualan'],
+                    ],
+                    'waktu' => [
+                        'tanggal' => $tanggal,
+                        'bulan' => $bulan,
+                        'tahun' => $tahun,
+                    ]
                 ];
                 return view('sistem.laporan.eod', compact('menu','data'));
                 break;
@@ -209,5 +273,25 @@ class LaporanController extends Controller
             'laba' => $laba,
         ];
         return $statistik;
+    }
+
+    public static function statistikeod($eod)
+    {
+        $totalitem      = 0;
+        $totaltransaksi = 0;
+        $totalpenjualan     = 0;
+        if (count($eod) > 0) {
+            foreach ($eod as $key) {
+                $totalitem  = $totalitem + $key->total_item;
+                $totaltransaksi  = $totaltransaksi + $key->total_transaksi;
+                $totalpenjualan  = $totalpenjualan + $key->total_penjualan;
+            }
+        }
+        $result = [
+            'totalitem' => $totalitem,
+            'totaltransaksi' => $totaltransaksi,
+            'totalpenjualan' => $totalpenjualan,
+        ];
+        return $result;
     }
 }

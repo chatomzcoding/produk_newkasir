@@ -23,14 +23,14 @@
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-6">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-list"></i></span>
   
                 <div class="info-box-content">
                   <span class="info-box-text">Total Laporan</span>
                   <span class="info-box-number">
-                        {{-- {{ $statistik['total']}} --}}
+                        {{ $data['statistik']['total']}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -38,14 +38,44 @@
               <!-- /.info-box -->
             </div>
             <!-- /.col -->
-            <div class="col-12 col-sm-6 col-md-6">
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-list"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
   
                 <div class="info-box-content">
-                  <span class="info-box-text">Total Laporan Bulan ini</span>
+                  <span class="info-box-text">Total Transaksi</span>
                   <span class="info-box-number">
-                        {{-- {{ $statistik['totalbulanini']}} --}}
+                        {{ norupiah($data['statistik']['totaltransaksi'])}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
+  
+                <div class="info-box-content">
+                  <span class="info-box-text">Total Item Terjual</span>
+                  <span class="info-box-number">
+                        {{ norupiah($data['statistik']['totalitem'])}}
+                  </span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
+  
+                <div class="info-box-content">
+                  <span class="info-box-text">Total Penjualan</span>
+                  <span class="info-box-number">
+                        {{ rupiah($data['statistik']['totalpenjualan'])}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -70,8 +100,11 @@
                   <section class="mb-1">
                       <form action="{{ url('datalaporan/eod') }}" method="get">
                         <div class="row">
+                          <div class="col-md-2">
+                            <a href="{{ url('datalaporan/eod') }}" class="btn btn-outline-secondary btn-block"><i class="fas fa-filter"></i> BERSIHKAN FILTER</a>
+                          </div>
                             <div class="form-group col-md-3">
-                               <select name="bulan" id="" class="form-control" onchange="this.form.submit()">
+                               <select name="user_id" id="" class="form-control listdata" data-width="100%" onchange="this.form.submit()">
                                 <option value="semua">-- SEMUA KASIR --</option>
                                     @foreach ($data['user'] as $item)
                                         <option value="{{ $item->id }}" @if ($data['user_id'] == $item->id)
@@ -80,15 +113,56 @@
                                     @endforeach
                                </select>
                             </div>
-                            {{-- <div class="form-group col-md-2">
-                               <select name="tahun" id="" class="form-control" onchange="this.form.submit()">
-                                   @for ($i = 2020; $i <= ambil_tahun(); $i++)
-                                   <option value="{{ $i }}" @if ($filter['tahun'] == $i)
-                                       selected
-                                   @endif>{{ $i }}</option>
-                                   @endfor
+                            <div class="form-group col-md-2">
+                               <select name="sesi" id="" class="form-control" onchange="this.form.submit()">
+                                  <option value="semua">-- SEMUA LAPORAN --</option>
+                                  <option value="harian" @if ($data['sesi'] == 'harian')
+                                      selected
+                                  @endif>HARIAN</option>
+                                  <option value="bulanan" @if ($data['sesi'] == 'bulanan')
+                                      selected
+                                  @endif>BULANAN</option>
+                                  <option value="tahunan" @if ($data['sesi'] == 'tahunan')
+                                      selected
+                                  @endif>TAHUNAN</option>
                                </select>
-                            </div> --}}
+                            </div>
+                            @if ($data['sesi'] == 'harian')
+                            <div class="form group col-md-2">
+                              <input type="date" name="tanggal" value="{{ $data['waktu']['tanggal'] }}" class="form-control" onchange="this.form.submit()">
+                            </div>
+                            @endif
+                            @if ($data['sesi'] == 'bulanan')
+                            <div class="col-md-2">
+                              <select name="bulan" id="" class="form-control" onchange="this.form.submit()">
+                                  @for ($i = 1; $i <= 12; $i++)
+                                      <option value="{{ $i }}" @if ($data['waktu']['bulan'] == $i)
+                                          selected
+                                      @endif>{{ bulan_indo($i) }}</option>
+                                  @endfor
+                              </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="tahun" id="" class="form-control" onchange="this.form.submit()">
+                                    @for ($i = 2020; $i <= ambil_tahun(); $i++)
+                                        <option value="{{ $i }}" @if ($data['waktu']['tahun'] == $i)
+                                            selected
+                                        @endif>{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            @endif
+                            @if ($data['sesi'] == 'tahunan')
+                            <div class="col-md-2">
+                                <select name="tahun" id="" class="form-control" onchange="this.form.submit()">
+                                    @for ($i = 2020; $i <= ambil_tahun(); $i++)
+                                        <option value="{{ $i }}" @if ($data['waktu']['tahun'] == $i)
+                                            selected
+                                        @endif>{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            @endif
                         </div>
                     </form>
                   </section>
