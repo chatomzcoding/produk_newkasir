@@ -171,13 +171,11 @@ class CetakController extends Controller
                     $data           = [
                         'sesi' => 'Kategori '.ucwords($kategori->nama),
                         'info' => $data['info'],
-                        'alamat' => $alamat,
-                        'telp' => $telp,
                     ];
-                    $pdf        = PDF::loadview('sistem.cetak.transaksikategori', compact('dtransaksi','data','client'));
+                    $pdf        = PDF::loadview('sistem.cetak.transaksikategori', compact('dtransaksi','data','main'));
                 } else {
                     $namafile   = 'Transaksi';
-                    $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data','client'));
+                    $pdf        = PDF::loadview('sistem.cetak.transaksi', compact('transaksi','data','main'));
                 }
                 break;
             
