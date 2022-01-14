@@ -206,8 +206,16 @@ class TransaksiController extends Controller
                                         $jumlah = $key->jumlah + $produk[$key->kode_barang]['jumlah'];
                                         $produk[$key->kode_barang]['jumlah'] = $jumlah;
                                     } else {
+                                        $link = 'img/barang/produk.jpg';
+                                        $barang     = Barang::select('gambar')->where('kode_barang',$key->kode_barang)->first();
+                                        if ($barang) {
+                                            if (!is_null($barang->gambar)) {
+                                                $link = 'img/barang/'.$barang->gambar;
+                                            }
+                                        }
                                         $produk[$key->kode_barang] = [
                                             'nama_barang' => $key->nama_barang,
+                                            'gambar' => $link,
                                             'jumlah' => $key->jumlah
                                         ];
                                     }
