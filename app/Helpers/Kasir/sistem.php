@@ -229,6 +229,44 @@ if (! function_exists('sisauangeod')) {
         return $sisa;
     }
 }
+if (! function_exists('kolomjumlahkeuangan')) {
+    function kolomjumlahkeuangan($data,$nominal=null)
+    {
+        if(isset($data['start'])){
+            $_SESSION['jumlah'] = 0;
+        }
+        
+        $jumlah     = $_SESSION['jumlah'];
+        if (!is_null($nominal)) {
+            if ($data['sesi'] == 'pemasukan') {
+                $jumlah     = $jumlah + $nominal;
+            } else {
+                $jumlah     = $jumlah - $nominal;
+            }
+        }
+
+        $_SESSION['jumlah'] = $jumlah;
+
+        if(isset($data['stop'])){
+            unset($_SESSION['jumlah']);
+        }
+        return norupiah($jumlah);
+    }
+}
+if (! function_exists('listlaporankeuangan')) {
+    function listlaporankeuangan($sesi,$rincian)
+    {
+        $result     = [];
+        if (!is_null($rincian)) {
+            foreach (json_decode($rincian) as $key) {
+                if ($sesi == $key->kategori) {
+                    $result[] = $key;
+                }
+            }
+        }
+        return $result;
+    }
+}
 if (! function_exists('statistiklaporantransaksikategori')) {
     function statistiklaporantransaksikategori($transaksi)
     {

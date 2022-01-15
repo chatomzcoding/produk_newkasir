@@ -201,7 +201,7 @@
                                 </tr>
                             @empty
                                 <tr class="text-center">
-                                    <td colspan="9">tidak ada data</td>
+                                    <td colspan="10">tidak ada data</td>
                                 </tr>
                             @endforelse
                     </table>

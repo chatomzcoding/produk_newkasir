@@ -50,6 +50,14 @@ if (! function_exists('notifjson')) {
         return $result;
     }
 }
+if (! function_exists('uniqid')) {
+    function uniqid()
+    {
+        $id = base_convert(microtime(false), 10, 36);
+
+        return $id;
+    }
+}
 if (! function_exists('cektoken')) {
     function cektoken($token)
     {

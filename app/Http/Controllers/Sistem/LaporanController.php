@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sistem;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Keuangan;
 use App\Models\Laporan;
 use App\Models\Transaksi;
 use App\Models\Userakses;
@@ -223,7 +224,29 @@ class LaporanController extends Controller
                 ];
                 return view('sistem.laporan.eod', compact('menu','data'));
                 break;
-            
+            case 'keuangan':
+                $menu       = 'laporankeuangan';
+                $bulan      = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
+                $tahun      = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
+                $keuangan = Keuangan::where('cabang_id',$akses->cabang_id)->where('bulan',$bulan)->where('tahun',$tahun)->first();
+                $penjualan    = Laporan::whereMonth('tgl_laporan',$bulan)->whereYear('tgl_laporan',$tahun)->sum('total_penjualan');
+                $info   = bulan_indo($bulan).' '.$tahun;
+                $data   = [
+                    'keuangan' => $keuangan,
+                    'akses' => $akses,
+                    'penjualan' => $penjualan,
+                    'waktu' => [
+                        'bulan' => $bulan,
+                        'tahun' => $tahun,
+                        'info' => $info,
+                    ],
+                    'statistik' => [
+                        'total' => Keuangan::where('cabang_id',$akses->cabang_id)->count(),
+                    ]
+                ];
+
+                return view('sistem.laporan.keuangan', compact('menu','data'));
+                break;
                 default:
                 # code...
                 break;

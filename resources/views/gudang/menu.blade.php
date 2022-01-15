@@ -31,7 +31,7 @@
         </li>
       </ul>
   </li>
-  <li class="nav-item @if ($menu == 'laporantransaksi' || $menu == 'laporaneod')
+  <li class="nav-item @if ($menu == 'laporantransaksi' || $menu == 'laporaneod' || $menu == 'laporankeuangan')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -51,8 +51,14 @@
         </li>
         <li class="nav-item">
           <a href="{{ url('/datalaporan/eod')}}" class="nav-link small {{ menuaktif($menu,'laporaneod') }}">
-            &nbsp;&nbsp;<i class="fas fa-shopping-cart nav-icon"></i>
+            &nbsp;&nbsp;<i class="fas fa-file-contract nav-icon"></i>
             <p>EOD</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url('/datalaporan/keuangan')}}" class="nav-link small {{ menuaktif($menu,'laporankeuangan') }}">
+            &nbsp;&nbsp;<i class="fas fa-file-invoice-dollar nav-icon"></i>
+            <p>Keuangan</p>
           </a>
         </li>
       </ul>

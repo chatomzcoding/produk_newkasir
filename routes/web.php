@@ -9,6 +9,7 @@ use App\Http\Controllers\Kasir\BarangController;
 use App\Http\Controllers\Kasir\LaporanController;
 use App\Http\Controllers\Kasir\UseraksesController;
 use App\Http\Controllers\Sistem\KategoriController;
+use App\Http\Controllers\Sistem\KeuanganController;
 use App\Http\Controllers\Sistem\SatuanController;
 use App\Http\Controllers\Sistem\TransaksiController;
 use App\Http\Controllers\Superadmin\ClientController;
@@ -55,6 +56,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::resource('userakses', UseraksesController::class);
     Route::resource('distribusi', DistribusiController::class);
     Route::resource('retur', ReturController::class);
+    Route::resource('keuangan', KeuanganController::class);
 
     // TRANSAKSI
     Route::get('kasir/transaksi/loadbarang','App\Http\Controllers\Sistem\TransaksiController@loadbarang')->name('loadBarang');
