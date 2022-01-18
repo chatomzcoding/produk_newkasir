@@ -14,7 +14,7 @@
             </h4>
             @if ($data['kategori'] <> 'semua')
                 <h5>
-                    kategori : {{ ucwords($dkategori->nama) }}
+                    kategori : {{ ucwords($dkategori->nama) }} <br> Cabang {{ ucwords($main['cabang']->nama_cabang) }}
                 </h5>
             @endif
         </section>

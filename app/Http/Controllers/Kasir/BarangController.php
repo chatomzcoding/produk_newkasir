@@ -90,8 +90,11 @@ class BarangController extends Controller
             
             default:
                 if ($fkategori == 'semua') {
-                    $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
-                    $page           = TRUE;
+                    $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->get();
+                    if (count($barang) > 250) {
+                        $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
+                        $page           = TRUE;
+                    }
                 } else {
                     $barang     = Barang::cabangPerKategori($akses->cabang_id,$fkategori);
                 }
@@ -158,6 +161,7 @@ class BarangController extends Controller
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'kategori_id' => $request->kategori_id,
+            'produsen_id' => $request->produsen_id,
             'satuan_id' => $request->satuan_id,
             'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual,
@@ -232,6 +236,7 @@ class BarangController extends Controller
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'kategori_id' => $request->kategori_id,
+            'produsen_id' => $request->produsen_id,
             'satuan_id' => $request->satuan_id,
             'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual,

@@ -135,11 +135,7 @@
                   </form>
                 </section>
                   <div class="table-responsive">
-                    @if ($filter['kategori'] == 'semua')
-                    <table class="table table-bordered table-striped">
-                    @else
-                    <table id="example1" class="table table-bordered table-striped">
-                      @endif
+                    <table id="{{ cekdatatable($filter['page']) }}" class="table table-bordered table-striped">
                         <thead class="text-center">
                             <tr>
                                 <th width="5%">No</th>
@@ -150,8 +146,8 @@
                                 <th>Nama Barang</th>
                                 <th>Harga Beli</th>
                                 <th>Harga Jual</th>
-                                <th>Kategori</th>
                                 <th>Stok</th>
+                                <th>Kategori</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,8 +177,8 @@
                                     <td class="text-capitalize">{{ $item->nama_barang }}</td>
                                     <td class="text-right">{{ norupiah($item->harga_beli) }} </td>
                                     <td class="text-right">{{ norupiah($item->harga_jual) }} </td>
-                                    <td>{{ DbCikara::namaKategori($item->kategori_id) }}</td>
                                     <td class="text-center">{{ $item->stok }} </td>
+                                    <td class="text-center text-uppercase">{{ DbCikara::namaKategori($item->kategori_id) }}</td>
                                 </tr>
                             @endforeach
                     </table>
