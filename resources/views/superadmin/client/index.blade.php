@@ -65,7 +65,11 @@
             <div class="card">
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
-                    <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data Client Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
+                    @if (count($user) == count($client))
+                        <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data Client Baru" data-toggle="modal" data-target="#tambahuser"><i class="fas fa-plus"></i> Tambah</a>
+                    @else
+                        <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data Client Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
+                    @endif
                     {{-- <a href="#" data-toggle="modal" data-target="#cetakdokumen" class="btn btn-outline-info btn-flat btn-sm float-right pop-info" title="Cetak Daftar Vaksinasi"><i class="fas fa-print"></i> CETAK</a> --}}
               </div>
               <div class="card-body">
@@ -92,12 +96,12 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th width="10%">Aksi</th>
+                                <th>Logo</th>
                                 <th>Nama Pemilik</th>
                                 <th>Nama Toko</th>
                                 <th>Jenis retail</th>
                                 <th>No Telp</th>
                                 <th>Alamat</th>
-                                <th>Logo</th>
                                 <th>Tanggal Bergabung</th>
                             </tr>
                         </thead>
@@ -117,7 +121,7 @@
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
                                                   {{-- <a class="dropdown-item text-primary" href="{{ url('/penduduk/'.Crypt::encryptString($item->penduduk_id))}}"><i class="fas fa-list"></i> Detail Penduduk</a> --}}
-                                                    <button type="button" data-toggle="modal" data-nama_pemilik="{{ $item->nama_pemilik }}" data-nama_toko="{{ $item->nama_toko }}" data-no_telp="{{ $item->no_telp }}" data-alamat="{{ $item->alamat }}" data-tgl_bergabung="{{ $item->tgl_bergabung }}" data-jenis_retail="{{ $item->jenis_retail }}" data-detail="{{ $item->detail }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
+                                                    <button type="button" data-toggle="modal" data-nama_pemilik="{{ $item->nama_pemilik }}" data-nama_toko="{{ $item->nama_toko }}" data-no_telp="{{ $item->no_telp }}" data-alamat="{{ $item->alamat }}" data-tgl_bergabung="{{ $item->tgl_bergabung }}" data-jenis_retail="{{ $item->jenis_retail }}" data-detail="{{ $item->detail }}" data-user_id="{{ $item->user_id }}"  data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item" data-original-title="Edit Task">
                                                      EDIT <i class="fa fa-edit float-right pt-1 text-success"></i>
                                                     </button>
                                                   <div class="dropdown-divider"></div>
@@ -131,7 +135,7 @@
                                     <td>{{ $item->jenis_retail}}</td>
                                     <td>{{ $item->no_telp}}</td>
                                     <td>{{ $item->alamat}}</td>
-                                    <td>{{ $item->tgl_bergabung}}</td>
+                                    <td>{{ date_indo($item->tgl_bergabung)}}</td>
                                 </tr>
                             @empty
                                 <tr class="text-center">
@@ -143,6 +147,47 @@
               </div>
             </div>
           </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="tambahuser">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <form action="{{ url('/user')}}" method="post" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="level" value="client">
+            <div class="modal-header">
+            <h4 class="modal-title">Tambah User</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body p-3">
+                <section class="p-3">
+                    <div class="alert alert-info">
+                        <strong>BELUM ADA AKUN USER</strong> <br>
+                        Sebelum menambahkan akun client, terlebih dahulu menambahkan akun user, setelah itu akun client dapat dibuat !
+                    </div>
+                   <div class="form-group row">
+                        <label for="" class="col-md-4">Nama User</label>
+                        <input type="text" name="name" id="name" class="form-control col-md-8" required>
+                   </div>
+                   <div class="form-group row">
+                        <label for="" class="col-md-4">Email</label>
+                        <input type="email" name="email" id="email" class="form-control col-md-8" required>
+                   </div>
+                   <div class="form-group row">
+                        <label for="" class="col-md-4">Password</label>
+                        <input type="password" name="password" id="password" class="form-control col-md-8" required>
+                   </div>
+                </section>
+            </div>
+            <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> SIMPAN</button>
+            </div>
+        </form>
+        </div>
         </div>
     </div>
 
@@ -160,31 +205,31 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Pemilik</label>
+                        <label for="" class="col-md-4">Nama Pemilik {!! ireq() !!}</label>
                         <input type="text" name="nama_pemilik" id="nama_pemilik" value="{{ old('nama_pemilik') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Toko</label>
+                        <label for="" class="col-md-4">Nama Toko {!! ireq() !!}</label>
                         <input type="text" name="nama_toko" id="nama_toko" value="{{ old('nama_toko') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">No Telp</label>
-                        <input type="text" name="no_telp" id="no_telp" value="{{ old('no_telp') }}" class="form-control col-md-8" required>
+                        <label for="" class="col-md-4">No Telp {!! ireq() !!}</label>
+                        <input type="text" name="no_telp" id="no_telp" value="{{ old('no_telp') }}" pattern="[0-9]{+}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Alamat</label>
+                        <label for="" class="col-md-4">Alamat {!! ireq() !!}</label>
                         <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <label for="" class="col-md-4">Tanggal Bergabung {!! ireq() !!}</label>
                         <input type="date" name="tgl_bergabung" id="tgl_bergabung" value="{{ old('tgl_bergabung') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Logo</label>
+                        <label for="" class="col-md-4">Logo {!! ireq() !!}</label>
                         <input type="file" name="logo" id="logo" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Jenis Toko</label>
+                        <label for="" class="col-md-4">Jenis Toko {!! ireq() !!}</label>
                         <select name="jenis_retail" id="jenis_retail" class="form-control col-md-8" required>
                             @foreach (DbCikara::showtable('list_data',['kategori','jenis toko']) as $item)
                                 <option value="{{ $item->nama }}">{{ strtoupper($item->nama) }}</option>
@@ -192,10 +237,12 @@
                         </select>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama User</label>
-                        <select name="user_id" id="user_id" class="form-control col-md-8" required>
+                        <label for="" class="col-md-4">Nama User {!! ireq() !!}</label>
+                        <select name="user_id" id="user_id" class="form-control col-md-8" onchange="location = this.value;" required>
                             @foreach ($user as $item)
-                                <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                @if (DbCikara::countData('Client',['user_id',$item->id]) == 0)
+                                    <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -299,6 +346,7 @@
                 var alamat = button.data('alamat')
                 var tgl_bergabung = button.data('tgl_bergabung')
                 var detail = button.data('detail')
+                var user_id = button.data('user_id')
                 var id = button.data('id')
         
                 var modal = $(this)
@@ -308,8 +356,9 @@
                 modal.find('.modal-body #jenis_retail').val(jenis_retail);
                 modal.find('.modal-body #no_telp').val(no_telp);
                 modal.find('.modal-body #alamat').val(alamat);
-                modal.find('.modal-body #detail').val(detail);
                 modal.find('.modal-body #tgl_bergabung').val(tgl_bergabung);
+                modal.find('.modal-body #detail').val(detail);
+                modal.find('.modal-body #user_id').val(user_id);
                 modal.find('.modal-body #id').val(id);
             })
         </script>
