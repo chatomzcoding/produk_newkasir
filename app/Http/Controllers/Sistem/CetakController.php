@@ -26,7 +26,8 @@ class CetakController extends Controller
             case 'client':
                 $client     = Client::where('user_id',$user->id)->first();
                 $alamat     = $client->alamat;
-                $telp     = $client->no_telp;
+                $telp       = $client->no_telp;
+                $cabang     = [];
                 break;
             case 'cabang':
                 $cabang     = Cabang::where('user_id',$user->id)->first();
@@ -274,7 +275,13 @@ class CetakController extends Controller
                 $pdf        = PDF::loadview('sistem.cetak.userclient', compact('user'));
 
                 break;
-                default:
+            case 'cabang':
+               
+                $namafile   = 'Data Cabang';
+                $cabang     = Cabang::where('client_id',$client->id)->get();
+                $pdf        = PDF::loadview('sistem.cetak.cabang', compact('main','cabang'));
+                break;
+            default:
                 return 'sesi tidak ada';
                 break;
         }

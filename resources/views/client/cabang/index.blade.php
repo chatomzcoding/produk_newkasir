@@ -47,7 +47,7 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="#" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Data Client Baru" data-toggle="modal" data-target="#tambah"><i class="fas fa-plus"></i> Tambah</a>
-                    {{-- <a href="#" data-toggle="modal" data-target="#cetakdokumen" class="btn btn-outline-info btn-flat btn-sm float-right pop-info" title="Cetak Daftar Vaksinasi"><i class="fas fa-print"></i> CETAK</a> --}}
+                    <a href="{{ url('cetakdata?s=cabang') }}" target="_blank" class="btn btn-outline-info btn-flat btn-sm float-right pop-info" title="Cetak Daftar Cabang"><i class="fas fa-print"></i> CETAK</a>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -137,33 +137,33 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Cabang</label>
+                        <label for="" class="col-md-4">Nama Cabang {!! ireq() !!}</label>
                         <input type="text" name="nama_cabang" id="nama_cabang" value="{{ old('nama_cabang') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Alamat</label>
+                        <label for="" class="col-md-4">Alamat {!! ireq() !!}</label>
                         <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">No Telp</label>
+                        <label for="" class="col-md-4">No Telp {!! ireq() !!}</label>
                         <input type="text" name="telp" id="telp" value="{{ old('telp') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Pimpinan Cabang</label>
+                        <label for="" class="col-md-4">Pimpinan Cabang {!! ireq() !!}</label>
                         <input type="text" name="pimpinan" id="pimpinan" value="{{ old('pimpinan') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <label for="" class="col-md-4">Tanggal Bergabung {!! ireq() !!}</label>
                         <input type="date" name="tgl_gabung" id="tgl_gabung" value="{{ old('tgl_gabung') }}" class="form-control col-md-8" required>
                     </div>
                     <hr>
                     <h4>Akses Login Pimpinan Cabang</h4>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Email Login</label>
+                        <label for="" class="col-md-4">Email Login {!! ireq() !!}</label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Password</label>
+                        <label for="" class="col-md-4">Password {!! ireq() !!}</label>
                         <input type="password" name="password" id="password" class="form-control col-md-8" required>
                     </div>
                 </section>
@@ -195,23 +195,23 @@
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Cabang</label>
+                        <label for="" class="col-md-4">Nama Cabang {!! ireq() !!}</label>
                         <input type="text" name="nama_cabang" id="nama_cabang" value="{{ old('nama_cabang') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">No Telp</label>
+                        <label for="" class="col-md-4">No Telp {!! ireq() !!}</label>
                         <input type="text" name="telp" id="telp" value="{{ old('telp') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Pimpinan Cabang</label>
+                        <label for="" class="col-md-4">Pimpinan Cabang {!! ireq() !!}</label>
                         <input type="text" name="pimpinan" id="pimpinan" value="{{ old('pimpinan') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Tanggal Bergabung</label>
+                        <label for="" class="col-md-4">Tanggal Bergabung {!! ireq() !!}</label>
                         <input type="date" name="tgl_gabung" id="tgl_gabung" value="{{ old('tgl_gabung') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Alamat</label>
+                        <label for="" class="col-md-4">Alamat {!! ireq() !!}</label>
                         <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" class="form-control col-md-8" required>
                     </div>
                 </section>
