@@ -91,7 +91,7 @@ class UserController extends Controller
         ]);
 
         if ($request->level == 'gudang' || $request->level == 'kasir') {
-            $user       = User::where('name',$request->name)->first();
+            $user       = User::where('email',$request->email)->first();
             $cabang     = Cabang::where('user_id',Auth::user()->id)->first();
             // $cabang     = Caba
             // tambahkan ke user akses

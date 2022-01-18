@@ -281,6 +281,16 @@ class CetakController extends Controller
                 $cabang     = Cabang::where('client_id',$client->id)->get();
                 $pdf        = PDF::loadview('sistem.cetak.cabang', compact('main','cabang'));
                 break;
+            case 'karyawan':
+               
+                $namafile   = 'Data Karyawan';
+                $user   = DB::table('users')
+                            ->join('user_akses','users.id','=','user_akses.user_id')
+                            ->select('users.*')
+                            ->where('user_akses.cabang_id',$cabang->id)
+                            ->get();
+                $pdf        = PDF::loadview('sistem.cetak.karyawan', compact('main','user'));
+                break;
             default:
                 return 'sesi tidak ada';
                 break;

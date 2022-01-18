@@ -51,7 +51,7 @@
                     <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-user-friends"></i></span>
       
                     <div class="info-box-content">
-                      <span class="info-box-text">Total Karyawan Gudang</span>
+                      <span class="info-box-text">Karyawan Gudang</span>
                       <span class="info-box-number">
                         {{ $statistik['totalgudang'] }}
                         
@@ -66,7 +66,7 @@
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-friends"></i></span>
       
                     <div class="info-box-content">
-                      <span class="info-box-text">Total Karyawan Kasir</span>
+                      <span class="info-box-text">Karyawan Kasir</span>
                       <span class="info-box-number">
                         {{ $statistik['totalkasir'] }}
                         
@@ -82,7 +82,7 @@
               <div class="card-header">
                 {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                     <a href="#" class="btn btn-outline-primary btn-sm pop-info" data-toggle="modal" data-target="#tambah" title="Tambah User Baru"><i class="fas fa-plus"></i> Tambah</a>
-                <a href="{{ url('cetakdata?s=user') }}" class="btn btn-outline-info btn-sm float-right pop-info" target="_blank" title="Cetak daftar User"><i class="fas fa-print"></i> CETAK</a>
+                <a href="{{ url('cetakdata?s=karyawan') }}" class="btn btn-outline-info btn-sm float-right pop-info" target="_blank" title="Cetak daftar User"><i class="fas fa-print"></i> CETAK</a>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
@@ -93,7 +93,7 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th width="12%">Aksi</th>
-                                <th>Nama User</th>
+                                <th>Nama Karyawan</th>
                                 <th>Email</th>
                                 <th>Level</th>
                             </tr>
@@ -113,7 +113,7 @@
                                                 <span class="sr-only">Toggle Dropdown</span>
                                               </button>
                                               <div class="dropdown-menu" role="menu">
-                                                  <button type="button" data-toggle="modal" data-name ="{{ $item->name }}" data-email ="{{ $item->email }}" data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
+                                                  <button type="button" data-toggle="modal" data-name ="{{ $item->name }}" data-email ="{{ $item->email }}" data-level="{{ $item->level }}" data-id="{{ $item->id }}" data-target="#ubah" title="" class="dropdown-item text-success" data-original-title="Edit Task">
                                                   <i class="fa fa-edit"></i> Edit User
                                                   </button>
                                                 <div class="dropdown-divider"></div>
@@ -121,9 +121,9 @@
                                               </div>
                                           </div>
                                     </td>
-                                    <td>{{ $item->name }}</td>
+                                    <td class="text-capitalize">{{ $item->name }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->level }} </td>
+                                    <td class="text-center text-uppercase">{{ $item->level }} </td>
                                 </tr>
                             @endforeach
                     </table>
@@ -141,7 +141,7 @@
             <form action="{{ url('/user')}}" method="post" enctype="multipart/form-data">
                 @csrf
             <div class="modal-header">
-            <h4 class="modal-title">Tambah User</h4>
+            <h4 class="modal-title">Tambah Karyawan</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -149,11 +149,11 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                    <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Karywan</label>
+                        <label for="" class="col-md-4">Nama Karyawan {!! ireq() !!}</label>
                         <input type="text" name="name" id="name" class="form-control col-md-8" required>
                    </div>
                    <div class="form-group row">
-                        <label for="" class="col-md-4">Status Karyawan</label>
+                        <label for="" class="col-md-4">Status Karyawan {!! ireq() !!}</label>
                         <select name="level" id="level" class="form-control col-md-8" required>
                             <option value="">-- PILIH STATUS --</option>
                             <option value="gudang">GUDANG</option>
@@ -161,11 +161,11 @@
                         </select>
                    </div>
                    <div class="form-group row">
-                        <label for="" class="col-md-4">Email</label>
+                        <label for="" class="col-md-4">Email {!! ireq() !!}</label>
                         <input type="email" name="email" id="email" class="form-control col-md-8" required>
                    </div>
                    <div class="form-group row">
-                        <label for="" class="col-md-4">Password</label>
+                        <label for="" class="col-md-4">Password {!! ireq() !!}</label>
                         <input type="password" name="password" id="password" class="form-control col-md-8" required>
                    </div>
                 </section>
@@ -188,7 +188,7 @@
                 @csrf
                 @method('patch')
             <div class="modal-header">
-            <h4 class="modal-title">Edit User</h4>
+            <h4 class="modal-title">Edit Karyawan</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -196,8 +196,20 @@
             <div class="modal-body p-3">
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
+                  <div class="form-group row">
+                        <label for="" class="col-md-4">Nama Karyawan {!! ireq() !!}</label>
+                        <input type="text" name="name" id="name" class="form-control col-md-8" required>
+                  </div>
+                  <div class="form-group row">
+                        <label for="" class="col-md-4">Status Karyawan {!! ireq() !!}</label>
+                        <select name="level" id="level" class="form-control col-md-8" required>
+                            <option value="">-- PILIH STATUS --</option>
+                            <option value="gudang">GUDANG</option>
+                            <option value="kasir">KASIR</option>
+                        </select>
+                  </div>
                    <div class="form-group row">
-                        <label for="" class="col-md-4">Email</label>
+                        <label for="" class="col-md-4">Email {!! ireq() !!}</label>
                         <input type="email" name="email" id="email" class="form-control col-md-8" required>
                    </div>
                    <div class="form-group row">
@@ -222,12 +234,16 @@
                 var button = $(event.relatedTarget)
                 var email = button.data('email')
                 var password = button.data('password')
+                var name = button.data('name')
+                var level = button.data('level')
                 var id = button.data('id')
         
                 var modal = $(this)
         
                 modal.find('.modal-body #email').val(email);
                 modal.find('.modal-body #password').val(password);
+                modal.find('.modal-body #name').val(name);
+                modal.find('.modal-body #level').val(level);
                 modal.find('.modal-body #id').val(id);
             })
     </script>
