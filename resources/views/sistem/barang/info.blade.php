@@ -77,7 +77,7 @@
                                 @foreach ($data['barangstokbanyak'] as $item)
                                   <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama_barang }}</td>
+                                    <td class="text-capitalize">{{ $item->nama_barang }}</td>
                                     <td class="text-center">{{ $item->stok }}</td>
                                   </tr>
                                 @endforeach
@@ -101,13 +101,19 @@
                                 <th>Terjual</th>
                               </thead>
                               <tbody>
-                                @foreach ($data['barangterlaris'] as $item)
-                                  <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item['barang']->nama_barang }}</td>
-                                    <td class="text-center">{{ norupiah($item['terjual']) }}</td>
-                                  </tr>
-                                @endforeach
+                                @if (count($data['barangterlaris']) > 0)
+                                  @foreach ($data['barangterlaris'] as $item)
+                                    <tr>
+                                      <td class="text-center">{{ $loop->iteration }}</td>
+                                      <td>{{ $item['barang']->nama_barang }}</td>
+                                      <td class="text-center">{{ norupiah($item['terjual']) }}</td>
+                                    </tr>
+                                  @endforeach
+                                @else
+                                    <tr>
+                                      <td class="text-center" colspan="3">Belum ada Data</td>
+                                    </tr>
+                                @endif
                               </tbody>
                             </table>
                           </div>

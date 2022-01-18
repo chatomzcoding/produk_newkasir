@@ -43,6 +43,7 @@ class BarangController extends Controller
                                             ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
                                             ->select('transaksi.keranjang')
                                             ->where('transaksi.keranjang','<>','NULL')
+                                            ->where('user_akses.cabang_id',$akses->cabang_id)
                                             ->get();
                 $barang         = [];
                 $totalomzet     = 0;
@@ -64,10 +65,18 @@ class BarangController extends Controller
                 $barang = array_slice($barang,0,10);
                 $barangterlaris     = [];
                 foreach ($barang as $key => $value) {
-                    $barangterlaris[] = [
-                        'barang' => Barang::select('id','nama_barang')->where('kode_barang',$key)->first(),
-                        'terjual' => $value
-                    ];
+                    $barang     = Barang::select('id','nama_barang')->where('kode_barang',$key)->where('cabang_id',$akses->cabang_id)->first();
+                    if ($barang) {
+                        $barangterlaris[] = [
+                            'barang' => $barang->nama_barang,
+                            'terjual' => $value
+                        ];
+                    } else {
+                        $barangterlaris[] = [
+                            'barang' => 'barang tidak ada',
+                            'terjual' => $value
+                        ];
+                    }
                 }
                 $omzetdalambarang       = 0;
                 $labadalambarang       = 0;
