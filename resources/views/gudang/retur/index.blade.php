@@ -111,7 +111,7 @@
                                             </div>
                                     </td>
                                     <td>{{ $item->kode_retur}}</td>
-                                    <td>{{ $item->kode}}</td>
+                                    <td>{{ $item->kode_distribusi}}</td>
                                     <td>{{ date_indo($item->tgl_retur)}}</td>
                                     <td class="text-center">{!! showstatus($item->status_retur)!!}</td>
                                 </tr>
