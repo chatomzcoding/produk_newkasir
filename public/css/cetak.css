@@ -2,7 +2,10 @@ body{
     font-size: small;
     font-family: sans-serif;
 }
-.text-center {
+table > thead > tr > th{
+    text-align: center;
+}
+.text-center{
     text-align: center;
 }
 .text-right {

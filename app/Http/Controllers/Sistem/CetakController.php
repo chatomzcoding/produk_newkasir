@@ -10,6 +10,7 @@ use App\Models\Distribusi;
 use App\Models\Kategori;
 use App\Models\Supplier;
 use App\Models\Transaksi;
+use App\Models\User;
 use App\Models\Userakses;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,10 @@ class CetakController extends Controller
                 $telp     = $cabang->telp;
                 break;
             
+            case 'superadmin':
+                
+                break;
+            
             default:
                 $userakses  = Userakses::where('user_id',$user->id)->first();
                 $cabang     = Cabang::find($userakses->cabang_id);
@@ -43,12 +48,14 @@ class CetakController extends Controller
 
                 break;
         }
-        $main       = [
-            'telp' => $telp,
-            'alamat' => $alamat,
-            'client' => $client,
-            'cabang' => $cabang,
-        ];
+        if ($user->level <> 'superadmin') {
+            $main       = [
+                'telp' => $telp,
+                'alamat' => $alamat,
+                'client' => $client,
+                'cabang' => $cabang,
+            ];
+        }
         switch ($_GET['s']) {
             case 'transaksi':
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
@@ -251,6 +258,20 @@ class CetakController extends Controller
                 $barang     = Barang::find(Crypt::decryptString($_GET['id']));
                 $namafile   = 'Detail Barang '.$barang->nama_barang;
                 $pdf        = PDF::loadview('sistem.cetak.detailbarang', compact('main','barang'));
+
+                break;
+            case 'user':
+                switch ($user->level) {
+                    case 'value':
+                        # code...
+                        break;
+                    
+                    default:
+                        $namafile   = 'Data User Client';
+                        $user       = User::where('level','client')->get();
+                        break;
+                }
+                $pdf        = PDF::loadview('sistem.cetak.userclient', compact('user'));
 
                 break;
                 default:

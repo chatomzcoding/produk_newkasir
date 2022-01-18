@@ -125,7 +125,7 @@
                                     </td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->level }} </td>
+                                    <td class="text-center text-uppercase">{{ $item->level }} </td>
                                 </tr>
                             @endforeach
                     </table>
@@ -191,6 +191,10 @@
             <div class="modal-body p-3">
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
+                  <div class="form-group row">
+                    <label for="" class="col-md-4">Nama User</label>
+                    <input type="text" name="name" id="name" class="form-control col-md-8" required>
+               </div>
                    <div class="form-group row">
                         <label for="" class="col-md-4">Email</label>
                         <input type="email" name="email" id="email" class="form-control col-md-8" required>
@@ -217,12 +221,14 @@
                 var button = $(event.relatedTarget)
                 var email = button.data('email')
                 var password = button.data('password')
+                var name = button.data('name')
                 var id = button.data('id')
         
                 var modal = $(this)
         
                 modal.find('.modal-body #email').val(email);
                 modal.find('.modal-body #password').val(password);
+                modal.find('.modal-body #name').val(name);
                 modal.find('.modal-body #id').val(id);
             })
     </script>
