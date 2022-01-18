@@ -240,7 +240,7 @@
                         <label for="" class="col-md-4">Nama User {!! ireq() !!}</label>
                         <select name="user_id" id="user_id" class="form-control col-md-8" onchange="location = this.value;" required>
                             @foreach ($user as $item)
-                                @if (DbCikara::countData('Client',['user_id',$item->id]) == 0)
+                                @if (DbCikara::countData('client',['user_id',$item->id]) == 0)
                                     <option value="{{ $item->id }}">{{ strtoupper($item->name) }}</option>
                                 @endif
                             @endforeach
