@@ -244,7 +244,7 @@ class CetakController extends Controller
                 $namafile   = 'Data Supplier';
                 $akses      = Userakses::where('user_id',$user->id)->first();
                 $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
-                $pdf        = PDF::loadview('sistem.cetak.supplier', compact('supplier'));
+                $pdf        = PDF::loadview('sistem.cetak.supplier', compact('main','supplier'));
 
                 break;
             case 'produsen':
@@ -252,7 +252,7 @@ class CetakController extends Controller
                 $akses      = Userakses::where('user_id',$user->id)->first();
                 $produsen   = Kategori::produsen($akses->cabang_id);
 
-                $pdf        = PDF::loadview('sistem.cetak.produsen', compact('produsen'));
+                $pdf        = PDF::loadview('sistem.cetak.produsen', compact('main','produsen'));
 
                 break;
             case 'detailbarang':

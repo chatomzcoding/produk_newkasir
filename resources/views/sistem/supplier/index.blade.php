@@ -30,7 +30,7 @@
                 <div class="info-box-content">
                   <span class="info-box-text">Total Supplier</span>
                   <span class="info-box-number">
-                        {{-- {{ count($supplier)}} --}}
+                        {{ count($supplier)}}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -109,7 +109,7 @@
                                 </tr>
                             @empty
                                 <tr class="text-center">
-                                    <td colspan="4">tidak ada data</td>
+                                    <td colspan="5">tidak ada data</td>
                                 </tr>
                             @endforelse
                     </table>

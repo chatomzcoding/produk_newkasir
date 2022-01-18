@@ -5,12 +5,16 @@
     <link rel="stylesheet" href="{{ asset('css/cetak.css') }}">
 </head>
 <body>
+  @include('sistem.cetak.header')
+
 	<div class="container-fluid">
 		<section class="text-center">
             <h4>
                 Data Supplier
             </h4>
-            <hr>
+            <h5>
+                Cabang {{ ucwords($main['cabang']->nama_cabang) }}
+            </h5>
         </section>
         <table class="table">
             <thead class="text-center">
