@@ -223,7 +223,7 @@ class CetakController extends Controller
                 $data       = [
                     'info' => $info
                 ];
-                $pdf        = PDF::loadview('sistem.cetak.distribusi', compact('datatabel','data'));
+                $pdf        = PDF::loadview('sistem.cetak.distribusi', compact('main','datatabel','data'));
                 
                 break;
             case 'kategoribarang':

@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{{ asset('css/cetak.css') }}">
 </head>
 <body>
+  @include('sistem.cetak.header')
+
 	<div class="container-fluid">
 		<section class="text-center">
             <h4>
