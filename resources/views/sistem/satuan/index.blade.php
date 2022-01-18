@@ -74,7 +74,7 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th width="10%">Aksi</th>
-                                <th>Nama Kategori</th>
+                                <th>Nama Satuan</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
@@ -83,7 +83,7 @@
                             <tr>
                                     <td class="text-center">{{ $loop->iteration}}</td>
                                     <td class="text-center">
-                                        <form id="data-{{ $item->id }}" action="{{url('kategori/'.$item->id)}}" method="post">
+                                        <form id="data-{{ $item->id }}" action="{{url('satuan/'.$item->id)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             </form>
@@ -120,7 +120,7 @@
     <div class="modal fade" id="tambah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ url('/kategori')}}" method="post">
+            <form action="{{ url('/satuan')}}" method="post">
                 @csrf
                 <input type="hidden" name="label" value="satuan">
                 <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
@@ -133,7 +133,7 @@
             <div class="modal-body p-3">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Kategori {!! ireq() !!}</label>
+                        <label for="" class="col-md-4">Nama Satuan {!! ireq() !!}</label>
                         <input type="text" name="nama" id="nama" value="{{ old('nama') }}" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">
@@ -156,7 +156,7 @@
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
-            <form action="{{ route('kategori.update','test')}}" method="post">
+            <form action="{{ route('satuan.update','test')}}" method="post">
                 @csrf
                 @method('patch')
             <div class="modal-header">
@@ -169,7 +169,7 @@
                 <input type="hidden" name="id" id="id">
                 <section class="p-3">
                     <div class="form-group row">
-                        <label for="" class="col-md-4">Nama Kategori {!! ireq() !!}</label>
+                        <label for="" class="col-md-4">Nama Satuan {!! ireq() !!}</label>
                         <input type="text" name="nama" id="nama" class="form-control col-md-8" required>
                     </div>
                     <div class="form-group row">

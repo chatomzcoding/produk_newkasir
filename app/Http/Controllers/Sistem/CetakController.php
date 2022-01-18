@@ -230,14 +230,14 @@ class CetakController extends Controller
                 $namafile   = 'Data Kategori Barang';
                 $akses      = Userakses::where('user_id',$user->id)->first();
                 $kategori   = Kategori::kategori($akses->cabang_id);
-                $pdf        = PDF::loadview('sistem.cetak.kategoribarang', compact('kategori'));
+                $pdf        = PDF::loadview('sistem.cetak.kategoribarang', compact('main','kategori'));
 
                 break;
             case 'satuanbarang':
                 $namafile   = 'Data Satuan Barang';
                 $akses      = Userakses::where('user_id',$user->id)->first();
-                $satuan   = Kategori::satuan($akses->cabang_id);
-                $pdf        = PDF::loadview('sistem.cetak.satuanbarang', compact('satuan'));
+                $satuan     = Kategori::satuan($akses->cabang_id);
+                $pdf        = PDF::loadview('sistem.cetak.satuanbarang', compact('main','satuan'));
 
                 break;
             case 'supplier':

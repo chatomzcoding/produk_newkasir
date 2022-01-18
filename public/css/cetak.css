@@ -42,4 +42,16 @@ table > thead > tr > th{
     text-transform: capitalize;
 }
 
+h4 {
+    text-transform: uppercase;
+    padding-bottom: 0px;
+    margin-bottom: 5px;
+}
+h5 {
+    text-transform: uppercase;
+    padding: 0px;
+    margin-top: 0px;
+}
+
+
 /* untuk harga barang */

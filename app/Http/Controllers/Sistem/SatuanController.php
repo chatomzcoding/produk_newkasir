@@ -81,7 +81,7 @@ class SatuanController extends Controller
             'nama' => $request->nama,
             'keterangan' => $request->keterangan,
         ]);
-        return back()->with('dU','Satuan Barang');
+        return back()->with('du','Satuan Barang');
     }
 
     /**
@@ -90,9 +90,9 @@ class SatuanController extends Controller
      * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kategori $kategori)
+    public function destroy($kategori)
     {
-        $kategori->delete();
+        Kategori::find($kategori)->delete();
 
         return back()->with('dd','Satuan');
     }
