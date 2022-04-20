@@ -1,10 +1,5 @@
-@extends('layouts.admin')
-
-@section('title')
-    Data Karyawan
-@endsection
-
-@section('header')
+<x-admin-layout title="Karyawan" menu="karyawan">
+  <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0">Data Karyawan</h1>
@@ -16,11 +11,8 @@
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
-@endsection
-
-@section('container')
-    
-  
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
           <!-- left column -->
@@ -133,8 +125,6 @@
           </div>
         </div>
     </div>
- {{-- modal --}}
-    {{-- modal tambah --}}
     <div class="modal fade" id="tambah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -178,9 +168,6 @@
         </div>
         </div>
     </div>
-    <!-- /.modal -->
-
-    {{-- modal edit --}}
     <div class="modal fade" id="ubah">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -226,9 +213,8 @@
         </div>
         </div>
     </div>
-    <!-- /.modal -->
-
-    @section('script')
+  </x-slot>
+  <x-slot name="kodejs">
         <script>
             $('#ubah').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget)
@@ -264,6 +250,5 @@
             });
             });
         </script>
-    @endsection
-    @endsection
-
+  </x-slot>
+</x-admin-layout>

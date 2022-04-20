@@ -56,7 +56,7 @@ class UserController extends Controller
                                         ->where('users.level','kasir')
                                         ->count(),
                 ];
-                return view('cabang.user.index', compact('user','menu','statistik'));
+                return view('cabang.user.index', compact('user','statistik'));
                 break;
             
             default:
