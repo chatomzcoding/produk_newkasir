@@ -136,6 +136,7 @@ if (! function_exists('cikararesetrupiah')) {
     {
         $nilai = str_replace('Rp. ', '', $nilai);
         $nilai = str_replace('.', '', $nilai);
+        $nilai = str_replace(',', '.', $nilai);
         return $nilai;
     }
 }

@@ -1,10 +1,5 @@
-@extends('layouts.admin')
-
-@section('title')
-    Data Barang
-@endsection
-
-@section('header')
+<x-admin-layout title="Daftar Barang" menu="barang">
+  <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0">Data Barang</h1>
@@ -16,11 +11,8 @@
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
-@endsection
-
-@section('container')
-    
-  
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
           <!-- left column -->
@@ -73,11 +65,20 @@
                   <!-- /.info-box -->
                 </div>
               </div>
+              @if (count($kategori) == 0)
+                  <div class="alert alert-info">
+                    Sebelum menambahkan barang, silahkan tambahkan kategori dan satuan terlebih dahulu <br>
+                    <a href="{{ url('kategori') }}">Tambah Kategori</a> || <a href="{{ url('satuan') }}">Tambah Satuan</a>
+                  </div>
+              @endif
             <div class="card">
               <div class="card-header">
-                {{-- <h3 class="card-title">Daftar Unit</h3> --}}
                   @if ($user->level == 'gudang')
-                    <a href="{{ url('barang/create') }}" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
+                    @if (count($kategori) > 0)
+                      <a href="{{ url('barang/create') }}" class="btn btn-outline-primary btn-sm pop-info" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
+                      @else
+                      <a href="#" class="btn btn-outline-primary btn-sm pop-info disabled" title="Tambah Barang Baru"><i class="fas fa-plus"></i> Tambah</a>
+                    @endif
                     <a href="{{ url('barang') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> Bersihkan Filter</a>
                   @endif
                     <div class="float-right">
@@ -178,7 +179,7 @@
                                     <td class="text-right">{{ norupiah($item->harga_beli) }} </td>
                                     <td class="text-right">{{ norupiah($item->harga_jual) }} </td>
                                     <td class="text-center">{{ $item->stok }} </td>
-                                    <td class="text-center text-uppercase">{{ DbCikara::namaKategori($item->kategori_id) }}</td>
+                                    <td class="text-center text-uppercase">{{ $item->kategori->nama }}</td>
                                 </tr>
                             @endforeach
                     </table>
@@ -189,9 +190,8 @@
           </div>
         </div>
     </div>
-
-@section('script')
-    
+  </x-slot>
+  <x-slot name="kodejs">
         <script>
             $(function () {
             $("#example1").DataTable({
@@ -209,6 +209,5 @@
             });
             });
         </script>
-    @endsection
-    @endsection
-
+  </x-slot>
+</x-admin-layout>

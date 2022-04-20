@@ -6,7 +6,6 @@ use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
-use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -172,8 +171,8 @@ class BarangController extends Controller
             'kategori_id' => $request->kategori_id,
             'produsen_id' => $request->produsen_id,
             'satuan_id' => $request->satuan_id,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
+            'harga_beli' => cikararesetrupiah($request->harga_beli),
+            'harga_jual' => cikararesetrupiah($request->harga_jual),
             'stok' => $request->stok,
             'kode_barcode' => $request->kode_barcode,
             'merk' => $request->merk,

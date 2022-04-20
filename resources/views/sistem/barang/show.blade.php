@@ -1,10 +1,5 @@
-@extends('layouts.admin')
-
-@section('title')
-    Data Barang
-@endsection
-
-@section('header')
+<x-admin-layout title="Detail Barang" menu="barang">
+  <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0">Detail Barang {{ ucwords($barang->nama_barang) }}</h1>
@@ -17,16 +12,11 @@
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
-@endsection
-
-@section('container')
-    
-  
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
-          <!-- left column -->
           <div class="col-md-12">
-            <!-- statistik -->
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-4">
                   <div class="info-box">
@@ -35,8 +25,7 @@
                     <div class="info-box-content">
                       <span class="info-box-text">Stok Barang</span>
                       <span class="info-box-number">
-                        {{ $statistik['stokbarang'].' '.DbCikara::namaKategori($barang->satuan_id) }}
-                        {{-- <small>%</small> --}}
+                        {{ $statistik['stokbarang'].' '.$barang->satuan->nama }}
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -48,10 +37,9 @@
                     <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cart-arrow-down"></i></span>
       
                     <div class="info-box-content">
-                      <span class="info-box-text">Total Terjual</span>
+                      <span class="info-box-text">Terjual</span>
                       <span class="info-box-number">
                         {{ $statistik['totalterjual'] }}
-                        {{-- <small>%</small> --}}
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -63,10 +51,9 @@
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill"></i></span>
       
                     <div class="info-box-content">
-                      <span class="info-box-text">Total Omzet Dalam Barang</span>
+                      <span class="info-box-text">Omzet Dalam Barang</span>
                       <span class="info-box-number">
                         {{ rupiah(subtotal($barang->harga_jual,$barang->stok)) }}
-                        {{-- <small>%</small> --}}
                       </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -111,7 +98,7 @@
                                     </tr>
                                     <tr>
                                         <th>Kategori Barang</th>
-                                        <td class="text-uppercase">: {{ DbCikara::namaKategori($barang->kategori_id) }}</td>
+                                        <td class="text-uppercase">: {{ $barang->kategori->nama }}</td>
                                     </tr>
                                     <tr>
                                         <th>Harga Beli</th>
@@ -138,7 +125,5 @@
           </div>
         </div>
     </div>
-
-       
-    @endsection
-
+  </x-slot>
+</x-admin-layout>

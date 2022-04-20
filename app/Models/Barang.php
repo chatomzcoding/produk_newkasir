@@ -17,4 +17,13 @@ class Barang extends Model
     {
         return Barang::where('cabang_id',$cabang_id)->where('kategori_id',$kategori)->orderBy('nama_barang','ASC')->get();
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
+    public function satuan()
+    {
+        return $this->belongsTo(Kategori::class,'satuan_id');
+    }
 }

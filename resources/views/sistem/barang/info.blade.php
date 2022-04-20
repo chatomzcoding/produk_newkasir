@@ -1,10 +1,5 @@
-@extends('layouts.admin')
-
-@section('title')
-    Informasi Barang
-@endsection
-
-@section('header')
+<x-admin-layout title="info barang" menu="barang">
+  <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0">Informasi Barang</h1>
@@ -17,10 +12,8 @@
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
-@endsection
-
-@section('container')
-  
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
           <div class="col-md-4">
@@ -126,7 +119,5 @@
           </div>
         </div>
     </div>
-
-
-    @endsection
-
+  </x-slot>
+</x-admin-layout>
