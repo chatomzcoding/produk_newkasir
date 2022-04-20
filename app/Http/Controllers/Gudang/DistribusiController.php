@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Gudang;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Cabang;
 use App\Models\Distribusi;
-use App\Models\Kategori;
 use App\Models\Retur;
 use App\Models\Supplier;
-use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

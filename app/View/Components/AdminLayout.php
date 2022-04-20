@@ -14,11 +14,13 @@ class AdminLayout extends Component
      */
     public $menu;
     public $title;
+    public $chart;
     
-    public function __construct($menu='beranda',$title='')
+    public function __construct($menu='beranda',$title='',$chart=FALSE)
     {
         $this->menu = $menu;
         $this->title = $title;
+        $this->chart = $chart;
     }
 
     /**
