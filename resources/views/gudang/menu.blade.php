@@ -24,6 +24,12 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ url('/barang/create')}}" class="nav-link small {{ menuaktif($menu,'tambahbarang') }}">
+            &nbsp;&nbsp;<i class="fas fa-plus nav-icon"></i>
+            <p>Tambah Barang</p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ url('/barang?sesi=info')}}" class="nav-link small {{ menuaktif($menu,'infobarang') }}">
             &nbsp;&nbsp;<i class="fas fa-info-circle nav-icon"></i>
             <p>Info Barang</p>
