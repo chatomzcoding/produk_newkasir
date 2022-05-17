@@ -110,11 +110,11 @@ class DbCikara {
             $kodebarang     = explode('-',$barang->kode_barang);
             $nomor          = $kodebarang[1];
             $urutbaru       = $nomor + 1;
-            if ($nomor < 10 ) {
+            if ($urutbaru < 10 ) {
                 $urutan = '000'.$urutbaru;
-            }elseif ($nomor >= 10 AND $nomor < 100) {
+            }elseif ($urutbaru >= 10 AND $urutbaru < 100) {
                 $urutan = '00'.$urutbaru;
-            }elseif ($nomor >= 100 AND $nomor < 1000) {
+            }elseif ($urutbaru >= 100 AND $urutbaru < 1000) {
                 $urutan = '0'.$urutbaru;
             } else {
                 $urutan = $urutbaru;

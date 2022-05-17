@@ -25,6 +25,7 @@ class TransaksiController extends Controller
     {
         $menu       = 'transaksi';
         $user       = Auth::user();
+        $client     = Client::first();
         $sesi = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
         $tanggal    = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
         switch ($sesi) {
@@ -57,7 +58,7 @@ class TransaksiController extends Controller
                     'totalhariini' => $totalhariini,
                 ];
                 $laporan    = Laporan::where('tgl_laporan',$tanggal)->first();
-                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi','laporan'));
+                return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi','laporan','client'));
                 break;
         }
 

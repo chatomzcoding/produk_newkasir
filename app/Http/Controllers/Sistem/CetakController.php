@@ -142,7 +142,7 @@ class CetakController extends Controller
                 } else {
                     $dkategori  = Kategori::find($kategori);
                     $namafile   = 'Barang Kategori '.ucwords($dkategori->nama);
-                    $barang     =  Barang::cabangPerKategori($akses->cabang_id,$kategori);
+                    $barang     =  Barang::cabangPerKategori($kategori);
                 }
                 if (isset($_GET['harga'])) {
                     $pdf        = PDF::loadview('sistem.cetak.hargabarang', compact('barang','kategori','main'));

@@ -93,9 +93,9 @@ class BarangController extends Controller
             
             default:
                 if ($fkategori == 'semua') {
-                    $barang      = Barang::orderBy('nama_barang','DESC')->get();
+                    $barang      = Barang::orderBy('nama_barang','ASC')->get();
                     if (count($barang) > 250) {
-                        $barang      = Barang::orderBy('id','DESC')->paginate(20);
+                        $barang      = Barang::orderBy('nama_barang','ASC')->paginate(20);
                         $page           = TRUE;
                     }
                 } else {
