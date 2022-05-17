@@ -63,39 +63,42 @@
                   <a href="{{ url('transaksi') }}" class="btn btn-outline-dark btn-sm"><i class="fas fa-sync"></i> BERSIHKAN FILTER</a>
                   <div class="float-right">
                     @if ($laporan)
-                    <a href="#" class="btn btn-outline-dark btn-sm"><i class="fas fa-file"></i> TRANSAKSI SUDAH DITUTUP</a>
+                      <a href="#" class="btn btn-outline-dark btn-sm"><i class="fas fa-file"></i> TRANSAKSI SUDAH DITUTUP</a>
                     @else
-                    <a href="#" data-toggle="modal" data-target="#laporan" class="btn btn-outline-success btn-sm"><i class="fas fa-file"></i> TUTUP TRANSAKSI</a>
-                        
+                      @if (count($transaksi) > 0)
+                        <a href="#" data-toggle="modal" data-target="#laporan" class="btn btn-outline-success btn-sm"><i class="fas fa-file"></i> TUTUP TRANSAKSI</a>
+                      @endif
                     @endif
-                    <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                    @if (count($transaksi) > 0)
+                      <a href="{{ url('cetakdata?s=transaksi&tanggal='.$tanggal) }}" target="_blank" class="btn btn-outline-info btn-sm"><i class="fas fa-print"></i> CETAK</a>
+                    @endif
+
                   </div>
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-  
                   <section class="mb-1 mt-1">
                         <div class="row">
                           @if ($user->level == 'kasir')
-                          @if (!$laporan)
-                            <div class="col-md-3">
-                                @if ($cektransaksi)
-                                    <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
-                                      <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
-                                    </form>
-                                @else
-                                <form action="{{ url('transaksi') }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="sesi" value="tambah">
-                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                    <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
-                                    <input type="hidden" name="status_transaksi" value="proses">
-                                    <input type="hidden" name="uang_pembeli" value="0">
-                                    <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
-                                </form>
-                              @endif
-                            </div>
-                          @endif
+                            @if (!$laporan AND $tanggal == tgl_sekarang())
+                              <div class="col-md-3">
+                                  @if ($cektransaksi)
+                                      <form action="{{ url('transaksi/'.Crypt::encryptString($cektransaksi->id)) }}" method="get">
+                                        <button type="submit" class="btn btn-outline-info btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-sync"></i> Lanjutkan Transaksi [Enter]</button>
+                                      </form>
+                                  @else
+                                  <form action="{{ url('transaksi') }}" method="post">
+                                      @csrf
+                                      <input type="hidden" name="sesi" value="tambah">
+                                      <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                      <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
+                                      <input type="hidden" name="status_transaksi" value="proses">
+                                      <input type="hidden" name="uang_pembeli" value="0">
+                                      <button type="submit" class="btn btn-outline-primary btn-flat btn-sm pop-info" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru [Enter]</button>
+                                  </form>
+                                @endif
+                              </div>
+                            @endif
                           @endif
                           <div class="form-group col-md-2">
                               <form action="{{ url('transaksi') }}" method="get">
@@ -111,8 +114,6 @@
                                 <th width="5%">No</th>
                                 <th width="10%">Aksi</th>
                                 <th>Kode Transaksi</th>
-                                <th>Tipe Pembayaran</th>
-                                <th>Tipe Orderan</th>
                                 <th>Uang Pembeli</th>
                                 <th>Keranjang</th>
                                 <th>Status</th>
@@ -146,9 +147,7 @@
                                             </div>
                                     </td>
                                     <td>{{ $item->kode_transaksi}}</td>
-                                    <td>{{ $item->tipe_pembayaran}}</td>
-                                    <td>{{ $item->tipe_orderan}}</td>
-                                    <td>{{ rupiah($item->uang_pembeli)}}</td>
+                                    <td class="text-right">{{ rupiah($item->uang_pembeli)}}</td>
                                     <td>
                                         @if (!is_null($item->keranjang))
                                             <ul class="list-group">

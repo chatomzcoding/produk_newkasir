@@ -1,6 +1,6 @@
 <div>
-    {{-- button input barang melalui barcode --}}
-    <section>
+
+    {{-- <section>
         <form action="{{ url('transaksi') }}" method="post">
             @csrf
             <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
@@ -10,7 +10,7 @@
                 autofocus
             @endif required>
         </form>
-    </section>
+    </section> --}}
 
 
     {{-- button kembali ke daftar keranjang / halaman proses --}}
@@ -22,7 +22,7 @@
             <input type="hidden" name="kode_transaksi" value="{{ DbCikara::kodeTransaksi($user->id) }}">
             <input type="hidden" name="status_transaksi" value="proses">
             <input type="hidden" name="uang_pembeli" value="0">
-            <button type="submit" class="btn btn-warning btn-block text-left" title="Tambah Transaksi" id="tambahtransaksi"><i class="fas fa-plus"></i> Tambah Transaksi Baru<span class="float-right">[Enter]</span></button>
+            <button type="submit" class="btn btn-warning btn-block text-left" title="Tambah Transaksi" id="caribarang"><i class="fas fa-plus"></i> Tambah Transaksi Baru<span class="float-right">[insert]</span></button>
         </form>
         {{-- <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
             @csrf
@@ -40,13 +40,13 @@
     </section>
 
     {{-- button untuk mencari barang secara manual --}}
-    <section class="mt-1">
+    {{-- <section class="mt-1">
         <form action="{{ url('transaksi/'.Crypt::encryptString($transaksi->id)) }}" method="get">
             @csrf
             <input type="hidden" name="s" value="caribarang">
             <button type="submit" class="btn btn-info btn-block text-left" id="caribarang"><i class="fas fa-cart-plus"></i> TAMBAH KERANJANG <span class="float-right">[insert]</span></button>
         </form>
-    </section>
+    </section> --}}
 
     {{-- muncul ketika keranjang tidak kosong --}}
     @if ($data['totalpembayaran'] > 0)
@@ -80,5 +80,18 @@
             </section>
         @endif
     @endif
+
+        {{-- cari barang kombinasi nama dan barcode --}}
+        <section class="mt-1">
+            <form action="{{ url('transaksi') }}" method="post">
+                @csrf
+                <input type="hidden" name="transaksi_id" value="{{ $transaksi->id }}">
+                <input type="hidden" name="sesi" value="tambahbarang">
+                <input type="hidden" name="status" value="caribarang">
+                <input type="text" name="barang" id="nama" placeholder="cari barang disini" class="form-control" @if ($s == 'index')
+                    autofocus
+                @endif required>
+            </form>
+        </section>
 
 </div>

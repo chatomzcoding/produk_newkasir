@@ -21,7 +21,7 @@
                     @php
                         $subtotal = $item->jumlah * $item->harga_jual;
                     @endphp
-                    <tr>
+                    <tr class="h5">
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-capitalize">{{ $item->nama_barang }}</td>
                         <td class="text-right">{{ norupiah($item->harga_jual) }}</td>

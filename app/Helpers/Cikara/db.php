@@ -107,7 +107,7 @@ class DbCikara {
         // cek barang terakhir
         $barang     = Barang::latest()->first();
         if ($barang) {
-            $kodebarang     = explode('.',$barang->kode_barang);
+            $kodebarang     = explode('-',$barang->kode_barang);
             $nomor          = $kodebarang[1];
             $urutbaru       = $nomor + 1;
             if ($nomor < 10 ) {

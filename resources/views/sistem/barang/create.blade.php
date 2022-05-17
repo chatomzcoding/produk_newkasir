@@ -1,4 +1,4 @@
-<x-admin-layout title="tambah barang" menu="barang">
+<x-admin-layout title="tambah barang" menu="tambahbarang">
     <x-slot name="header">
         <div class="row mb-2">
             <div class="col-sm-6">

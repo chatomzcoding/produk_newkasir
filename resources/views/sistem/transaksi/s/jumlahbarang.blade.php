@@ -2,7 +2,8 @@
     <div class="card">
         <div class="card-body pb-0">
             @php
-                $barang = DbCikara::showtablefirst('barang',['kode_barang',$_GET['kode_barang']]); 
+                $barang     = DbCikara::showtablefirst('barang',['kode_barang',$_GET['kode_barang']]); 
+                $sisabarang = $barang->stok + $_GET['jumlah'];
             @endphp
             <form action="{{ url('transaksi/'.$transaksi->id) }}" method="post">
                 @csrf
@@ -14,10 +15,10 @@
                 <div class="form-group row">
                     <label for="" class="col-md-10 h4 text-secondary"><i class="fas fa-plus"></i> Tambah Jumlah Barang <span class="text-dark">"{{ ucwords($_GET['nama_barang']) }}"</span></label>
                     <div class="col-md-2">
-                        <input type="number" name="jumlah" class="form-control" value="{{ $_GET['jumlah'] }}" min="1" max="{{ $barang->stok }}"  @if ($s == 'jumlahbarang')
+                        <input type="number" name="jumlah" class="form-control" value="{{ $_GET['jumlah'] }}" min="1" max="{{ $sisabarang }}"  @if ($s == 'jumlahbarang')
                         autofocus
                         @endif required>
-                        <small class="font-weight-bold">stok digudang {{ $barang->stok }}</small>
+                        <small class="font-weight-bold">stok digudang {{ $sisabarang }}</small>
                     </div>
                 </div>
             </form>

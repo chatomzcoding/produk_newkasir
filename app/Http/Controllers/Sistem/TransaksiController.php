@@ -42,19 +42,10 @@ class TransaksiController extends Controller
                         $total          = Transaksi::where('user_id',$user->id)->count();
                         $totalhariini   = Transaksi::where('user_id',$user->id)->whereDate('created_at',tgl_sekarang())->count();
                         break;
-                    case 'cabang':
-                        $transaksi      = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->whereDate('transaksi.created_at',$tanggal)
-                                        ->select('transaksi.*')
-                                        ->get();
-                        $total      = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->count();
-                        $totalhariini      = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->whereDate('transaksi.created_at',tgl_sekarang())
-                                        ->count();
+                    case 'gudang':
+                        $transaksi      = Transaksi::whereDate('transaksi.created_at',$tanggal)->get();
+                        $total          = Transaksi::count();
+                        $totalhariini   = Transaksi::whereDate('transaksi.created_at',tgl_sekarang())->count();
                         $cektransaksi = FALSE;
                         break;
                     default:
@@ -65,9 +56,7 @@ class TransaksiController extends Controller
                     'total' => $total,
                     'totalhariini' => $totalhariini,
                 ];
-
                 $laporan    = Laporan::where('tgl_laporan',$tanggal)->first();
-
                 return view('sistem.transaksi.index', compact('menu','transaksi','user','tanggal','statistik','cektransaksi','laporan'));
                 break;
         }
@@ -105,14 +94,12 @@ class TransaksiController extends Controller
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
                 break;
             case 'tambahbarang':
-                $akses      = Userakses::where('user_id',Auth::user()->id)->first();
                 $transaksi  = Transaksi::find($request->transaksi_id);
-                if ($request->status == 'barcode') {
-                    $barang     = Barang::where('kode_barcode',$request->kode_barcode)->first();
-                } else {
-                    $barang     = Barang::where('nama_barang',$request->nama_barang)->first();
+                $barang     = Barang::where('kode_barcode',$request->barang)->first();
+                if (!$barang) {
+                    $barang     = Barang::where('nama_barang',$request->barang)->first();
                 }
-                
+
                 if ($barang) {
                     if ($barang->stok > 0) {
                         $keranjang = json_decode($transaksi->keranjang,TRUE);
@@ -146,7 +133,7 @@ class TransaksiController extends Controller
                         ]);
                         return redirect('transaksi/'.Crypt::encryptString($transaksi->id))->with('success','<strong>'.ucwords($barang->nama_barang).'</strong> berhasil ditambahkan  ke keranjang');
                     } else {
-                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id).'?s=caribarang')->with('danger','<strong>'.ucwords($barang->nama_barang).'</strong> stok tidak ada!');
+                        return redirect('transaksi/'.Crypt::encryptString($transaksi->id).'?s=caribarang')->with('danger',"<strong>".ucwords($barang->nama_barang)."</strong> stok tidak ada!   ");
                     }
                     
                 } else {
@@ -180,12 +167,6 @@ class TransaksiController extends Controller
                 ];
 
                 $keranjang  = json_decode($transaksi->keranjang,TRUE);
-                // $dkeranjang = [];
-                // foreach ($keranjang as $key) {
-                //     $dkeranjang[] = $key;
-                // };
-                // krsort($dkeranjang);
-                // dd($dkeranjang);
 
                 return view('sistem.transaksi.proses', compact('transaksi','s','user','data','client'));
                 break;
@@ -215,23 +196,30 @@ class TransaksiController extends Controller
     public function loadbarang()
     {
         $nama   = $_GET["query"];
-        $result = Barang::where('nama_barang','like','%'.$nama.'%')->get();
-
-        // Cek apakah ada yang cocok atau tidak.
-        if (count($result) > 0) {
-            foreach($result as $item) {
+        $result = Barang::where('kode_barcode',$nama)->first();
+        if ($result) {
+            $output['suggestions'][] = [
+                'value' => $result->nama_barang,
+                'nama'  => $result->nama_barang
+            ];
+        } else {
+            $result = Barang::where('nama_barang','like','%'.$nama.'%')->get();
+    
+            // Cek apakah ada yang cocok atau tidak.
+            if (count($result) > 0) {
+                foreach($result as $item) {
+                    $output['suggestions'][] = [
+                        'value' => $item->nama_barang,
+                        'nama'  => $item->nama_barang
+                    ];
+                }
+            // Jika tidak ada yang cocok.
+            } else {
                 $output['suggestions'][] = [
-                    'value' => $item->nama_barang,
-                    'nama'  => $item->nama_barang
+                    'value' => 'cari barang',
+                    'nama'  => 'cari barang'
                 ];
             }
-        // Jika tidak ada yang cocok.
-        } else {
-            $output['suggestions'][] = [
-                'value' => '',
-                'nama'  => ''
-            ];
-
         }
         // Encode ke JSON.
         echo json_encode($output);
@@ -302,15 +290,15 @@ class TransaksiController extends Controller
                 ]);
 
                 // kurangi barang dari stok sesuai dengan jumlah barang pembelian
-                foreach (json_decode($transaksi->keranjang) as $item) {
-                    $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
-                    if ($barang) {
-                        $stok   = $barang->stok - $item->jumlah;
-                        Barang::where('id',$barang->id)->update([
-                            'stok' => $stok
-                        ]);
-                    }
-                }
+                // foreach (json_decode($transaksi->keranjang) as $item) {
+                //     $barang     = Barang::where('kode_barang',$item->kode_barang)->first();
+                //     if ($barang) {
+                //         $stok   = $barang->stok - $item->jumlah;
+                //         Barang::where('id',$barang->id)->update([
+                //             'stok' => $stok
+                //         ]);
+                //     }
+                // }
                 return redirect('transaksi/'.Crypt::encryptString($transaksi->id));
                 break;
             case 'tambahjumlahbarang':

@@ -100,7 +100,7 @@
   </style>
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed" onkeydown="myFunction()">
+<body class="hold-transition sidebar-mini layout-fixed bg-light" onkeydown="myFunction()">
 <div class="container-fluid">
     @yield('header')
     <section class="content">
