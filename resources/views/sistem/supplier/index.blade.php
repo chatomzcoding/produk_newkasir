@@ -46,22 +46,6 @@
                   </div>
                   <div class="card-body">
                       @include('sistem.notifikasi')
-                      {{-- <section class="mb-3">
-                          <form action="{{ url('listdata') }}" method="get">
-                            <div class="row">
-                                <div class="form-group col-md-2">
-                                    <select name="kategori" id="" class="form-control form-control-sm" onchange="this.form.submit();">
-                                        <option value="semua">Semua</option>
-                                        @foreach (list_kategori() as $item)
-                                            <option value="{{ $item}}" @if ($kategori == $item)
-                                                selected
-                                            @endif>{{ strtoupper($item)}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </form>
-                      </section> --}}
                       <div class="table-responsive">
                         <table id="example1" class="table table-bordered table-striped">
                             <thead class="text-center">
@@ -118,7 +102,6 @@
               <div class="modal-content">
                 <form action="{{ url('/supplier')}}" method="post">
                     @csrf
-                    <input type="hidden" name="cabang_id" value="{{ $userakses->cabang_id }}">
                 <div class="modal-header">
                 <h4 class="modal-title">Tambah Data Supplier</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

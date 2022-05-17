@@ -2,24 +2,14 @@
 namespace App\Helpers\Cikara;
 
 use App\Models\Barang;
-use App\Models\Daftarakun;
-use App\Models\Daftarakunpembantu;
 use App\Models\Distribusi;
-use App\Models\Jurnalakun;
 use App\Models\Kategori;
-use App\Models\Keluarga;
-use App\Models\Lapor;
-use App\Models\Penduduk;
-use App\Models\Penduduksurat;
-use App\Models\Profil;
 use App\Models\Retur;
 use App\Models\Transaksi;
-use App\Models\User;
 use App\Models\Userakses;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class DbCikara {
 
@@ -111,11 +101,11 @@ class DbCikara {
     }
 
     // kode barang
-    public static function kodeBarang($cabang_id)
+    public static function kodeBarang($cabang_id='1')
     {
         $kode   = 'CK'.$cabang_id.'.';
         // cek barang terakhir
-        $barang     = Barang::where('cabang_id',$cabang_id)->latest()->first();
+        $barang     = Barang::latest()->first();
         if ($barang) {
             $kodebarang     = explode('.',$barang->kode_barang);
             $nomor          = $kodebarang[1];

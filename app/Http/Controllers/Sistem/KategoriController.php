@@ -17,11 +17,8 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $menu       = 'kategori';
-        $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $kategori   = Kategori::kategori($akses->cabang_id);
-
-        return view('sistem.kategori.index', compact('menu','kategori','akses'));
+        $kategori   = Kategori::where('label','kategori')->orderBy('nama','ASC')->get();
+        return view('sistem.kategori.index', compact('kategori'));
     }
 
     /**

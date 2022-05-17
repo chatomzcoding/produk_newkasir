@@ -25,12 +25,11 @@
                   <div class="card-body">
                         <form action="{{ url('barang') }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group row">
                                         <label for="" class="col-md-4 p-2">Kode Barang <strong class="text-danger">*</strong></label>
-                                        <input type="text" name="kode_barang" value="{{ DbCikara::kodeBarang($akses->cabang_id) }}" class="form-control col-md-8" readonly>
+                                        <input type="text" name="kode_barang" value="{{ DbCikara::kodeBarang() }}" class="form-control col-md-8" readonly>
                                     </div>
                                     <div class="form-group row">
                                         <label for="" class="col-md-4 p-2">Nama Barang <strong class="text-danger">*</strong></label>

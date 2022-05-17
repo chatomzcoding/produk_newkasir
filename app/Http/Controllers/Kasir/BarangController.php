@@ -22,9 +22,8 @@ class BarangController extends Controller
     public function index()
     {
         $menu       = 'barang';
-        $page       = FALSE;
         $user       = Auth::user();
-        $akses      = Userakses::where('user_id',$user->id)->first();
+        $page       = FALSE;
         $fkategori  = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
         $sesi       = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'barang' ;
         switch ($sesi) {
@@ -32,17 +31,16 @@ class BarangController extends Controller
                 $cari       = $_GET['cari'];
                 $barang     = Barang::where('kode_barang',$cari)->get();
                 if (count($barang) == 0) {
-                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','LIKE','%'.$cari.'%')->get();
+                    $barang     = Barang::where('nama_barang','LIKE','%'.$cari.'%')->get();
                 }
                 break;
             case 'info':
                 $menu   = 'infobarang';
-                $barangstokbanyak       = Barang::select('id','nama_barang','stok')->where('cabang_id',$akses->cabang_id)->orderBy('stok','DESC')->limit(10)->get();
+                $barangstokbanyak       = Barang::select('id','nama_barang','stok')->orderBy('stok','DESC')->limit(10)->get();
                 $transaksi              = DB::table('transaksi')
                                             ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
                                             ->select('transaksi.keranjang')
                                             ->where('transaksi.keranjang','<>','NULL')
-                                            ->where('user_akses.cabang_id',$akses->cabang_id)
                                             ->get();
                 $barang         = [];
                 $totalomzet     = 0;
@@ -64,7 +62,7 @@ class BarangController extends Controller
                 $barang = array_slice($barang,0,10);
                 $barangterlaris     = [];
                 foreach ($barang as $key => $value) {
-                    $barang     = Barang::select('id','nama_barang')->where('kode_barang',$key)->where('cabang_id',$akses->cabang_id)->first();
+                    $barang     = Barang::select('id','nama_barang')->where('kode_barang',$key)->first();
                     if ($barang) {
                         $barangterlaris[] = [
                             'barang' => $barang->nama_barang,
@@ -78,8 +76,8 @@ class BarangController extends Controller
                     }
                 }
                 $omzetdalambarang       = 0;
-                $labadalambarang       = 0;
-                $barang                 = Barang::select('harga_jual','harga_beli','stok')->where('cabang_id',$akses->cabang_id)->where('stok','<>',0)->get();
+                $labadalambarang        = 0;
+                $barang                 = Barang::select('harga_jual','harga_beli','stok')->where('stok','<>',0)->get();
                 foreach ($barang as $key) {
                     $hargajual          = $key->stok * $key->harga_jual;
                     $hargabeli          = $key->stok * $key->harga_beli;
@@ -98,9 +96,9 @@ class BarangController extends Controller
             
             default:
                 if ($fkategori == 'semua') {
-                    $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->get();
+                    $barang      = Barang::orderBy('id','DESC')->get();
                     if (count($barang) > 250) {
-                        $barang      = Barang::where('cabang_id',$akses->cabang_id)->orderBy('id','DESC')->paginate(20);
+                        $barang      = Barang::orderBy('id','DESC')->paginate(20);
                         $page           = TRUE;
                     }
                 } else {
@@ -109,10 +107,10 @@ class BarangController extends Controller
                 break;
         }
         
-        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
-        $totalbarang    = Barang::where('cabang_id',$akses->cabang_id)->count();
-        $totalitem      = Barang::where('cabang_id',$akses->cabang_id)->sum('stok');
-        $totalbarangstokkosong    = Barang::where('cabang_id',$akses->cabang_id)->where('stok','<=',0)->count();
+        $kategori       = Kategori::where('label','kategori')->orderBy('nama','ASC')->get();
+        $totalbarang    = Barang::count();
+        $totalitem      = Barang::sum('stok');
+        $totalbarangstokkosong    = Barang::where('stok','<=',0)->count();
         $filter         = [
             'kategori' => $fkategori,
             'page' => $page,
@@ -135,11 +133,10 @@ class BarangController extends Controller
     public function create()
     {
         $menu           = 'barang';
-        $akses          = Userakses::where('user_id',Auth::user()->id)->first();
-        $satuan         = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->orderBy('nama','ASC')->get();
-        $kategori       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
-        $produsen       = Kategori::where('cabang_id',$akses->cabang_id)->where('label','produsen')->orderBy('nama','ASC')->get();
-        return view('sistem.barang.create', compact('satuan','kategori','produsen','menu','akses'));
+        $satuan         = Kategori::where('label','satuan')->orderBy('nama','ASC')->get();
+        $kategori       = Kategori::where('label','kategori')->orderBy('nama','ASC')->get();
+        $produsen       = Kategori::where('label','produsen')->orderBy('nama','ASC')->get();
+        return view('sistem.barang.create', compact('satuan','kategori','produsen','menu'));
     }
 
     /**
@@ -165,7 +162,6 @@ class BarangController extends Controller
             $gambar  = NULL;
         }
         Barang::create([
-            'cabang_id' => $request->cabang_id,
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'kategori_id' => $request->kategori_id,
@@ -210,9 +206,9 @@ class BarangController extends Controller
     {
         $menu   = 'barang';
         $barang     = Barang::find(Crypt::decryptString($barang));
-        $satuan         = Kategori::where('cabang_id',$barang->cabang_id)->where('label','satuan')->orderBy('nama','ASC')->get();
-        $kategori       = Kategori::where('cabang_id',$barang->cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
-        $produsen       = Kategori::where('cabang_id',$barang->cabang_id)->where('label','produsen')->orderBy('nama','ASC')->get();
+        $satuan         = Kategori::where('label','satuan')->orderBy('nama','ASC')->get();
+        $kategori       = Kategori::where('label','kategori')->orderBy('nama','ASC')->get();
+        $produsen       = Kategori::where('label','produsen')->orderBy('nama','ASC')->get();
         return view('sistem.barang.edit', compact('menu','barang','satuan','kategori','produsen'));
     }
 

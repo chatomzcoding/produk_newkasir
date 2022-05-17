@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Gudang;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cabang;
 use App\Models\Supplier;
-use App\Models\Userakses;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -18,12 +15,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $menu       = 'supplier';
-        $userakses  = Userakses::where('user_id',Auth::user()->id)->first();
-        // $supplier   = Cabang::find($userakses->cabang_id)->supplier();
-        $supplier   = Supplier::where('cabang_id',$userakses->cabang_id)->orderBy('nama_supplier','ASC')->get();
+        $supplier   = Supplier::orderBy('nama_supplier','ASC')->get();
 
-        return view('sistem.supplier.index', compact('menu','supplier','userakses'));
+        return view('sistem.supplier.index', compact('supplier'));
 
     }
 

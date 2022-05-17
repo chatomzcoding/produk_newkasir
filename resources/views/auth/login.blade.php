@@ -23,7 +23,7 @@ background-repeat: no-repeat;>
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
       <img src="{{ asset('img/logo.png') }}" alt="" width="50%"><br>
-      <h3 class="font-weight-bold">Cikara Kasir</h3>
+      <h3 class="font-weight-bold">Cikara Kasir <br> <small>minikasir v.1.0</small> </h3>
     </div>
     <div class="card-body">
         @if ($errors->any())
@@ -64,7 +64,6 @@ background-repeat: no-repeat;>
       </form>
       <hr>
       <p class="mt-3 mb-0 small">
-        <a href="{{ url('/') }}"><i class="fas fa-home"></i> Halaman Utama</a>
         <a href="http://cikarastudio.com/" target="_blank" class="float-right">CIKARA STUDIO</a>
       </p>
     </div>

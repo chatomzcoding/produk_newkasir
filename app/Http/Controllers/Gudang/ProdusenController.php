@@ -17,10 +17,8 @@ class ProdusenController extends Controller
      */
     public function index()
     {
-        $menu       = 'produsen';
-        $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $produsen   = Kategori::produsen($akses->cabang_id);
-        return view('sistem.produsen.index', compact('menu','produsen','akses'));
+        $produsen   = Kategori::where('label','produsen')->orderBy('nama','ASC')->get();
+        return view('sistem.produsen.index', compact('produsen'));
     }
 
     /**

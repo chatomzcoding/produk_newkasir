@@ -100,7 +100,6 @@
                 <form action="{{ url('/kategori')}}" method="post">
                     @csrf
                     <input type="hidden" name="label" value="kategori">
-                    <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
                 <div class="modal-header">
                 <h4 class="modal-title">Tambah Data Kategori Barang</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -17,10 +17,8 @@ class SatuanController extends Controller
      */
     public function index()
     {
-        $menu       = 'satuan';
-        $akses      = Userakses::where('user_id',Auth::user()->id)->first();
-        $kategori   = Kategori::where('cabang_id',$akses->cabang_id)->where('label','satuan')->get();
-        return view('sistem.satuan.index', compact('menu','kategori','akses'));
+        $kategori   = Kategori::where('label','satuan')->orderBy('nama','ASC')->get();
+        return view('sistem.satuan.index', compact('kategori'));
     }
 
     /**
