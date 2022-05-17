@@ -1,4 +1,4 @@
-<x-admin-layout title="Distribusi" name="distribusi">
+<x-admin-layout title="Distribusi" menu="distribusi">
     <x-slot name="header">
         <div class="row mb-2">
             <div class="col-sm-6">
@@ -213,7 +213,6 @@
                     @csrf
                     <input type="hidden" name="status_stok" value="proses">
                     <input type="hidden" name="s" value="tambahdistribusi">
-                    <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
                 <div class="modal-header">
                     <h4 class="modal-title">Tambah Data Distribusi</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -224,7 +223,7 @@
                     <section class="p-3">
                         <div class="form-group row">
                             <label for="" class="col-md-4">Kode Distribusi</label>
-                            <input type="text" name="kode_distribusi" id="kode_distribusi" value="{{ DbCikara::kodeDistribusi($akses->user_id) }}" class="form-control col-md-8" readonly>
+                            <input type="text" name="kode_distribusi" id="kode_distribusi" value="{{ DbCikara::kodeDistribusi() }}" class="form-control col-md-8" readonly>
                         </div>
                         <div class="form-group row">
                             <label for="" class="col-md-4">No Faktur/Bukti Pembayaran</label>

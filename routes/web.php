@@ -34,17 +34,9 @@ Route::get('/','App\Http\Controllers\HomepageController@index');
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::get('/dashboard','App\Http\Controllers\HomeController@index')->name('dashboard');
     
-    // SUPERADMIN
-    Route::middleware(['superadmin'])->group(function () {
-        Route::resource('listdata', ListdataController::class);
-        Route::resource('client', ClientController::class);
-    });
-
-    // CLIENT
-    Route::middleware(['client'])->group(function () {
-        Route::resource('cabang', CabangController::class);
-    });
-    
+    Route::resource('listdata', ListdataController::class);
+    Route::resource('client', ClientController::class);
+  
     Route::resource('user', UserController::class);
     Route::resource('barang', BarangController::class);
     Route::resource('laporan', LaporanController::class);

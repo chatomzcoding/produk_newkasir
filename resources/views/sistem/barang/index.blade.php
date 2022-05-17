@@ -178,7 +178,7 @@
                                     <td class="text-capitalize">{{ $item->nama_barang }}</td>
                                     <td class="text-right">{{ norupiah($item->harga_beli) }} </td>
                                     <td class="text-right">{{ norupiah($item->harga_jual) }} </td>
-                                    <td class="text-center">{{ $item->stok }} </td>
+                                    <td class="text-center">{{ $item->stok.' '.$item->satuan->nama }} </td>
                                     <td class="text-center text-uppercase">{{ $item->kategori->nama }}</td>
                                 </tr>
                             @endforeach

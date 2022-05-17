@@ -101,9 +101,9 @@ class DbCikara {
     }
 
     // kode barang
-    public static function kodeBarang($cabang_id='1')
+    public static function kodeBarang()
     {
-        $kode   = 'CK'.$cabang_id.'.';
+        $kode   = 'KD-';
         // cek barang terakhir
         $barang     = Barang::latest()->first();
         if ($barang) {
@@ -146,12 +146,11 @@ class DbCikara {
         return $kodebarang;
         
     }
-    public static function kodeDistribusi($user_id)
+    public static function kodeDistribusi()
     {
-        $akses          = Userakses::where('user_id',$user_id)->first();
-        $kode   = 'DB'.$akses->cabang_id.'.';
+        $kode   = 'DB.';
         // cek distribusi terakhir
-        $distribusi     = Distribusi::where('cabang_id',$akses->cabang_id)->latest()->first();
+        $distribusi     = Distribusi::latest()->first();
         if ($distribusi) {
             $kodetrx     = explode('.',$distribusi->kode_distribusi);
             $nomor          = $kodetrx[1];
@@ -163,12 +162,11 @@ class DbCikara {
         return $kodedistribusi;
         
     }
-    public static function kodeRetur($user_id)
+    public static function kodeRetur()
     {
-        $akses          = Userakses::where('user_id',$user_id)->first();
-        $kode   = 'RB'.$akses->cabang_id.'.';
+        $kode   = 'RB.';
         // cek distribusi terakhir
-        $retur     = Retur::where('cabang_id',$akses->cabang_id)->latest()->first();
+        $retur     = Retur::latest()->first();
         if ($retur) {
             $kodetrx     = explode('.',$retur->kode_retur);
             $nomor          = $kodetrx[1];

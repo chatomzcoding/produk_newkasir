@@ -43,20 +43,16 @@ class TransaksiController extends Controller
                         $totalhariini   = Transaksi::where('user_id',$user->id)->whereDate('created_at',tgl_sekarang())->count();
                         break;
                     case 'cabang':
-                        $cabang     = Cabang::where('user_id',$user->id)->first();
                         $transaksi      = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$cabang->id)
                                         ->whereDate('transaksi.created_at',$tanggal)
                                         ->select('transaksi.*')
                                         ->get();
                         $total      = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$cabang->id)
                                         ->count();
                         $totalhariini      = DB::table('transaksi')
                                         ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$cabang->id)
                                         ->whereDate('transaksi.created_at',tgl_sekarang())
                                         ->count();
                         $cektransaksi = FALSE;
@@ -112,9 +108,9 @@ class TransaksiController extends Controller
                 $akses      = Userakses::where('user_id',Auth::user()->id)->first();
                 $transaksi  = Transaksi::find($request->transaksi_id);
                 if ($request->status == 'barcode') {
-                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('kode_barcode',$request->kode_barcode)->first();
+                    $barang     = Barang::where('kode_barcode',$request->kode_barcode)->first();
                 } else {
-                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang',$request->nama_barang)->first();
+                    $barang     = Barang::where('nama_barang',$request->nama_barang)->first();
                 }
                 
                 if ($barang) {
@@ -173,21 +169,9 @@ class TransaksiController extends Controller
      */
     public function show($transaksi)
     {
-        $menu       = 'transaksi';
         $transaksi  = Transaksi::find(Crypt::decryptString($transaksi));
         $user       = Auth::user();
-        switch ($user->level) {
-            case 'cabang':
-                $cabang     = Cabang::where('user_id',$user->id)->first();
-                # code...
-                break;
-            
-            default:
-                $akses      = Userakses::where('user_id',$user->id)->first();
-                $cabang     = Cabang::find($akses->cabang_id);
-                $client     = Client::find($cabang->client_id);
-                break;
-        }
+        $client     = Client::first();
         switch ($transaksi->status_transaksi) {
             case 'proses':
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
@@ -203,7 +187,7 @@ class TransaksiController extends Controller
                 // krsort($dkeranjang);
                 // dd($dkeranjang);
 
-                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','cabang','client'));
+                return view('sistem.transaksi.proses', compact('transaksi','s','user','data','client'));
                 break;
             case 'retur':
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'index' ;
@@ -215,12 +199,12 @@ class TransaksiController extends Controller
                     'totalpembayaran' => $totalpembayaran,
                     'sisapembayaran' => $sisapembayaran,
                 ];
-                return view('sistem.transaksi.proses', compact('menu','transaksi','s','user','data','cabang','client'));
+                return view('sistem.transaksi.proses', compact('transaksi','s','user','data','client'));
                 break;
             case 'selesai':
                 $invoice = datainvoice($transaksi->keranjang,$transaksi->uang_pembeli);
                 $userakses  = Userakses::where('user_id',$user->id)->first();
-                return view('sistem.transaksi.invoice', compact('menu','transaksi','user','cabang','invoice','userakses','client'));
+                return view('sistem.transaksi.invoice', compact('transaksi','user','invoice','userakses','client'));
                 break;
             default:
                 # code...
@@ -230,10 +214,8 @@ class TransaksiController extends Controller
 
     public function loadbarang()
     {
-        // Deklarasi variable keyword buah.
         $nama   = $_GET["query"];
-        $akses  = Userakses::where('user_id',Auth::user()->id)->first();
-        $result = Barang::where('cabang_id',$akses->cabang_id)->where('nama_barang','like','%'.$nama.'%')->get();
+        $result = Barang::where('nama_barang','like','%'.$nama.'%')->get();
 
         // Cek apakah ada yang cocok atau tidak.
         if (count($result) > 0) {

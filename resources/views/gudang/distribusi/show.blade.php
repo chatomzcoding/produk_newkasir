@@ -232,7 +232,6 @@
               <div class="modal-content">
                 <form action="{{ url('/retur')}}" method="post">
                     @csrf
-                    <input type="hidden" name="cabang_id" value="{{ $akses->cabang_id }}">
                     <input type="hidden" name="distribusi_id" value="{{ $distribusi->id }}">
                 <div class="modal-header">
                     <h4 class="modal-title">Tambah Data Retur</h4>
@@ -244,7 +243,7 @@
                     <section class="p-3">
                         <div class="form-group row">
                             <label for="" class="col-md-4">Kode Retur</label>
-                            <input type="text" name="kode_retur" id="kode_retur" value="{{ DbCikara::kodeRetur($akses->user_id) }}" class="form-control col-md-8" readonly>
+                            <input type="text" name="kode_retur" id="kode_retur" value="{{ DbCikara::kodeRetur() }}" class="form-control col-md-8" readonly>
                         </div>
                         <div class="form-group row">
                             <label for="" class="col-md-4">Tanggal Retur</label>

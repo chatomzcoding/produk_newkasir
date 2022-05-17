@@ -18,20 +18,12 @@
   <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/fontawesome-free/css/all.min.css')}}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/jqvmap/jqvmap.min.css')}}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('template/admin/lte/dist/css/adminlte.min.css')}}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/daterangepicker/daterangepicker.css')}}">
-  <!-- summernote -->
-  <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/summernote/summernote-bs4.min.css')}}">
 
   <link rel="stylesheet" href="{{ asset('css/style.css')}}">
 
@@ -40,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('template/admin/lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     
-    <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2.min.css')}}">
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2.min.css')}}"> --}}
 
     <script src="{{ asset('vendor/sweetalert/sweetalert.min.js')}}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert2.css')}}"></script>
@@ -48,85 +40,21 @@
 
     <script type="text/javascript" src="{{ asset('/vendor/ckeditor/ckeditor.js')}}"></script>
 
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+    {{-- <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script> --}}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" /> --}}
+          <!-- Select2 -->
+  <link rel="stylesheet" href=" {{ asset('template/admin/lte/plugins/select2/css/select2.min.css') }}">
+  <link rel="stylesheet" href=" {{ asset('template/admin/lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
     @yield('head')
 
-  <style>
-
-.select2-hidden-accessible {
-    border: 0 !important;
-    clip: rect(0 0 0 0) !important;
-    height: 1px !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    position: absolute !important;
-    width: 1px !important
-}
-
-.select2-container--default .select2-selection--single,
-.select2-selection .select2-selection--single {
-    border: 1px solid #d2d6de;
-    border-radius: 50%;
-    padding: 6px 12px;
-    height: 34px
-}
-
-.select2-container--default .select2-selection--single {
-    background-color: #fff;
-    border: 1px solid #aaa;
-    border-radius: 20px
-}
-
-.select2-container .select2-selection--single {
-    box-sizing: border-box;
-    cursor: pointer;
-    display: block;
-    height: 28px;
-    user-select: none;
-    -webkit-user-select: none
-}
-
-.select2-container .select2-selection--single .select2-selection__rendered {
-    padding-right: 10px
-}
-
-.select2-container .select2-selection--single .select2-selection__rendered {
-    padding-left: 0;
-    padding-right: 0;
-    height: auto;
-    margin-top: -3px
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #444;
-    line-height: 28px
-}
-
-.select2-container--default .select2-selection--single,
-.select2-selection .select2-selection--single {
-    border: 1px solid #d2d6de;
-    border-radius: 4px;
-    padding: 6px 12px;
-    height: 40px !important
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 26px;
-    position: absolute;
-    top: 6px !important;
-    right: 1px;
-    width: 20px
-}
-  </style>
+  
   @livewireStyles
 
 </head>
@@ -384,28 +312,11 @@
 </script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('template/admin/lte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<!-- ChartJS -->
-{{-- <script src="{{ asset('template/admin/lte/plugins/chart.js/Chart.min.js')}}"></script> --}}
-<!-- Sparkline -->
-<script src="{{ asset('template/admin/lte/plugins/sparklines/sparkline.js')}}"></script>
-<!-- JQVMap -->
-{{-- <script src="{{ asset('template/admin/lte/plugins/jqvmap/jquery.vmap.min.js')}}"></script> --}}
-{{-- <script src="{{ asset('template/admin/lte/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script> --}}
-<!-- jQuery Knob Chart -->
-{{-- <script src="{{ asset('template/admin/lte/plugins/jquery-knob/jquery.knob.min.js')}}"></script> --}}
-<!-- daterangepicker -->
-{{-- <script src="{{ asset('template/admin/lte/plugins/moment/moment.min.js')}}"></script> --}}
-{{-- <script src="{{ asset('template/admin/lte/plugins/daterangepicker/daterangepicker.js')}}"></script> --}}
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="{{ asset('template/admin/lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
-<!-- Summernote -->
-<script src="{{ asset('template/admin/lte/plugins/summernote/summernote-bs4.min.js')}}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('template/admin/lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('template/admin/lte/dist/js/adminlte.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-{{-- <script src="{{ asset('template/admin/lte/dist/js/pages/dashboard.js')}}"></script> --}}
 
 <!-- DataTables  & Plugins -->
 <script src="{{ asset('template/admin/lte/plugins/datatables/jquery.dataTables.min.js')}}"></script>
@@ -414,29 +325,31 @@
 <script src="{{ asset('template/admin/lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-{{-- <script src="{{ asset('template/admin/lte/plugins/jszip/jszip.min.js')}}"></script> --}}
 <script src="{{ asset('template/admin/lte/plugins/pdfmake/pdfmake.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/pdfmake/vfs_fonts.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
-<script src="{{ asset('template/admin/lte/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-<script src="{{ asset('vendor/select2/dist/js/select2.min.js')}}"></script>
+<script src=" {{ asset('template/admin/lte/plugins/select2/js/select2.full.min.js')}}"></script>
+
 
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('template/admin/lte/dist/js/demo.js')}}"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.select2').select2({
-      closeOnSelect: true
-    });
-  });
   $(function () {
     $('.pop-info').tooltip()
   })
 </script>
-<script type="text/javascript">
+{{-- <script type="text/javascript">
   $(document).ready(function() {
       $(".listdata").select2();
+  })
+</script> --}}
+<script>
+  $(function () {
+    //Initialize Select2 Elements
+    $('.listdata').select2({
+      theme: 'bootstrap4'
+    })
   })
 </script>
 <script>
