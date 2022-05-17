@@ -13,9 +13,9 @@ class Kategori extends Model
 
     protected $guarded = [];
 
-    public static function kategori($cabang_id)
+    public static function kategori()
     {
-        return Kategori::where('cabang_id',$cabang_id)->where('label','kategori')->orderBy('nama','ASC')->get();
+        return Kategori::where('label','kategori')->orderBy('nama','ASC')->get();
     }
     public static function satuan($cabang_id)
     {

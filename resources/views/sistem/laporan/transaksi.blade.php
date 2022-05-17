@@ -1,32 +1,25 @@
-@extends('layouts.admin')
-
-@section('title')
-    Data Transaksi
-@endsection
-
-@section('header')
+<x-admin-layout title="Laporan Transaksi" menu="laporantransaksi">
+  <x-slot name="header">
     <div class="row mb-2">
-        <div class="col-sm-6">
-        <h1 class="m-0">Data Transaksi</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Beranda</a></li>
-            <li class="breadcrumb-item active">Daftar Transaksi</li>
-        </ol>
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-@endsection
-   
-@section('container')
-    
+      <div class="col-sm-6">
+      <h1 class="m-0">Data Transaksi</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+      <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Beranda</a></li>
+          <li class="breadcrumb-item active">Daftar Transaksi</li>
+      </ol>
+      </div><!-- /.col -->
+  </div><!-- /.row -->
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-shopping-cart"></i></span>
-  
+    
                 <div class="info-box-content">
                   <span class="info-box-text">Total Transaksi</span>
                   <span class="info-box-number">
@@ -44,7 +37,7 @@
                   <span class="info-box-text">Item Terjual</span>
                   <span class="info-box-number">
                     {{ norupiah($statistik['data']['itemterjual'])}}
-
+    
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -59,7 +52,7 @@
                   <span class="info-box-text">Total Omzet</span>
                   <span class="info-box-number">
                     {{ rupiah($statistik['data']['omzet'])}}
-
+    
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -74,7 +67,7 @@
                   <span class="info-box-text">Laba</span>
                   <span class="info-box-number">
                     {{ rupiah($statistik['data']['laba'])}}
-
+    
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -82,7 +75,7 @@
               <!-- /.info-box -->
             </div>
             <!-- /.col -->
-  
+    
           </div>
         <div class="row">
           <!-- left column -->
@@ -109,7 +102,7 @@
               </div>
               <div class="card-body">
                   @include('sistem.notifikasi')
-  
+    
                   <section class="mb-1 mt-1">
                       <form action="{{ url('datalaporan/transaksi') }}" method="get">
                         <div class="row">
@@ -163,9 +156,6 @@
                                   <th width="5%">No</th>
                                   <th width="10%">Aksi</th>
                                   <th>Kode Transaksi</th>
-                                  <th>Tipe Pembayaran</th>
-                                  <th>Tipe Orderan</th>
-                                  <th>Uang Pembeli</th>
                                   <th>Keranjang</th>
                                   <th>Status</th>
                               </tr>
@@ -194,9 +184,6 @@
                                               </div>
                                       </td>
                                       <td>{{ $item->kode_transaksi}}</td>
-                                      <td>{{ $item->tipe_pembayaran}}</td>
-                                      <td>{{ $item->tipe_orderan}}</td>
-                                      <td>{{ rupiah($item->uang_pembeli)}}</td>
                                       <td>
                                           @if (!is_null($item->keranjang))
                                               <ul class="list-group">
@@ -261,34 +248,33 @@
           </div>
         </div>
     </div>
-    @section('script')
-        <script>
-            $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                // "buttons": ["copy","excel"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-            });
-        </script>
-          <script type="text/javascript">
-            function myFunction(){
-                /* tombol enter */
-                if(event.keyCode == 13) {
-                    event.preventDefault()
-                    $("#tambahtransaksi").click();
-                }
-            } 
-        </script>
-    @endsection
-
-    @endsection
-
+  </x-slot>
+  <x-slot name="kodejs">
+    <script>
+      $(function () {
+      $("#example1").DataTable({
+          "responsive": true, "lengthChange": false, "autoWidth": false,
+          // "buttons": ["copy","excel"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#example2').DataTable({
+          "paging": true,
+          "lengthChange": false,
+          "searching": false,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+      });
+      });
+  </script>
+    <script type="text/javascript">
+      function myFunction(){
+          /* tombol enter */
+          if(event.keyCode == 13) {
+              event.preventDefault()
+              $("#tambahtransaksi").click();
+          }
+      } 
+  </script>
+  </x-slot>
+</x-admin-layout>

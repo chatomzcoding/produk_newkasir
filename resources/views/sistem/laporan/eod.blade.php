@@ -1,10 +1,5 @@
-@extends('layouts.admin')
-
-@section('title')
-    Data Laporan EOD
-@endsection
-
-@section('header')
+<x-admin-layout title="Laporan EOD" menu="laporaneod">
+  <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
         <h1 class="m-0">Data Laporan EOD</h1>
@@ -16,17 +11,15 @@
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
-@endsection
-   
-@section('container')
-    
+  </x-slot>
+  <x-slot name="content">
     <div class="container-fluid">
         <div class="row">
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-list"></i></span>
-  
+    
                 <div class="info-box-content">
                   <span class="info-box-text">Total Laporan</span>
                   <span class="info-box-number">
@@ -41,7 +34,7 @@
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
-  
+    
                 <div class="info-box-content">
                   <span class="info-box-text">Total Transaksi</span>
                   <span class="info-box-number">
@@ -56,7 +49,7 @@
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
-  
+    
                 <div class="info-box-content">
                   <span class="info-box-text">Total Item Terjual</span>
                   <span class="info-box-number">
@@ -71,7 +64,7 @@
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
-  
+    
                 <div class="info-box-content">
                   <span class="info-box-text">Total Penjualan</span>
                   <span class="info-box-number">
@@ -83,7 +76,7 @@
               <!-- /.info-box -->
             </div>
             <!-- /.col -->
-  
+    
           </div>
         <div class="row">
           <!-- left column -->
@@ -210,26 +203,23 @@
           </div>
         </div>
     </div>
-
-  
-    @section('script')
-        <script>
-            $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-            });
-        </script>
-    @endsection
-
-    @endsection
-
+  </x-slot>
+  <x-slot name="kodejs">
+    <script>
+        $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+        });
+    </script>
+  </x-slot>
+</x-admin-layout>

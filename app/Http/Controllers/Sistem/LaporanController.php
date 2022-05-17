@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Sistem;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Client;
 use App\Models\Kategori;
 use App\Models\Keuangan;
 use App\Models\Laporan;
@@ -21,19 +22,13 @@ class LaporanController extends Controller
         $akses  = Userakses::where('user_id',$user->id)->first();
         switch ($sesi) {
             case 'transaksi':
-                $menu   = 'laporantransaksi';
-                $kategori = Kategori::kategori($akses->cabang_id);
+                $kategori = Kategori::kategori();
                 $s = (isset($_GET['s'])) ? $_GET['s'] : 'harian' ;
                 $skategori = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua' ;
                 switch ($s) {
                     case 'harian':
                         $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
-                        $dstatistik  = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->select('transaksi.*')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereDate('transaksi.created_at',$tanggal)
-                                        ->get();
+                        $dstatistik  = Transaksi::whereDate('transaksi.created_at',$tanggal)->get();
                         $dfilter    = [
                             'tanggal' => $tanggal,
                             'page' => FALSE,
@@ -44,18 +39,8 @@ class LaporanController extends Controller
                     case 'bulanan':
                         $bulan = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan();
                         $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
-                        $datatabel  = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->select('transaksi.*')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereMonth('transaksi.created_at',$bulan)
-                                        ->whereYear('transaksi.created_at',$tahun)
-                                        ->paginate(10);
-                        $dstatistik  = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->select('transaksi.*')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereMonth('transaksi.created_at',$bulan)
+                        $datatabel  = Transaksi::whereMonth('transaksi.created_at',$bulan)->whereYear('transaksi.created_at',$tahun)->paginate(10);
+                        $dstatistik  = Transaksi::whereMonth('transaksi.created_at',$bulan)
                                         ->whereYear('transaksi.created_at',$tahun)
                                         ->get();
                         $dfilter    = [
@@ -67,17 +52,9 @@ class LaporanController extends Controller
                         break;
                     case 'tahunan':
                         $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
-                        $datatabel  = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->select('transaksi.*')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereYear('transaksi.created_at',$tahun)
+                        $datatabel  = Transaksi::whereYear('transaksi.created_at',$tahun)
                                         ->paginate(10);
-                        $dstatistik  = DB::table('transaksi')
-                                        ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                        ->select('transaksi.*')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereYear('transaksi.created_at',$tahun)
+                        $dstatistik  = Transaksi::whereYear('transaksi.created_at',$tahun)
                                         ->get();
                         $dfilter    = [
                             'tahun' => $tahun,
@@ -91,7 +68,7 @@ class LaporanController extends Controller
                         break;
                 }
                 if ($skategori <> 'semua') {
-                    $barang     = Barang::select('kode_barang')->where('cabang_id',$akses->cabang_id)->where('kategori_id',$skategori)->pluck('kode_barang')->toArray();
+                    $barang     = Barang::select('kode_barang')->where('kategori_id',$skategori)->pluck('kode_barang')->toArray();
                     $dkategori  = Kategori::find($skategori);
                     $dkeranjang = [];
                     $total      = 0;
@@ -134,11 +111,10 @@ class LaporanController extends Controller
                     'data' => $dfilter,
                     'kategori' => $skategori
                 ];
-                return view('sistem.laporan.transaksi', compact('menu','datatabel','filter','statistik','kategori'));
+                return view('sistem.laporan.transaksi', compact('datatabel','filter','statistik','kategori'));
                 break;
             
             case 'eod':
-                $menu   = 'laporaneod';
                 $user_id  = (isset($_GET['user_id'])) ? $_GET['user_id'] : 'semua' ;
                 $sesi  = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'semua' ;
                 $tanggal  = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang() ;
@@ -147,10 +123,7 @@ class LaporanController extends Controller
                 switch ($sesi) {
                     case 'harian':
                         if ($user_id == 'semua') {
-                            $eod    = DB::table('laporan')
-                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereDate('laporan.tgl_laporan',$tanggal)
+                            $eod    = Laporan::whereDate('laporan.tgl_laporan',$tanggal)
                                         ->orderBy('laporan.tgl_laporan','DESC')
                                         ->get();
                         } else {
@@ -159,10 +132,7 @@ class LaporanController extends Controller
                         break;
                     case 'bulanan':
                         if ($user_id == 'semua') {
-                            $eod    = DB::table('laporan')
-                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereMonth('laporan.tgl_laporan',$bulan)
+                            $eod    = Laporan::whereMonth('laporan.tgl_laporan',$bulan)
                                         ->whereyear('laporan.tgl_laporan',$tahun)
                                         ->orderBy('laporan.tgl_laporan','DESC')
                                         ->get();
@@ -172,10 +142,7 @@ class LaporanController extends Controller
                         break;
                     case 'tahunan':
                         if ($user_id == 'semua') {
-                            $eod    = DB::table('laporan')
-                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->whereyear('laporan.tgl_laporan',$tahun)
+                            $eod    = Laporan::whereyear('laporan.tgl_laporan',$tahun)
                                         ->orderBy('laporan.tgl_laporan','DESC')
                                         ->get();
                         } else {
@@ -185,19 +152,13 @@ class LaporanController extends Controller
                     
                     default:
                         if ($user_id == 'semua') {
-                            $eod    = DB::table('laporan')
-                                        ->join('user_akses','laporan.user_id','=','user_akses.user_id')
-                                        ->where('user_akses.cabang_id',$akses->cabang_id)
-                                        ->orderBy('laporan.tgl_laporan','DESC')
-                                        ->get();
+                            $eod    = Laporan::orderBy('laporan.tgl_laporan','DESC')->get();
                         } else {
                             $eod    = Laporan::where('user_id',$user_id)->orderBy('tgl_laporan','DESC')->get();
                         }
                         break;
                 }
                 $user   = DB::table('users')
-                            ->join('user_akses','users.id','=','user_akses.user_id')
-                            ->where('user_akses.cabang_id',$akses->cabang_id)
                             ->where('users.level','kasir')
                             ->select('users.*')
                             ->orderBy('users.name','ASC')
@@ -222,13 +183,13 @@ class LaporanController extends Controller
                         'tahun' => $tahun,
                     ]
                 ];
-                return view('sistem.laporan.eod', compact('menu','data'));
+                return view('sistem.laporan.eod', compact('data'));
                 break;
             case 'keuangan':
-                $menu       = 'laporankeuangan';
+                $client     = Client::first();
                 $bulan      = (isset($_GET['bulan'])) ? $_GET['bulan'] : ambil_bulan() ;
                 $tahun      = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun() ;
-                $keuangan = Keuangan::where('cabang_id',$akses->cabang_id)->where('bulan',$bulan)->where('tahun',$tahun)->first();
+                $keuangan = Keuangan::where('bulan',$bulan)->where('tahun',$tahun)->first();
                 $penjualan    = Laporan::whereMonth('tgl_laporan',$bulan)->whereYear('tgl_laporan',$tahun)->sum('total_penjualan');
                 $info   = bulan_indo($bulan).' '.$tahun;
                 $data   = [
@@ -241,11 +202,11 @@ class LaporanController extends Controller
                         'info' => $info,
                     ],
                     'statistik' => [
-                        'total' => Keuangan::where('cabang_id',$akses->cabang_id)->count(),
+                        'total' => Keuangan::count(),
                     ]
                 ];
 
-                return view('sistem.laporan.keuangan', compact('menu','data'));
+                return view('sistem.laporan.keuangan', compact('data','client'));
                 break;
                 default:
                 # code...

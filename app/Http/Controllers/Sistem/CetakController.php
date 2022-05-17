@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Sistem;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
-use App\Models\Cabang;
 use App\Models\Client;
 use App\Models\Distribusi;
 use App\Models\Kategori;
@@ -22,41 +21,12 @@ class CetakController extends Controller
     public function cetak()
     {
         $user   = Auth::user();
-        switch ($user->level) {
-            case 'client':
-                $client     = Client::where('user_id',$user->id)->first();
-                $alamat     = $client->alamat;
-                $telp       = $client->no_telp;
-                $cabang     = [];
-                break;
-            case 'cabang':
-                $cabang     = Cabang::where('user_id',$user->id)->first();
-                $client     = Client::find($cabang->client_id);
-                $alamat     = $cabang->alamat;
-                $telp     = $cabang->telp;
-                break;
-            
-            case 'superadmin':
-                
-                break;
-            
-            default:
-                $userakses  = Userakses::where('user_id',$user->id)->first();
-                $cabang     = Cabang::find($userakses->cabang_id);
-                $client     = Client::find($cabang->client_id);
-                $alamat     = $cabang->alamat;
-                $telp     = $cabang->telp;
-
-                break;
-        }
-        if ($user->level <> 'superadmin') {
-            $main       = [
-                'telp' => $telp,
-                'alamat' => $alamat,
-                'client' => $client,
-                'cabang' => $cabang,
-            ];
-        }
+        $client     = Client::first();
+        $alamat     = $client->alamat;
+        $telp     = $client->telp;
+        $main       = [
+            'client' => $client
+        ];
         switch ($_GET['s']) {
             case 'transaksi':
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : tgl_sekarang();
@@ -64,17 +34,6 @@ class CetakController extends Controller
                 $tahun = (isset($_GET['tahun'])) ? $_GET['tahun'] : ambil_tahun();
                 $kategori = (isset($_GET['kategori'])) ? $_GET['kategori'] : 'semua';
                 switch ($user->level) {
-                    case 'cabang':
-                        $cabang     = Cabang::where('user_id',$user->id)->first();
-                        $transaksi      = DB::table('transaksi')
-                            ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                            ->where('user_akses.cabang_id',$cabang->id)
-                            ->select('transaksi.*')
-                            ->get();
-                        $data = [
-                            
-                        ];
-                        break;
                     case 'kasir':
                         $filter = (isset($_GET['sesi'])) ? $_GET['sesi'] : 'harian' ;
                         switch ($filter) {
@@ -94,16 +53,10 @@ class CetakController extends Controller
                         }
                         break;
                     case 'gudang':
-                        $akses  = Userakses::where('user_id',$user->id)->first();
-                        $sesi   = 'Cabang : '.ucwords($cabang->nama_cabang);
+                        $sesi   = '';
                         switch ($_GET['filter']) {
                             case 'harian':
-                                $transaksi      = DB::table('transaksi')
-                                                    ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                                    ->select('transaksi.*')
-                                                    ->whereDate('transaksi.created_at',$tanggal)
-                                                    ->where('user_akses.cabang_id',$akses->cabang_id)
-                                                    ->get();
+                                $transaksi      = Transaksi::whereDate('transaksi.created_at',$tanggal)->get();
                                 $data           = [
                                     'sesi' => $sesi,
                                     'info' => 'Tanggal '.date_indo($tanggal),
@@ -112,11 +65,7 @@ class CetakController extends Controller
                                 ];
                                 break;
                             case 'bulanan':
-                                $transaksi  = DB::table('transaksi')
-                                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                                ->select('transaksi.*')
-                                                ->where('user_akses.cabang_id',$akses->cabang_id)
-                                                ->whereMonth('transaksi.created_at',$bulan)
+                                $transaksi  = Transaksi::whereMonth('transaksi.created_at',$bulan)
                                                 ->whereYear('transaksi.created_at',$tahun)
                                                 ->get();
                                 $data           = [
@@ -127,12 +76,7 @@ class CetakController extends Controller
                                 ];
                                 break;
                             case 'tahunan':
-                                $transaksi  = DB::table('transaksi')
-                                                ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                                ->select('transaksi.*')
-                                                ->where('user_akses.cabang_id',$akses->cabang_id)
-                                                ->whereYear('transaksi.created_at',$tahun)
-                                                ->get();
+                                $transaksi  = Transaksi::whereYear('transaksi.created_at',$tahun)->get();
                                 $data           = [
                                     'sesi' => $sesi,
                                     'info' => 'Tahun '.$tahun,
@@ -152,7 +96,7 @@ class CetakController extends Controller
                         break;
                 }
                 if ($kategori <> 'semua') {
-                    $barang     = Barang::select('kode_barang')->where('cabang_id',$akses->cabang_id)->where('kategori_id',$kategori)->pluck('kode_barang')->toArray();
+                    $barang     = Barang::select('kode_barang')->where('kategori_id',$kategori)->pluck('kode_barang')->toArray();
                     $kategori   = Kategori::find($kategori);
                     $dtransaksi = [];
                     foreach ($transaksi as $item) {
@@ -194,7 +138,7 @@ class CetakController extends Controller
                 if ($kategori == 'semua') {
                     $namafile   = 'Barang';
                     $dkategori  = NULL;
-                    $barang     = Barang::where('cabang_id',$akses->cabang_id)->get();
+                    $barang     = Barang::get();
                 } else {
                     $dkategori  = Kategori::find($kategori);
                     $namafile   = 'Barang Kategori '.ucwords($dkategori->nama);
@@ -211,13 +155,12 @@ class CetakController extends Controller
                 break;
             case 'distribusi':
                 $namafile   = 'Distribusi';
-                $akses  = Userakses::where('user_id',$user->id)->first();
                 $tanggal = (isset($_GET['tanggal'])) ? $_GET['tanggal'] : 'semua' ;
                 if ($tanggal == 'semua') {
-                    $datatabel  = Distribusi::where('cabang_id',$akses->cabang_id)->orderBy('tgl_faktur','DESC')->get();
+                    $datatabel  = Distribusi::orderBy('tgl_faktur','DESC')->get();
                     $info       = 'Daftar Distribusi'; 
                 } else {
-                    $datatabel = Distribusi::where('cabang_id',$akses->cabang_id)->whereDate('tgl_faktur',$tanggal)->get();
+                    $datatabel = Distribusi::whereDate('tgl_faktur',$tanggal)->get();
                     $info       = 'Daftar Distribusi tanggal '.date_indo($tanggal); 
                 }
                 $data       = [
@@ -228,8 +171,7 @@ class CetakController extends Controller
                 break;
             case 'kategoribarang':
                 $namafile   = 'Data Kategori Barang';
-                $akses      = Userakses::where('user_id',$user->id)->first();
-                $kategori   = Kategori::kategori($akses->cabang_id);
+                $kategori   = Kategori::kategori();
                 $pdf        = PDF::loadview('sistem.cetak.kategoribarang', compact('main','kategori'));
 
                 break;
@@ -243,7 +185,7 @@ class CetakController extends Controller
             case 'supplier':
                 $namafile   = 'Data Supplier';
                 $akses      = Userakses::where('user_id',$user->id)->first();
-                $supplier   = Supplier::where('cabang_id',$akses->cabang_id)->orderBy('nama_supplier','ASC')->get();
+                $supplier   = Supplier::orderBy('nama_supplier','ASC')->get();
                 $pdf        = PDF::loadview('sistem.cetak.supplier', compact('main','supplier'));
 
                 break;

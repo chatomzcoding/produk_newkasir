@@ -33,7 +33,7 @@
               @foreach ($dtransaksi as $item)
                   <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $item[0]['kode_barang'] }}</td>
+                    <td><small>{{ $item[0]['kode_barang'] }}</small></td>
                     <td>{{ ucwords($item[0]['nama_barang']) }}</td>
                     @php
                         $detail = detailtransaksikategori($item)
@@ -54,7 +54,7 @@
               @endphp
               <tr>
                   <th colspan="4">TOTAL</th>
-                  <th>{{ $statistik['terjual'] }}</th>
+                  <th class="text-center">{{ $statistik['terjual'] }}</th>
                   <th class="text-right">{{ norupiah($statistik['penjualan']) }}</th>
                   <th class="text-right">{{ norupiah($statistik['hpp']) }}</th>
                   <th class="text-right">{{ norupiah($statistik['laba']) }}</th>

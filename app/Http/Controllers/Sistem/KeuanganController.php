@@ -65,7 +65,6 @@ class KeuanganController extends Controller
             $info   = 'Rincian telah ditambahkan';
         } else {
             Keuangan::create([
-                'cabang_id' => $request->cabang_id,
                 'bulan' => $request->bulan,
                 'tahun' => $request->tahun,
                 'penjualan' => 0,

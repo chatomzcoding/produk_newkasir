@@ -21,8 +21,6 @@
                 <tr>
                     <th width="5%">No</th>
                     <th>Kode Transaksi</th>
-                    <th>Tipe Pembayaran</th>
-                    <th>Tipe Orderan</th>
                     <th>Uang Pembeli</th>
                 </tr>
             </thead>
@@ -31,13 +29,11 @@
                 <tr>
                         <th class="text-center">{{ $loop->iteration}}</th>
                         <th class="text-leftW"> <small>{{ $item->kode_transaksi}}</small></th>
-                        <td>{{ $item->tipe_pembayaran}}</td>
-                        <td>{{ $item->tipe_orderan}}</td>
                         <td class="text-right">{{ norupiah($item->uang_pembeli)}}</td>
                     </tr>
                         <tr>
                             <td></td>
-                            <td colspan="4">
+                            <td colspan="2">
                                 @if (!is_null($item->keranjang))
                                     @foreach (json_decode($item->keranjang) as $key)
                                         - {{ strtolower($key->nama_barang) }} ({{ $key->jumlah }}) <br>
