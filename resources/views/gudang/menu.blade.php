@@ -5,7 +5,7 @@
     </a>
   </li> --}}
   
-  <li class="nav-item @if ($menu == 'barang' || $menu == 'infobarang')
+  <li class="nav-item @if ($menu == 'barang' || $menu == 'infobarang' || $menu == 'tambahbarang')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -95,7 +95,7 @@
         </li>
       </ul>
   </li>
-  <li class="nav-item @if ($menu == 'kategori' || $menu == 'satuan' || $menu == 'supplier'|| $menu == 'produsen')
+  <li class="nav-item @if ($menu == 'kategori' || $menu == 'satuan' || $menu == 'supplier'|| $menu == 'produsen' || $menu == 'client')
   menu-is-opening menu-open
   @endif">
       <a href="#" class="nav-link small">
@@ -107,6 +107,12 @@
         </p>
       </a>
       <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{{ url('/client')}}" class="nav-link small {{ menuaktif($menu,'client') }}">
+            &nbsp;&nbsp;<i class="fas fa-store nav-icon"></i>
+            <p>Data Pokok</p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="{{ url('/kategori')}}" class="nav-link small {{ menuaktif($menu,'kategori') }}">
             &nbsp;&nbsp;<i class="fas fa-th nav-icon"></i>

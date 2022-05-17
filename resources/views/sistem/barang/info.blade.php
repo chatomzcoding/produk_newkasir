@@ -1,4 +1,4 @@
-<x-admin-layout title="info barang" menu="barang">
+<x-admin-layout title="info barang" menu="infobarang">
   <x-slot name="header">
     <div class="row mb-2">
         <div class="col-sm-6">
@@ -98,7 +98,7 @@
                                   @foreach ($data['barangterlaris'] as $item)
                                     <tr>
                                       <td class="text-center">{{ $loop->iteration }}</td>
-                                      <td>{{ $item['barang']->nama_barang }}</td>
+                                      <td>{{ $item['barang'] }}</td>
                                       <td class="text-center">{{ norupiah($item['terjual']) }}</td>
                                     </tr>
                                   @endforeach

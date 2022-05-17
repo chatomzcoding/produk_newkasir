@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Client\CabangController;
+use App\Http\Controllers\Gudang\ClientController as GudangClientController;
 use App\Http\Controllers\Gudang\DistribusiController;
 use App\Http\Controllers\Gudang\ProdusenController;
 use App\Http\Controllers\Gudang\ReturController;
@@ -35,7 +36,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::get('/dashboard','App\Http\Controllers\HomeController@index')->name('dashboard');
     
     Route::resource('listdata', ListdataController::class);
-    Route::resource('client', ClientController::class);
+    Route::resource('client', GudangClientController::class);
   
     Route::resource('user', UserController::class);
     Route::resource('barang', BarangController::class);

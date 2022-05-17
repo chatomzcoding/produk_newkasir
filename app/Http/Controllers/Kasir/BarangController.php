@@ -6,6 +6,7 @@ use App\Helpers\Cikara\DbCikara;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\Transaksi;
 use App\Models\Userakses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,11 +38,7 @@ class BarangController extends Controller
             case 'info':
                 $menu   = 'infobarang';
                 $barangstokbanyak       = Barang::select('id','nama_barang','stok')->orderBy('stok','DESC')->limit(10)->get();
-                $transaksi              = DB::table('transaksi')
-                                            ->join('user_akses','transaksi.user_id','=','user_akses.user_id')
-                                            ->select('transaksi.keranjang')
-                                            ->where('transaksi.keranjang','<>','NULL')
-                                            ->get();
+                $transaksi              = Transaksi::where('keranjang','<>','NULL')->get('keranjang');
                 $barang         = [];
                 $totalomzet     = 0;
                 foreach ($transaksi as $item) {
